@@ -2,7 +2,14 @@ import { defineStore } from 'pinia'
 
 export const useStore = defineStore('store', {
   state: () => ({
-    msg: 'Vite'
+    isStart: true,
+    isReward: false,
+    startPage: {
+      title: 'Start'
+    },
+    rewardPage: {
+      title: 'Reward'
+    }
   }),
   actions: {
     // setName(newName: string) {
