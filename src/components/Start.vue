@@ -1,5 +1,6 @@
 <template>
-  <h1 @click="GoToReward">{{ $store.startPage.title }}</h1>
+  <!-- <h1 @click="GoToReward">{{ $store.startPage.title }}</h1> -->
+  <img src="/images/bg-blue-sky.jpg"/>
 </template>
 
 <script setup lang="ts">
