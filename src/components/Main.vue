@@ -1,22 +1,24 @@
 <template>
-  <!-- <h1>{{ $store.rewardPage.title }}</h1> -->
-  <h1 @click="GoToReward">{{ $store.rewardPage.title }}</h1>
+  <h1 @click="GoToStart">{{ $store.MainPage.title }}</h1>
+  <img src="/images/zeus.png"/>
+
 </template>
 
 <script setup lang="ts">
-// import {  } from 'vue'
+// import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from '../stores/store'
 const $store = useStore()
 const router = useRouter()
 
 // ============= 切換頁面 =============
-function GoToReward() {
-  router.push('/')
+function GoToStart() {
+  router.push('/start')
 
-  $store.isStart = true
-  $store.isReward = false
+  $store.isStart = false
+  $store.isResult = true
 }
+
 </script>
 
 <style scoped>

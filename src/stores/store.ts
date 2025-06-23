@@ -3,12 +3,15 @@ import { defineStore } from 'pinia'
 export const useStore = defineStore('store', {
   state: () => ({
     isStart: true,
-    isReward: false,
+    isResult: false,
+    MainPage: {
+      title: 'Main'
+    },
     startPage: {
       title: 'Start'
     },
-    rewardPage: {
-      title: 'Reward'
+    resultPage: {
+      title: 'Result'
     }
   }),
   actions: {
