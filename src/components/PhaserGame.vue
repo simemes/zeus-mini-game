@@ -44,6 +44,9 @@ onMounted(() => {
   let items: Phaser.Physics.Arcade.Group
   let direction = 1
   let timerEvent: Phaser.Time.TimerEvent
+  let isTouching = false
+  let moveDirection = 0
+  let lastX = 0
 
   function preload(this: Phaser.Scene) {
     this.load.image('bg', '/images/bg_blue_sky.jpg')
@@ -64,7 +67,33 @@ onMounted(() => {
     // Player
     player = this.physics.add.sprite(360, 1150, 'player').setCollideWorldBounds(true)
     player.setScale(0.4)
+    // Player 觸控控制
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+        isTouching = true
+        lastX = pointer.x
+    })
 
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+        if (!isTouching) return
+        const deltaX = pointer.x - lastX
+        const swipeThreshold = 5 // 最小移動才能判斷方向
+        if (deltaX > swipeThreshold) {
+            // console.log('右滑')
+            moveDirection = 1
+        } else if (deltaX < -swipeThreshold) {
+            // console.log('左滑')
+            moveDirection = -1
+        } else {
+            // console.log('停住')
+        }
+        lastX = pointer.x // 更新位置
+    })
+
+    this.input.on('pointerup', () => {
+        // console.log('pointerup')
+        isTouching = false
+        moveDirection = 0
+    })
     // Controls
     cursors = this.input.keyboard!.createCursorKeys()
 
@@ -105,13 +134,17 @@ onMounted(() => {
     }
 
     // 玩家移動
-    if (cursors.left?.isDown) {
-      player.setVelocityX(-300)
-    } else if (cursors.right?.isDown) {
-      player.setVelocityX(300)
+    if (moveDirection === -1 || cursors.left?.isDown) {
+        // console.log('左移')
+        player.setVelocityX(-300)
+    } else if (moveDirection === 1 || cursors.right?.isDown) {
+        // console.log('右移')
+        player.setVelocityX(300)
     } else {
-      player.setVelocityX(0)
+        // console.log('停')
+        player.setVelocityX(0)
     }
+
   }
 
   function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
