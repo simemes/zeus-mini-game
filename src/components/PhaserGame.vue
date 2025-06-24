@@ -17,6 +17,8 @@ const itemList = [
   { key: 'star', scale: 0.2, speed: 220, weight: 1 },
 ]
 
+// ================================== onMounted ==================================
+
 onMounted(() => {
   if (!gameContainer.value) return;
 
@@ -29,7 +31,7 @@ onMounted(() => {
     physics: {
       default: "arcade",
       arcade: {
-        gravity: { x: 0, y: 500 }, // ✅ 補上 x
+        gravity: { x: 0, y: 500 },
         debug: false,
       },
     },
@@ -56,6 +58,7 @@ onMounted(() => {
   let moveDirection = 0;
   let lastX = 0;
 
+  // ------------- *** preload *** -------------
   function preload(this: Phaser.Scene) {
     this.load.image("bg", "/images/bg_blue_sky.jpg");
     this.load.image("boss", "/images/zeus.png");
@@ -67,9 +70,16 @@ onMounted(() => {
     this.load.image("star", "/images/star.png");
   }
 
+  // ------------- *** create *** -------------
   function create(this: Phaser.Scene) {
+    
+    // background
     const bg = this.add.image(0, 0, "bg").setOrigin(0);
     fitBackground(bg, this);
+    // 監聽畫面縮放
+    this.scale.on("resize", () => {
+      fitBackground(bg, this);
+    });
 
     // Boss
     boss = this.add.sprite(360, 200, "boss");
@@ -85,7 +95,6 @@ onMounted(() => {
       isTouching = true;
       lastX = pointer.x;
     });
-
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
       if (!isTouching) return;
       const deltaX = pointer.x - lastX;
@@ -101,7 +110,6 @@ onMounted(() => {
       }
       lastX = pointer.x; // 更新位置
     });
-
     this.input.on("pointerup", () => {
       // console.log('pointerup')
       isTouching = false;
@@ -112,7 +120,6 @@ onMounted(() => {
 
     // Items group
     items = this.physics.add.group();
-
     // 碰撞判定
     this.physics.add.overlap(player, items, (player, item) => {
       const gameItem = item as Phaser.GameObjects.GameObject & Phaser.Physics.Arcade.Body
@@ -130,7 +137,6 @@ onMounted(() => {
       }
       item.destroy()
     })
-
     // 定時丟東西
     timerEvent = this.time.addEvent({
       delay: 1000,
@@ -140,16 +146,12 @@ onMounted(() => {
       },
     });
 
-    // 監聽畫面縮放
-    this.scale.on("resize", () => {
-      fitBackground(bg, this);
-    });
   }
 
+  // ------------- *** update *** -------------
   function update(this: Phaser.Scene) {
-    // 魔王左右移動
+    // 魔王移動
     boss.x += direction * 5;
-
     const halfWidth = boss.displayWidth / 2;
     if (boss.x > 720 - halfWidth || boss.x < 0 + halfWidth) {
       direction *= -1;
@@ -168,12 +170,14 @@ onMounted(() => {
     }
   }
 
+  // ------------- 背景響應式調整 -------------
   function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
     const { width, height } = scene.scale;
     const scale = Math.max(width / bg.width, height / bg.height);
     bg.setScale(scale);
   }
 
+  // ------------- 隨機掉落物品 -------------
   function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
     // 依照 weight 建立擴展陣列
     const weightedList: string[] = []
@@ -182,17 +186,15 @@ onMounted(() => {
         weightedList.push(item.key)
       }
     })
-
     const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
     const itemData = itemList.find(i => i.key === selectedKey)
-
     if (!itemData) return
 
     const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
     item.setVelocityY(itemData.speed)
     item.setScale(itemData.scale)
     item.setData('type', selectedKey) // 方便之後判斷
-}
+  }
 
 });
 
