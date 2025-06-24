@@ -9,6 +9,14 @@ import Phaser from "phaser";
 const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
+const itemList = [
+  { key: 'bomb', scale: 0.2, speed: 220, weight: 5 },
+  { key: 'clock', scale: 0.2, speed: 200, weight: 4 },
+  { key: 'clock_gold', scale: 0.2, speed: 250, weight: 2 },
+  { key: 'coin', scale: 0.2, speed: 220, weight: 3 },
+  { key: 'star', scale: 0.2, speed: 220, weight: 1 },
+]
+
 onMounted(() => {
   if (!gameContainer.value) return;
 
@@ -52,7 +60,11 @@ onMounted(() => {
     this.load.image("bg", "/images/bg_blue_sky.jpg");
     this.load.image("boss", "/images/zeus.png");
     this.load.image("player", "/images/player.png");
-    this.load.image("item", "/images/bomb.png");
+    this.load.image("bomb", "/images/bomb.png");
+    this.load.image("clock", "/images/clock.png");
+    this.load.image("clock_gold", "/images/clock_gold.png");
+    this.load.image("coin", "/images/coin.png");
+    this.load.image("star", "/images/star.png");
   }
 
   function create(this: Phaser.Scene) {
@@ -103,23 +115,28 @@ onMounted(() => {
 
     // 碰撞判定
     this.physics.add.overlap(player, items, (player, item) => {
-      console.log("Hit!", item);
-      item.destroy();
-    });
+      const gameItem = item as Phaser.GameObjects.GameObject & Phaser.Physics.Arcade.Body
+      const type = (gameItem as any).getData?.('type')
+      if (type === 'bomb') {
+        console.log('bomb')
+      } else if (type === 'clock') {
+        console.log('clock')
+      } else if (type === 'clock_gold') {
+        console.log('clock_gold')
+      } else if (type === 'coin') {
+        console.log('coin')
+      } else if (type === 'star') {
+        console.log('star')
+      }
+      item.destroy()
+    })
 
     // 定時丟東西
     timerEvent = this.time.addEvent({
       delay: 1000,
       loop: true,
       callback: () => {
-        const drop = items.create(
-          boss.x,
-          boss.y + 50,
-          "item"
-        ) as Phaser.Physics.Arcade.Sprite;
-        drop.setVelocityY(300);
-        drop.setScale(0.2);
-        drop.setCollideWorldBounds(false);
+        dropRandomItem(this, boss.x, boss.y + 50)
       },
     });
 
@@ -156,6 +173,27 @@ onMounted(() => {
     const scale = Math.max(width / bg.width, height / bg.height);
     bg.setScale(scale);
   }
+
+  function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
+    // 依照 weight 建立擴展陣列
+    const weightedList: string[] = []
+    itemList.forEach(item => {
+      for (let i = 0; i < item.weight; i++) {
+        weightedList.push(item.key)
+      }
+    })
+
+    const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
+    const itemData = itemList.find(i => i.key === selectedKey)
+
+    if (!itemData) return
+
+    const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
+    item.setVelocityY(itemData.speed)
+    item.setScale(itemData.scale)
+    item.setData('type', selectedKey) // 方便之後判斷
+}
+
 });
 
 onBeforeUnmount(() => {
