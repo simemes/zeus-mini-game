@@ -1,5 +1,5 @@
 <template>
-  <div ref="gameContainer" class="w-full h-full" />
+  <div ref="gameContainer" class="w-screen h-screen mx-auto" />
 </template>
 
 <script lang="ts" setup>
@@ -14,10 +14,16 @@ onMounted(() => {
 
   const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: 720,
+    height: 1280,
     parent: gameContainer.value,
-    backgroundColor: '#242424',
+    backgroundColor: '#000000',
+    scale: {
+        // 等比例縮放整個 canvas
+        mode: Phaser.Scale.FIT,
+        // 置中 canvas
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
     scene: {
       preload,
       create,
@@ -27,13 +33,14 @@ onMounted(() => {
   game = new Phaser.Game(config)
 
   function preload(this: Phaser.Scene) {
-    this.load.setBaseURL('https://labs.phaser.io')
-    this.load.image('sky', 'assets/skies/space3.png')
+    this.load.image('bg_blue_sky', '/images/bg_blue_sky.jpg')
   }
 
   function create(this: Phaser.Scene) {
-    this.add.image(400, 300, 'sky')
+    // 強制背景填滿畫布大小
+    this.add.image(0, 0, 'bg_blue_sky').setOrigin(0).setDisplaySize(720, 1280)
   }
+
 })
 
 onBeforeUnmount(() => {
@@ -42,5 +49,4 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-/* 可自定義容器大小 */
 </style>
