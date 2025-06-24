@@ -18,29 +18,107 @@ onMounted(() => {
     height: 1280,
     parent: gameContainer.value,
     backgroundColor: '#000000',
+    physics: {
+      default: 'arcade',
+      arcade: {
+        gravity: { x: 0, y: 500 }, // ✅ 補上 x
+        debug: false,
+      },
+    },
     scale: {
-        // 等比例縮放整個 canvas
-        mode: Phaser.Scale.FIT,
-        // 置中 canvas
-        autoCenter: Phaser.Scale.CENTER_BOTH,
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scene: {
       preload,
       create,
+      update,
     },
   }
 
   game = new Phaser.Game(config)
 
+  let boss: Phaser.GameObjects.Sprite
+  let player: Phaser.Physics.Arcade.Sprite
+  let cursors: Phaser.Types.Input.Keyboard.CursorKeys
+  let items: Phaser.Physics.Arcade.Group
+  let direction = 1
+  let timerEvent: Phaser.Time.TimerEvent
+
   function preload(this: Phaser.Scene) {
-    this.load.image('bg_blue_sky', '/images/bg_blue_sky.jpg')
+    this.load.image('bg', '/images/bg_blue_sky.jpg')
+    this.load.image('boss', '/images/zeus.png')
+    this.load.image('player', '/images/player.png')
+    this.load.image('item', '/images/bomb.png')
   }
 
   function create(this: Phaser.Scene) {
-    // 強制背景填滿畫布大小
-    this.add.image(0, 0, 'bg_blue_sky').setOrigin(0).setDisplaySize(720, 1280)
+    const bg = this.add.image(0, 0, 'bg').setOrigin(0)
+    fitBackground(bg, this)
+
+    // Boss
+    boss = this.add.sprite(360, 200, 'boss')
+    boss.setScale(0.3)
+
+
+    // Player
+    player = this.physics.add.sprite(360, 1150, 'player').setCollideWorldBounds(true)
+    player.setScale(0.4)
+
+    // Controls
+    cursors = this.input.keyboard!.createCursorKeys()
+
+    // Items group
+    items = this.physics.add.group()
+
+    // 碰撞判定
+    this.physics.add.overlap(player, items, (player, item) => {
+      console.log('Hit!', item)
+      item.destroy()
+    })
+
+    // 定時丟東西
+    timerEvent = this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: () => {
+        const drop = items.create(boss.x, boss.y + 50, 'item') as Phaser.Physics.Arcade.Sprite
+        drop.setVelocityY(300)
+        drop.setScale(0.2)
+        drop.setCollideWorldBounds(false)
+      },
+    })
+
+    // 監聽畫面縮放
+    this.scale.on('resize', () => {
+      fitBackground(bg, this)
+    })
   }
 
+  function update(this: Phaser.Scene) {
+    // 魔王左右移動
+    boss.x += direction * 5
+
+    const halfWidth = boss.displayWidth / 2
+    if (boss.x > 720 - halfWidth || boss.x < 0 + halfWidth) {
+        direction *= -1
+    }
+
+    // 玩家移動
+    if (cursors.left?.isDown) {
+      player.setVelocityX(-300)
+    } else if (cursors.right?.isDown) {
+      player.setVelocityX(300)
+    } else {
+      player.setVelocityX(0)
+    }
+  }
+
+  function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
+    const { width, height } = scene.scale
+    const scale = Math.max(width / bg.width, height / bg.height)
+    bg.setScale(scale)
+  }
 })
 
 onBeforeUnmount(() => {
