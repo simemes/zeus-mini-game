@@ -1,5 +1,32 @@
 <template>
-  <div ref="gameContainer" class="w-screen h-screen mx-auto" />
+  <!-- Score -->
+    <div
+      class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
+    >
+      <div
+        class="absolute top-1 w-full h-[100px]"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        <img src="/images/score_bar.png" class="">
+      </div>
+    </div>
+    <!-- Canvas -->
+    <div
+      ref="gameContainer"
+      class="relative w-screen h-screen mx-auto"
+    >
+    </div>
+    <!-- Time -->
+    <div
+      class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
+    >
+      <div
+        class="absolute bottom-0 w-full"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        <img src="/images/time_bar.png" class="">
+      </div>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -10,11 +37,11 @@ const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
 const itemList = [
-  { key: 'bomb', scale: 0.15, speed: 220, weight: 5 },
-  { key: 'clock', scale: 0.15, speed: 200, weight: 4 },
-  { key: 'clock_gold', scale: 0.15, speed: 250, weight: 2 },
-  { key: 'coin', scale: 0.15, speed: 220, weight: 3 },
-  { key: 'star', scale: 0.15, speed: 220, weight: 1 },
+  { key: 'bomb', scale: 0.15, speed: 500, weight: 5 },
+  { key: 'clock', scale: 0.15, speed: 500, weight: 4 },
+  { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2 },
+  { key: 'coin', scale: 0.15, speed: 500, weight: 3 },
+  { key: 'star', scale: 0.15, speed: 500, weight: 1 },
 ]
 
 // ================================== onMounted ==================================
@@ -31,7 +58,7 @@ onMounted(() => {
     physics: {
       default: "arcade",
       arcade: {
-        gravity: { x: 0, y: 500 },
+        // gravity: { x: 0, y: 0 },
         debug: false,
       },
     },
@@ -47,6 +74,7 @@ onMounted(() => {
   };
 
   game = new Phaser.Game(config);
+  // console.log('🟢 ', game.canvas)
 
   let boss: Phaser.GameObjects.Sprite;
   let player: Phaser.Physics.Arcade.Sprite;
@@ -74,7 +102,7 @@ onMounted(() => {
   function create(this: Phaser.Scene) {
     
     // background
-    const bg = this.add.image(0, 0, "bg").setOrigin(0);
+    const bg = this.add.image(0, -90, "bg").setOrigin(0);
     fitBackground(bg, this);
     // 監聽畫面縮放
     this.scale.on("resize", () => {
@@ -82,12 +110,12 @@ onMounted(() => {
     });
 
     // Boss
-    boss = this.add.sprite(360, 200, "boss");
+    boss = this.add.sprite(360, 250, "boss");
     boss.setScale(0.3);
 
     // Player
     player = this.physics.add
-      .sprite(360, 1150, "player")
+      .sprite(360, 1060, "player")
       .setCollideWorldBounds(true);
     player.setScale(0.4);
     // Player 觸控控制

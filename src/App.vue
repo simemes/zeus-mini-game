@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full"><router-view /></div>
+  <div class="w-full h-full flex items-center justify-center"><router-view /></div>
   
 </template>
 
