@@ -10,11 +10,11 @@ const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
 const itemList = [
-  { key: 'bomb', scale: 0.2, speed: 220, weight: 5 },
-  { key: 'clock', scale: 0.2, speed: 200, weight: 4 },
-  { key: 'clock_gold', scale: 0.2, speed: 250, weight: 2 },
-  { key: 'coin', scale: 0.2, speed: 220, weight: 3 },
-  { key: 'star', scale: 0.2, speed: 220, weight: 1 },
+  { key: 'bomb', scale: 0.15, speed: 220, weight: 5 },
+  { key: 'clock', scale: 0.15, speed: 200, weight: 4 },
+  { key: 'clock_gold', scale: 0.15, speed: 250, weight: 2 },
+  { key: 'coin', scale: 0.15, speed: 220, weight: 3 },
+  { key: 'star', scale: 0.15, speed: 220, weight: 1 },
 ]
 
 // ================================== onMounted ==================================
