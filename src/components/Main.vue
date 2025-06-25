@@ -1,6 +1,6 @@
 <template>
   <h1 @click="GoToStart">{{ $store.MainPage.title }}</h1>
-  <img src="/images/zeus.png"/>
+  <!-- <img src="/images/zeus.png"/> -->
 
 </template>
 

@@ -15,12 +15,22 @@
         class="absolute bottom-0 w-full"
         :style="{ maxWidth:  + 'px' }"
       >
-        <img src="/images/time_bar.png" class="">
+        <div class="relative flex aspect-[10]">
+          <!-- bar bg -->
+          <img src="/images/time_bar.png" class="absolute bottom-0">
+          <!-- clock bg -->
+          <div class=" w-[45px] h-[22px] py-[2px] bg-[#643B1B] rounded-[20px] relative left-2 flex justify-start">
+            <!-- icon -->
+            <img src="/images/clock_icon.png" class="relative w-[16px] h-[16px] mx-1">
+            <!-- sec -->
+            <p class="sec-font relative text-[18px] leading-[100%]">{{clock_sec}}</p>
+          </div>
+        </div>
       </div>
       <!-- Start -->
       <div
         v-if="(4 > sec && sec >= 0)"
-        class="absolute bottom-[50%] w-full pointer-events-auto count-down"
+        class="absolute top-[40%] w-full pointer-events-auto text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
         :style="{ maxWidth:  + 'px' }"
       >
         {{countdownSec}}
@@ -51,6 +61,7 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
+let clock_sec = ref(60)
 
 // 開啟三秒後啟動
 function StartCountdown() {
@@ -61,8 +72,20 @@ function StartCountdown() {
     if (sec.value === 3) {
       console.log('GameStart!');
       gameStart.value = true;
+      StartClock();
     }
     if (sec.value === 4) clearInterval(interval); // 停止計時
+  }, 1000);
+}
+// 時鐘開始倒數
+function StartClock() {
+  console.log("StartClock!")
+  const interval = setInterval(() => {
+    clock_sec.value--;
+    if (clock_sec.value === 0) {
+      console.log('Clear!')
+      clearInterval(interval);
+    }
   }, 1000);
 }
 
@@ -285,9 +308,7 @@ onBeforeUnmount(() => {
 </script>
 <style scoped>
 
-.count-down {
-  @apply text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact] ;
-  /* font-weight: 400; */
+.sec-font {
+  font-family: Passion One;
 }
-
 </style>
