@@ -115,20 +115,23 @@ function StartClock() {
     }
   }, 1000);
 }
+// 暫停按鈕
 function togglePause() {
-  console.log('togglePause')
-  isPaused.value = !isPaused.value;
-  // 確保遊戲存在且目前場景是活躍狀態
-  if (game && game.scene.isActive('default')) {
-    const scene = game.scene.getScene('default');
-    // 暫停狀態
-    if (isPaused.value) {
-      scene.physics.world.pause();
-      scene.time.timeScale = 0;
-    // 非暫停狀態
-    } else {
-      scene.physics.world.resume();
-      scene.time.timeScale = 1;
+  if(gameStart.value) {
+    console.log('togglePause')
+    isPaused.value = !isPaused.value;
+    // 確保遊戲存在且目前場景是活躍狀態
+    if (game && game.scene.isActive('default')) {
+      const scene = game.scene.getScene('default');
+      // 暫停狀態
+      if (isPaused.value) {
+        scene.physics.world.pause();
+        scene.time.timeScale = 0;
+      // 非暫停狀態
+      } else {
+        scene.physics.world.resume();
+        scene.time.timeScale = 1;
+      }
     }
   }
 }
