@@ -10,10 +10,17 @@
       >
         <img src="/images/score_bar.png" class="">
       </div>
+      <button
+        @click="togglePause"
+        class="absolute top-2 right-2 z-[2] bg-blue-600 text-white px-4 py-2 rounded pointer-events-auto"
+      >
+        {{ isPaused ? 'Resume' : 'Pause' }}
+      </button>
+
       <!-- Start -->
       <div
         v-if="(4 > sec && sec >= 0) || clockSec == 0"
-        class="absolute top-[40%] w-full pointer-events-auto text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
+        class="absolute top-[40%] w-full text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
         :style="{ maxWidth:  + 'px' }"
       >
         {{countdownSec}}
@@ -81,6 +88,7 @@ const itemList = [
 let gameStart = ref(false)
 let sec = ref(0)
 let clockSec = ref(60)
+let isPaused = ref(false)
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -97,13 +105,32 @@ function StartCountdown() {
 function StartClock() {
   console.log("StartClock!")
   const interval = setInterval(() => {
-    clockSec.value--;
-    // 時間結束
-    if (clockSec.value === 0) {
-      console.log('Time\'s Up!')
-      clearInterval(interval);
+    if (!isPaused.value) {
+      clockSec.value--;
+      // 時間結束
+      if (clockSec.value === 0) {
+        console.log('Time\'s Up!')
+        clearInterval(interval);
+      }
     }
   }, 1000);
+}
+function togglePause() {
+  console.log('togglePause')
+  isPaused.value = !isPaused.value;
+  // 確保遊戲存在且目前場景是活躍狀態
+  if (game && game.scene.isActive('default')) {
+    const scene = game.scene.getScene('default');
+    // 暫停狀態
+    if (isPaused.value) {
+      scene.physics.world.pause();
+      scene.time.timeScale = 0;
+    // 非暫停狀態
+    } else {
+      scene.physics.world.resume();
+      scene.time.timeScale = 1;
+    }
+  }
 }
 
 // ================================== computed ==================================
@@ -285,8 +312,8 @@ onMounted(() => {
         },
       });
     }
-    // 處理遊戲尚未開始或已經結束
-    if (!hasStarted || clockSec.value <= 0) {
+    // 處理遊戲尚未開始 or 已經結束 or 暫停
+    if (!hasStarted || clockSec.value <= 0 || isPaused.value) {
       // 設為零，不然會滑動到邊界
       player.setVelocityX(0);
       // 把碰撞關掉
