@@ -32,12 +32,25 @@
         <div class="relative flex aspect-[10]">
           <!-- bar bg -->
           <img src="/images/time_bar.png" class="absolute bottom-0">
-          <!-- clock bg -->
-          <div class=" w-[45px] h-[22px] py-[2px] bg-[#643B1B] rounded-[20px] relative left-2 flex justify-start">
-            <!-- icon -->
-            <img src="/images/clock_icon.png" class="relative w-[16px] h-[16px] mx-1">
-            <!-- sec -->
-            <p class="sec-font relative text-[18px] leading-[100%]">{{clockSec}}</p>
+          <!-- clock & progress 的容器 -->
+          <div class="relative w-full flex px-2">
+            <!-- clock bg -->
+            <div class=" w-[45px] h-[22px] py-[2px] mr-3 bg-[#643B1B] rounded-[20px] relative flex justify-start">
+              <!-- icon -->
+              <img src="/images/clock_icon.png" class="relative w-[16px] h-[16px] mx-1">
+              <!-- sec -->
+              <p class="sec-font relative text-[18px] leading-[100%]">{{clockSec}}</p>
+            </div>
+            <!-- progress bar -->
+            <div class="flex-1 h-[15px] bg-[#643B1B] mt-1 rounded-[20px] relative left-0 z-1 overflow-hidden">
+              <!-- 實質時間 -->
+              <div class="h-[15px] bg-[#FFDB34] rounded-[20px] relative"
+                :style="{ width: (clockSec / 60 * 100) + '%' }"></div>
+              <!-- 三小格 -->
+              <div class="h-[15px] bottom-0 border border-[#643B1B] absolute w-[33.3%] rounded-tl-[20px] rounded-bl-[20px] rounded-tr-[1px] rounded-br-[1px]"></div>
+              <div class="h-[15px] bottom-0 border-y border-[#643B1B] absolute w-[33.3%] rounded-tl-[1px] rounded-bl-[1px] rounded-tr-[1px] rounded-br-[1px] left-[33.3%]"></div>
+              <div class="h-[15px] bottom-0 border border-[#643B1B] absolute w-[33.3%] rounded-tl-[1px] rounded-bl-[1px] rounded-tr-[20px] rounded-br-[20px] left-[66.6%]"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -67,7 +80,7 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(5)
+let clockSec = ref(60)
 
 // 預備三秒後啟動
 function StartCountdown() {
