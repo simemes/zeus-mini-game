@@ -8,15 +8,25 @@
         class="absolute top-1 w-full h-[100px]"
         :style="{ maxWidth:  + 'px' }"
       >
-        <img src="/images/score_bar.png" class="">
+        <!-- 底 -->
+        <div class="w-full h-8 rounded-[20px] bg-[#C87637] border-[2px] border-black absolute top-4"></div>
+        <!-- logo -->
+        <img src="/images/simemes_logo.png" class="w-25 absolute top-2 left-4" />
+        <!-- 分數區 -->
+        <div class="w-[37%] h-15 rounded-[13px] bg-[#C87637] border-[2px] border-black absolute top-0 left-[31.5%] flex justify-center items-center">
+          <div class="w-[92%] h-[80%] rounded-[10px] bg-[#643B1B] text-center text-[32px] font-[Impact]">
+            {{$store.totalScore}}
+          </div>
+        </div>
+        <!-- 暫停按鈕區 -->
+        <div class="w-12 h-12 rounded-[10px] bg-[#C87637] border-[2px] border-black absolute top-2 right-5 flex justify-center items-center">
+          <img
+            @click="togglePause"
+            src="/images/pause_btn.png"
+            class="w-[90%] h-[90%] top-2 left-4 pointer-events-auto" 
+          />
+        </div>
       </div>
-      <button
-        @click="togglePause"
-        class="absolute top-2 right-2 z-[2] bg-blue-600 text-white px-4 py-2 rounded pointer-events-auto"
-      >
-        {{ isPaused ? 'Resume' : 'Pause' }}
-      </button>
-
       <!-- Start -->
       <div
         v-if="(4 > sec && sec >= 0) || clockSec == 0"
@@ -68,11 +78,17 @@
       class="relative w-screen h-screen mx-auto"
     >
     </div>
+    <div v-if="$store.isPaused" class="absolute z-1 w-full h-full">
+      <Pause @pauseEvent = "togglePause"></Pause>
+    </div>
 </template>
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import Phaser from "phaser";
+import { useStore } from '../stores/store'
+import Pause from '../components/Pause.vue'
+const $store = useStore()
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
@@ -88,7 +104,6 @@ const itemList = [
 let gameStart = ref(false)
 let sec = ref(0)
 let clockSec = ref(60)
-let isPaused = ref(false)
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -105,7 +120,7 @@ function StartCountdown() {
 function StartClock() {
   console.log("StartClock!")
   const interval = setInterval(() => {
-    if (!isPaused.value) {
+    if (!$store.isPaused) {
       clockSec.value--;
       // 時間結束
       if (clockSec.value === 0) {
@@ -118,17 +133,18 @@ function StartClock() {
 // 暫停按鈕
 function togglePause() {
   if(gameStart.value) {
-    console.log('togglePause')
-    isPaused.value = !isPaused.value;
+    $store.isPaused = !$store.isPaused;
     // 確保遊戲存在且目前場景是活躍狀態
     if (game && game.scene.isActive('default')) {
       const scene = game.scene.getScene('default');
       // 暫停狀態
-      if (isPaused.value) {
+      if ($store.isPaused) {
+        console.log('Pause')
         scene.physics.world.pause();
         scene.time.timeScale = 0;
       // 非暫停狀態
       } else {
+        console.log('Continue')
         scene.physics.world.resume();
         scene.time.timeScale = 1;
       }
@@ -316,7 +332,7 @@ onMounted(() => {
       });
     }
     // 處理遊戲尚未開始 or 已經結束 or 暫停
-    if (!hasStarted || clockSec.value <= 0 || isPaused.value) {
+    if (!hasStarted || clockSec.value <= 0 || $store.isPaused) {
       // 設為零，不然會滑動到邊界
       player.setVelocityX(0);
       // 把碰撞關掉
