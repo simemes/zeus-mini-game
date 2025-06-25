@@ -6,6 +6,8 @@ export const useStore = defineStore('store', {
     isResult: false,
     isPaused: false,
     totalScore: 0,
+    knockOut: false,
+    invincible: false,
     MainPage: {
       title: 'Start'
     },

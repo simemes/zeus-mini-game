@@ -94,11 +94,11 @@ const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
 const itemList = [
-  { key: 'bomb', scale: 0.15, speed: 500, weight: 5 },
-  { key: 'clock', scale: 0.15, speed: 500, weight: 4 },
-  { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2 },
-  { key: 'coin', scale: 0.15, speed: 500, weight: 3 },
-  { key: 'star', scale: 0.15, speed: 500, weight: 1 },
+  { key: 'bomb', scale: 0.15, speed: 500, weight: 5, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'clock', scale: 0.15, speed: 500, weight: 4, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'coin', scale: 0.15, speed: 500, weight: 3, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'star', scale: 0.15, speed: 500, weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let gameStart = ref(false)
@@ -239,6 +239,8 @@ onMounted(() => {
     this.load.image("bg", "/images/bg_blue_sky.jpg");
     this.load.image("boss", "/images/zeus.png");
     this.load.image("player", "/images/player.png");
+    this.load.image("invincible", "/images/invincible.png");
+    this.load.image("knockout", "/images/knockout.png");
     this.load.image("bomb", "/images/bomb.png");
     this.load.image("clock", "/images/clock.png");
     this.load.image("clock_gold", "/images/clock_gold.png");
@@ -300,16 +302,39 @@ onMounted(() => {
     this.physics.add.overlap(player, items, (player, item) => {
       const gameItem = item as Phaser.GameObjects.GameObject & Phaser.Physics.Arcade.Body
       const type = (gameItem as any).getData?.('type')
+      const itemInfo = itemList.find(i => i.key === type);
+      // console.log(itemInfo)
+      // 被擊暈
       if (type === 'bomb') {
-        console.log('bomb')
-      } else if (type === 'clock') {
-        console.log('clock')
-      } else if (type === 'clock_gold') {
-        console.log('clock_gold')
+        if($store.invincible) return
+        $store.knockOut = true
+        let knockout_time = 0
+        const interval = setInterval(() => {
+          knockout_time++
+          if (knockout_time === itemInfo!.delay) {
+            $store.knockOut = false
+            clearInterval(interval)
+          }
+        }, 1000);
+      // 加時間
+      } else if (type === 'clock' || type === 'clock_gold') {
+        clockSec.value += itemInfo!.plus_time
+        if(clockSec.value >= 60) clockSec.value = 60
+      // 加分數
       } else if (type === 'coin') {
-        console.log('coin')
+        $store.totalScore += itemInfo!.scores
+      // 無敵時間
       } else if (type === 'star') {
-        console.log('star')
+        $store.invincible = true
+        let invincible_time = 0
+        const interval = setInterval(() => {
+          invincible_time++
+          if (invincible_time === 2) {
+            $store.invincible = false
+            clearInterval(interval)
+          }
+        }, 1000);
+
       }
       item.destroy()
     })
@@ -358,16 +383,32 @@ onMounted(() => {
       b_direction *= -1;
     }
 
-    // 玩家移動
-    if (moveDirection === -1 || cursors.left?.isDown) {
+    // 玩家移動 （不能 knockout）
+    if ((moveDirection === -1 || cursors.left?.isDown) && !$store.knockOut) {
       // console.log('左移')
       player.setVelocityX(-300);
-    } else if (moveDirection === 1 || cursors.right?.isDown) {
+    } else if ((moveDirection === 1 || cursors.right?.isDown) && !$store.knockOut) {
       // console.log('右移')
       player.setVelocityX(300);
     } else {
       // console.log('停')
       player.setVelocityX(0);
+    }
+    // knockout 關閉碰撞
+    if ($store.knockOut) {
+      player.body!.checkCollision.none = true;
+    } else {
+      player.body!.checkCollision.none = false;
+    }
+    // 更換圖示相關
+    // 無敵
+    if($store.invincible) {
+      player.setTexture('invincible')
+    } else if($store.knockOut) {
+      player.setTexture('knockout')
+      player.setY(player.y + 40);
+    } else {
+      player.setTexture('player')
     }
 
   }
