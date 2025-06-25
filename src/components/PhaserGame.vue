@@ -95,10 +95,10 @@ let game: Phaser.Game | null = null;
 
 const itemList = [
   { key: 'bomb', scale: 0.15, speed: 500, weight: 5, scores: 0, delay: 2, plus_time: 0 },
-  // { key: 'clock', scale: 0.15, speed: 500, weight: 4, scores: 0, delay: 0, plus_time: 2 },
-  // { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2, scores: 0, delay: 0, plus_time: 5 },
-  // { key: 'coin', scale: 0.15, speed: 500, weight: 3, scores: 100, delay: 0, plus_time: 0 },
-  // { key: 'star', scale: 0.15, speed: 500, weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'clock', scale: 0.15, speed: 500, weight: 4, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'coin', scale: 0.15, speed: 500, weight: 3, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'star', scale: 0.15, speed: 500, weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let gameStart = ref(false)
