@@ -10,6 +10,20 @@
       >
         <img src="/images/score_bar.png" class="">
       </div>
+      <!-- Start -->
+      <div
+        v-if="(4 > sec && sec >= 0)"
+        class="absolute top-[40%] w-full pointer-events-auto text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        {{countdownSec}}
+        <div
+          v-if="(3 > sec)"
+          class="w-[80%] flex mt-20 mx-auto">
+          <img src="/images/arrow_l.png" class="w-[50%]">
+          <img src="/images/arrow_r.png" class="w-[50%]">
+        </div>
+      </div>
       <!-- Time -->
       <div
         class="absolute bottom-0 w-full"
@@ -26,14 +40,6 @@
             <p class="sec-font relative text-[18px] leading-[100%]">{{clock_sec}}</p>
           </div>
         </div>
-      </div>
-      <!-- Start -->
-      <div
-        v-if="(4 > sec && sec >= 0)"
-        class="absolute top-[40%] w-full pointer-events-auto text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
-        :style="{ maxWidth:  + 'px' }"
-      >
-        {{countdownSec}}
       </div>
     </div>
     <!-- Canvas -->
