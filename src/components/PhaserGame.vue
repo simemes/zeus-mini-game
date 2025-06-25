@@ -95,15 +95,15 @@ let game: Phaser.Game | null = null;
 
 const itemList = [
   { key: 'bomb', scale: 0.15, speed: 500, weight: 5, scores: 0, delay: 2, plus_time: 0 },
-  { key: 'clock', scale: 0.15, speed: 500, weight: 4, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2, scores: 0, delay: 0, plus_time: 5 },
-  { key: 'coin', scale: 0.15, speed: 500, weight: 3, scores: 100, delay: 0, plus_time: 0 },
-  { key: 'star', scale: 0.15, speed: 500, weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  // { key: 'clock', scale: 0.15, speed: 500, weight: 4, scores: 0, delay: 0, plus_time: 2 },
+  // { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2, scores: 0, delay: 0, plus_time: 5 },
+  // { key: 'coin', scale: 0.15, speed: 500, weight: 3, scores: 100, delay: 0, plus_time: 0 },
+  // { key: 'star', scale: 0.15, speed: 500, weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(60)
+let clockSec = ref(5)
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -360,8 +360,14 @@ onMounted(() => {
     if (!hasStarted || clockSec.value <= 0 || $store.isPaused) {
       // 設為零，不然會滑動到邊界
       player.setVelocityX(0);
-      // 把碰撞關掉
-      if (clockSec.value <= 0) player.body!.checkCollision.none = true;
+      // 時間到時
+      if (clockSec.value <= 0) {
+        // 把碰撞關掉
+        player.body!.checkCollision.none = true;
+        // 若 knockout 設高度
+        if (player.texture.key === 'knockout') player.setY(player.y + 40);
+        // if(!$store.knockOut && !$store.invincible) player.setTexture('player')
+      }
       return;
     }
 
