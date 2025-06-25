@@ -12,7 +12,7 @@
       </div>
       <!-- Start -->
       <div
-        v-if="(4 > sec && sec >= 0)"
+        v-if="(4 > sec && sec >= 0) || clockSec == 0"
         class="absolute top-[40%] w-full pointer-events-auto text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
         :style="{ maxWidth:  + 'px' }"
       >
@@ -37,7 +37,7 @@
             <!-- icon -->
             <img src="/images/clock_icon.png" class="relative w-[16px] h-[16px] mx-1">
             <!-- sec -->
-            <p class="sec-font relative text-[18px] leading-[100%]">{{clock_sec}}</p>
+            <p class="sec-font relative text-[18px] leading-[100%]">{{clockSec}}</p>
           </div>
         </div>
       </div>
@@ -67,29 +67,27 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clock_sec = ref(60)
+let clockSec = ref(5)
 
-// 開啟三秒後啟動
+// 預備三秒後啟動
 function StartCountdown() {
   const interval = setInterval(() => {
     sec.value++;
-    // console.log(`秒數：${3 - sec.value}`);
-
     if (sec.value === 3) {
-      console.log('GameStart!');
       gameStart.value = true;
       StartClock();
     }
-    if (sec.value === 4) clearInterval(interval); // 停止計時
+    if (sec.value === 4) clearInterval(interval);
   }, 1000);
 }
 // 時鐘開始倒數
 function StartClock() {
   console.log("StartClock!")
   const interval = setInterval(() => {
-    clock_sec.value--;
-    if (clock_sec.value === 0) {
-      console.log('Clear!')
+    clockSec.value--;
+    // 時間結束
+    if (clockSec.value === 0) {
+      console.log('Time\'s Up!')
       clearInterval(interval);
     }
   }, 1000);
@@ -99,7 +97,8 @@ function StartClock() {
 
 const countdownSec = computed(() => {
   let result;
-  if(sec.value == 3) result = 'START'
+  if(sec.value == 3) result = 'START';
+  if(clockSec.value == 0) result = 'TIME\'S UP'
   return result?result:3-sec.value
 })
 
@@ -149,6 +148,32 @@ onMounted(() => {
   let lastX = 0;
 
   StartCountdown();
+
+  // ------------- 背景響應式調整 -------------
+  function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
+    const { width, height } = scene.scale;
+    const scale = Math.max(width / bg.width, height / bg.height);
+    bg.setScale(scale);
+  }
+
+  // ------------- 隨機掉落物品 -------------
+  function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
+    // 依照 weight 建立擴展陣列
+    const weightedList: string[] = []
+    itemList.forEach(item => {
+      for (let i = 0; i < item.weight; i++) {
+        weightedList.push(item.key)
+      }
+    })
+    const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
+    const itemData = itemList.find(i => i.key === selectedKey)
+    if (!itemData) return
+
+    const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
+    item.setVelocityY(itemData.speed)
+    item.setScale(itemData.scale)
+    item.setData('type', selectedKey) // 方便之後判斷
+  }
 
   // ------------- *** preload *** -------------
   function preload(this: Phaser.Scene) {
@@ -234,7 +259,8 @@ onMounted(() => {
 
   // ------------- *** update *** -------------
   function update(this: Phaser.Scene) {
-
+    
+    // 監控遊戲是否開始，只做一次
     if(gameStart.value && !hasStarted) {
       hasStarted = true;
       // 定時丟東西
@@ -246,9 +272,16 @@ onMounted(() => {
         },
       });
     }
+    // 處理遊戲尚未開始或已經結束
+    if (!hasStarted || clockSec.value <= 0) {
+      // 設為零，不然會滑動到邊界
+      player.setVelocityX(0);
+      // 把碰撞關掉
+      if (clockSec.value <= 0) player.body!.checkCollision.none = true;
+      return;
+    }
 
-    if (!hasStarted) return;
-
+    // 以下為正常遊戲時間內的邏輯
     // 魔王移動
     boss.x += b_direction * b_speed;
     b_changeDirCooldown--;
@@ -278,32 +311,6 @@ onMounted(() => {
       player.setVelocityX(0);
     }
 
-  }
-
-  // ------------- 背景響應式調整 -------------
-  function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
-    const { width, height } = scene.scale;
-    const scale = Math.max(width / bg.width, height / bg.height);
-    bg.setScale(scale);
-  }
-
-  // ------------- 隨機掉落物品 -------------
-  function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
-    // 依照 weight 建立擴展陣列
-    const weightedList: string[] = []
-    itemList.forEach(item => {
-      for (let i = 0; i < item.weight; i++) {
-        weightedList.push(item.key)
-      }
-    })
-    const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
-    const itemData = itemList.find(i => i.key === selectedKey)
-    if (!itemData) return
-
-    const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
-    item.setVelocityY(itemData.speed)
-    item.setScale(itemData.scale)
-    item.setData('type', selectedKey) // 方便之後判斷
   }
 
 });
