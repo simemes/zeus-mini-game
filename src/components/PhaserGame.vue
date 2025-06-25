@@ -103,7 +103,7 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(5)
+let clockSec = ref(60)
 
 // 預備三秒後啟動
 function StartCountdown() {
