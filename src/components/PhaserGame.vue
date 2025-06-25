@@ -1,13 +1,21 @@
 <template>
-  <!-- Score -->
+    <!-- UI -->
     <div
       class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
     >
+      <!-- Score -->
       <div
         class="absolute top-1 w-full h-[100px]"
         :style="{ maxWidth:  + 'px' }"
       >
         <img src="/images/score_bar.png" class="">
+      </div>
+      <!-- Time -->
+      <div
+        class="absolute bottom-0 w-full"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        <img src="/images/time_bar.png" class="">
       </div>
     </div>
     <!-- Canvas -->
@@ -15,17 +23,6 @@
       ref="gameContainer"
       class="relative w-screen h-screen mx-auto"
     >
-    </div>
-    <!-- Time -->
-    <div
-      class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
-    >
-      <div
-        class="absolute bottom-0 w-full"
-        :style="{ maxWidth:  + 'px' }"
-      >
-        <img src="/images/time_bar.png" class="">
-      </div>
     </div>
 </template>
 
@@ -80,7 +77,9 @@ onMounted(() => {
   let player: Phaser.Physics.Arcade.Sprite;
   let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   let items: Phaser.Physics.Arcade.Group;
-  let direction = 1;
+  let b_direction = Math.random() < 0.5 ? -1 : 1; // 初始方向
+  let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
+  let b_changeDirCooldown = 0;
   let timerEvent: Phaser.Time.TimerEvent;
   let isTouching = false;
   let moveDirection = 0;
@@ -179,10 +178,20 @@ onMounted(() => {
   // ------------- *** update *** -------------
   function update(this: Phaser.Scene) {
     // 魔王移動
-    boss.x += direction * 5;
+    boss.x += b_direction * b_speed;
+    b_changeDirCooldown--;
+    if (b_changeDirCooldown <= 0) {
+    // 每 60 幀（大約 1 秒）有機率改變方向
+    if (Math.random() < 0.5) {
+        b_direction *= -1;
+        b_speed = Phaser.Math.Between(2, 6); // ✅ 隨機新速度
+      }
+      b_changeDirCooldown = 60; // 重設冷卻
+    }
+    // 邊界檢查（避免魔王走出畫面）
     const halfWidth = boss.displayWidth / 2;
     if (boss.x > 720 - halfWidth || boss.x < 0 + halfWidth) {
-      direction *= -1;
+      b_direction *= -1;
     }
 
     // 玩家移動
