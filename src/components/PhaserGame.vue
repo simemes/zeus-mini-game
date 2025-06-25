@@ -17,6 +17,14 @@
       >
         <img src="/images/time_bar.png" class="">
       </div>
+      <!-- Start -->
+      <div
+        v-if="(4 > sec && sec >= 0)"
+        class="absolute bottom-[50%] w-full pointer-events-auto count-down"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        {{countdownSec}}
+      </div>
     </div>
     <!-- Canvas -->
     <div
@@ -27,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import Phaser from "phaser";
 
 const gameContainer = ref<HTMLDivElement | null>(null);
@@ -39,7 +47,32 @@ const itemList = [
   { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2 },
   { key: 'coin', scale: 0.15, speed: 500, weight: 3 },
   { key: 'star', scale: 0.15, speed: 500, weight: 1 },
-]
+];
+
+let gameStart = ref(false)
+let sec = ref(0)
+
+// 開啟三秒後啟動
+function StartCountdown() {
+  const interval = setInterval(() => {
+    sec.value++;
+    // console.log(`秒數：${3 - sec.value}`);
+
+    if (sec.value === 3) {
+      console.log('GameStart!');
+      gameStart.value = true;
+    }
+    if (sec.value === 4) clearInterval(interval); // 停止計時
+  }, 1000);
+}
+
+// ================================== computed ==================================
+
+const countdownSec = computed(() => {
+  let result;
+  if(sec.value == 3) result = 'START'
+  return result?result:3-sec.value
+})
 
 // ================================== onMounted ==================================
 
@@ -80,10 +113,13 @@ onMounted(() => {
   let b_direction = Math.random() < 0.5 ? -1 : 1; // 初始方向
   let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
   let b_changeDirCooldown = 0;
+  let hasStarted = false;
   let timerEvent: Phaser.Time.TimerEvent;
   let isTouching = false;
   let moveDirection = 0;
   let lastX = 0;
+
+  StartCountdown();
 
   // ------------- *** preload *** -------------
   function preload(this: Phaser.Scene) {
@@ -164,19 +200,26 @@ onMounted(() => {
       }
       item.destroy()
     })
-    // 定時丟東西
-    timerEvent = this.time.addEvent({
-      delay: 1000,
-      loop: true,
-      callback: () => {
-        dropRandomItem(this, boss.x, boss.y + 50)
-      },
-    });
 
   }
 
   // ------------- *** update *** -------------
   function update(this: Phaser.Scene) {
+
+    if(gameStart.value && !hasStarted) {
+      hasStarted = true;
+      // 定時丟東西
+      timerEvent = this.time.addEvent({
+        delay: 1000,
+        loop: true,
+        callback: () => {
+          dropRandomItem(this, boss.x, boss.y + 50)
+        },
+      });
+    }
+
+    if (!hasStarted) return;
+
     // 魔王移動
     boss.x += b_direction * b_speed;
     b_changeDirCooldown--;
@@ -205,6 +248,7 @@ onMounted(() => {
       // console.log('停')
       player.setVelocityX(0);
     }
+
   }
 
   // ------------- 背景響應式調整 -------------
@@ -239,5 +283,11 @@ onBeforeUnmount(() => {
   game?.destroy(true);
 });
 </script>
+<style scoped>
 
-<style scoped></style>
+.count-down {
+  @apply text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact] ;
+  /* font-weight: 400; */
+}
+
+</style>
