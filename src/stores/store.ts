@@ -5,7 +5,7 @@ export const useStore = defineStore('store', {
     isStart: true,
     isResult: false,
     MainPage: {
-      title: 'Main'
+      title: 'Start'
     },
     startPage: {
       title: 'Start'

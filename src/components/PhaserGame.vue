@@ -10,20 +10,49 @@
       >
         <img src="/images/score_bar.png" class="">
       </div>
+      <!-- Start -->
+      <div
+        v-if="(4 > sec && sec >= 0) || clockSec == 0"
+        class="absolute top-[40%] w-full pointer-events-auto text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        {{countdownSec}}
+        <div
+          v-if="(3 > sec)"
+          class="w-[80%] flex mt-20 mx-auto">
+          <img src="/images/arrow_l.png" class="w-[50%]">
+          <img src="/images/arrow_r.png" class="w-[50%]">
+        </div>
+      </div>
       <!-- Time -->
       <div
         class="absolute bottom-0 w-full"
         :style="{ maxWidth:  + 'px' }"
       >
-        <img src="/images/time_bar.png" class="">
-      </div>
-      <!-- Start -->
-      <div
-        v-if="(4 > sec && sec >= 0)"
-        class="absolute bottom-[50%] w-full pointer-events-auto count-down"
-        :style="{ maxWidth:  + 'px' }"
-      >
-        {{countdownSec}}
+        <div class="relative flex aspect-[10]">
+          <!-- bar bg -->
+          <img src="/images/time_bar.png" class="absolute bottom-0">
+          <!-- clock & progress 的容器 -->
+          <div class="relative w-full flex px-2">
+            <!-- clock bg -->
+            <div class=" w-[45px] h-[22px] py-[2px] mr-3 bg-[#643B1B] rounded-[20px] relative flex justify-start">
+              <!-- icon -->
+              <img src="/images/clock_icon.png" class="relative w-[16px] h-[16px] mx-1">
+              <!-- sec -->
+              <p class="sec-font relative text-[18px] leading-[100%]">{{clockSec}}</p>
+            </div>
+            <!-- progress bar -->
+            <div class="flex-1 h-[15px] bg-[#643B1B] mt-1 rounded-[20px] relative left-0 z-1 overflow-hidden">
+              <!-- 實質時間 -->
+              <div class="h-[15px] bg-[#FFDB34] rounded-[20px] relative"
+                :style="{ width: (clockSec / 60 * 100) + '%' }"></div>
+              <!-- 三小格 -->
+              <div class="h-[15px] bottom-0 border border-[#643B1B] absolute w-[33.3%] rounded-tl-[20px] rounded-bl-[20px] rounded-tr-[1px] rounded-br-[1px]"></div>
+              <div class="h-[15px] bottom-0 border-y border-[#643B1B] absolute w-[33.3%] rounded-tl-[1px] rounded-bl-[1px] rounded-tr-[1px] rounded-br-[1px] left-[33.3%]"></div>
+              <div class="h-[15px] bottom-0 border border-[#643B1B] absolute w-[33.3%] rounded-tl-[1px] rounded-bl-[1px] rounded-tr-[20px] rounded-br-[20px] left-[66.6%]"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- Canvas -->
@@ -51,18 +80,29 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
+let clockSec = ref(60)
 
-// 開啟三秒後啟動
+// 預備三秒後啟動
 function StartCountdown() {
   const interval = setInterval(() => {
     sec.value++;
-    // console.log(`秒數：${3 - sec.value}`);
-
     if (sec.value === 3) {
-      console.log('GameStart!');
       gameStart.value = true;
+      StartClock();
     }
-    if (sec.value === 4) clearInterval(interval); // 停止計時
+    if (sec.value === 4) clearInterval(interval);
+  }, 1000);
+}
+// 時鐘開始倒數
+function StartClock() {
+  console.log("StartClock!")
+  const interval = setInterval(() => {
+    clockSec.value--;
+    // 時間結束
+    if (clockSec.value === 0) {
+      console.log('Time\'s Up!')
+      clearInterval(interval);
+    }
   }, 1000);
 }
 
@@ -70,7 +110,8 @@ function StartCountdown() {
 
 const countdownSec = computed(() => {
   let result;
-  if(sec.value == 3) result = 'START'
+  if(sec.value == 3) result = 'START';
+  if(clockSec.value == 0) result = 'TIME\'S UP'
   return result?result:3-sec.value
 })
 
@@ -120,6 +161,32 @@ onMounted(() => {
   let lastX = 0;
 
   StartCountdown();
+
+  // ------------- 背景響應式調整 -------------
+  function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
+    const { width, height } = scene.scale;
+    const scale = Math.max(width / bg.width, height / bg.height);
+    bg.setScale(scale);
+  }
+
+  // ------------- 隨機掉落物品 -------------
+  function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
+    // 依照 weight 建立擴展陣列
+    const weightedList: string[] = []
+    itemList.forEach(item => {
+      for (let i = 0; i < item.weight; i++) {
+        weightedList.push(item.key)
+      }
+    })
+    const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
+    const itemData = itemList.find(i => i.key === selectedKey)
+    if (!itemData) return
+
+    const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
+    item.setVelocityY(itemData.speed)
+    item.setScale(itemData.scale)
+    item.setData('type', selectedKey) // 方便之後判斷
+  }
 
   // ------------- *** preload *** -------------
   function preload(this: Phaser.Scene) {
@@ -205,7 +272,8 @@ onMounted(() => {
 
   // ------------- *** update *** -------------
   function update(this: Phaser.Scene) {
-
+    
+    // 監控遊戲是否開始，只做一次
     if(gameStart.value && !hasStarted) {
       hasStarted = true;
       // 定時丟東西
@@ -217,9 +285,16 @@ onMounted(() => {
         },
       });
     }
+    // 處理遊戲尚未開始或已經結束
+    if (!hasStarted || clockSec.value <= 0) {
+      // 設為零，不然會滑動到邊界
+      player.setVelocityX(0);
+      // 把碰撞關掉
+      if (clockSec.value <= 0) player.body!.checkCollision.none = true;
+      return;
+    }
 
-    if (!hasStarted) return;
-
+    // 以下為正常遊戲時間內的邏輯
     // 魔王移動
     boss.x += b_direction * b_speed;
     b_changeDirCooldown--;
@@ -251,32 +326,6 @@ onMounted(() => {
 
   }
 
-  // ------------- 背景響應式調整 -------------
-  function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
-    const { width, height } = scene.scale;
-    const scale = Math.max(width / bg.width, height / bg.height);
-    bg.setScale(scale);
-  }
-
-  // ------------- 隨機掉落物品 -------------
-  function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
-    // 依照 weight 建立擴展陣列
-    const weightedList: string[] = []
-    itemList.forEach(item => {
-      for (let i = 0; i < item.weight; i++) {
-        weightedList.push(item.key)
-      }
-    })
-    const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
-    const itemData = itemList.find(i => i.key === selectedKey)
-    if (!itemData) return
-
-    const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
-    item.setVelocityY(itemData.speed)
-    item.setScale(itemData.scale)
-    item.setData('type', selectedKey) // 方便之後判斷
-  }
-
 });
 
 onBeforeUnmount(() => {
@@ -285,9 +334,7 @@ onBeforeUnmount(() => {
 </script>
 <style scoped>
 
-.count-down {
-  @apply text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact] ;
-  /* font-weight: 400; */
+.sec-font {
+  font-family: Passion One;
 }
-
 </style>
