@@ -94,11 +94,19 @@ const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
 const itemList = [
-  { key: 'bomb', scale: 0.15, speed: 500, weight: 5, scores: 0, delay: 2, plus_time: 0 },
-  { key: 'clock', scale: 0.15, speed: 500, weight: 4, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: 500, weight: 2, scores: 0, delay: 0, plus_time: 5 },
-  { key: 'coin', scale: 0.15, speed: 500, weight: 3, scores: 100, delay: 0, plus_time: 0 },
-  { key: 'star', scale: 0.15, speed: 500, weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  // 得分 - weight 大
+  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'poseidon', scale: 0.15, speed: [200, 900], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  // 加時 - weight 中
+  { key: 'clock', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  // 暈眩 - weight 中
+  { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 2, plus_time: 0 },
+  // 無敵 - weight 小
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let gameStart = ref(false)
@@ -229,23 +237,31 @@ onMounted(() => {
     if (!itemData) return
 
     const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
-    item.setVelocityY(itemData.speed)
+    const randomSpeed = Phaser.Math.Between(itemData.speed[0], itemData.speed[1]);
+    item.setVelocityY(randomSpeed)
     item.setScale(itemData.scale)
     item.setData('type', selectedKey) // 方便之後判斷
   }
 
   // ------------- *** preload *** -------------
   function preload(this: Phaser.Scene) {
+    // bg
     this.load.image("bg", "/images/bg_blue_sky.jpg");
+    // char
     this.load.image("boss", "/images/zeus.png");
     this.load.image("player", "/images/player.png");
     this.load.image("invincible", "/images/invincible.png");
     this.load.image("knockout", "/images/knockout.png");
+    // item
     this.load.image("bomb", "/images/bomb.png");
     this.load.image("clock", "/images/clock.png");
     this.load.image("clock_gold", "/images/clock_gold.png");
     this.load.image("coin", "/images/coin.png");
     this.load.image("star", "/images/star.png");
+    this.load.image("gmove", "/images/gmove.png");
+    this.load.image("hat", "/images/hat.png");
+    this.load.image("poseidon", "/images/poseidon.png");
+    this.load.image("thunder", "/images/thunder.png");
   }
 
   // ------------- *** create *** -------------
@@ -304,7 +320,7 @@ onMounted(() => {
       const type = (gameItem as any).getData?.('type')
       const itemInfo = itemList.find(i => i.key === type);
       // console.log(itemInfo)
-      // 被擊暈
+      // 暈眩
       if (type === 'bomb') {
         if($store.invincible) return
         $store.knockOut = true
@@ -316,14 +332,14 @@ onMounted(() => {
             clearInterval(interval)
           }
         }, 1000);
-      // 加時間
-      } else if (type === 'clock' || type === 'clock_gold') {
+      // 加時
+      } else if (['clock', 'clock_gold'].includes(type)) {
         clockSec.value += itemInfo!.plus_time
         if(clockSec.value >= 60) clockSec.value = 60
-      // 加分數
-      } else if (type === 'coin') {
+      // 得分
+      } else if (['coin', 'gmove', 'hat', 'poseidon', 'thunder'].includes(type)) {
         $store.totalScore += itemInfo!.scores
-      // 無敵時間
+      // 無敵
       } else if (type === 'star') {
         $store.invincible = true
         let invincible_time = 0
