@@ -1,6 +1,6 @@
 <template>
 
-  <!-- 預載入圖片後遮罩消失 -->
+  <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
   <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
     <div v-if="!isLoaded" class="absolute w-full h-full bg-black z-10"></div>
   </transition>
@@ -9,7 +9,7 @@
     <div
       class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
     >
-      <!-- 防其他頁面會穿幫的遮罩 -->
+      <!-- 遮罩，startPanel & pausePanel 都在遊戲上層，遊戲層可能邊緣會露出 -->
       <div v-if="$store.isPaused || !$store.isStart" class="absolute bg-black w-[100%] h-full z-10"></div>
       <!-- Score -->
       <div
@@ -360,7 +360,7 @@ onMounted(async() => {
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
       if (!isTouching) return;
       const deltaX = pointer.x - lastX;
-      const swipeThreshold = 5; // 最小移動才能判斷方向
+      const swipeThreshold = 2; // 最小移動才能判斷方向
       if (deltaX > swipeThreshold) {
         // console.log('右滑')
         moveDirection = 1;
