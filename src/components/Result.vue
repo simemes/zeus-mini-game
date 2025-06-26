@@ -1,4 +1,9 @@
 <template>
+
+  <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
+  <transition leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+    <div v-if="!$store.resultLoaded" class="absolute w-full h-full bg-white z-10"></div>
+  </transition>
   <div class="absolute top-0 z-1 w-full h-full">
     <div class="asolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] aspect-[720/1280] max-w-[101%] max-h-[101%] z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center">
       <!-- gold bg -->
@@ -45,11 +50,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useStore } from '../stores/store'
 const $store = useStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
+
+// 預載入圖片
+const imageList: string[] = [
+  '/images/gold_background.jpg',
+  '/images/game_results.png',
+  '/images/pepe_in_chest.png',
+];
 
 let btnIsDisabled = ref(true)
 
@@ -63,8 +75,31 @@ function GoToStart() {
   $store.totalScore = 0
   $store.isStart = false
   $store.isLoaded = false
+  $store.resultLoaded = false
   router.push('/')
 }
+
+// 預載入圖片
+function preloadImages(imageUrls: string[]) {
+  console.log("[zeus]: preloadImages from Home ...")
+  return Promise.all(
+    imageUrls.map(
+      (src) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = reject;
+        })
+    )
+  );
+}
+
+onMounted(async() => {
+  // 預載入圖片
+  await preloadImages(imageList);
+  $store.resultLoaded = true; 
+})
 </script>
 
 <style scoped>
