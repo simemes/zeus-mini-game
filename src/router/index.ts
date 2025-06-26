@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Main from '../components/Main.vue'
-import Home from '../components/Home.vue'
+import Loading from '../components/Loading.vue'
+import Game from '../components/Game.vue'
 import Result from '../components/Result.vue'
 
 const routes = [
-  { path: '/', component: Main },
-  { path: '/home', component: Home },
+  { path: '/', component: Loading },
+  { path: '/game', component: Game },
   { path: '/result', component: Result },
 ]
 

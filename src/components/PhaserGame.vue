@@ -1,5 +1,4 @@
 <template>
-
   <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
   <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
     <div v-if="!isLoaded" class="absolute w-full h-full bg-black z-10"></div>
@@ -103,6 +102,8 @@ import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const $store = useStore()
 
 const gameContainer = ref<HTMLDivElement | null>(null);
@@ -155,7 +156,7 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(60)
+let clockSec = ref(1)
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -222,6 +223,10 @@ function preloadImages(imageUrls: string[]) {
         })
     )
   );
+}
+// 跳至 resultPage
+function GotoResult() {
+  router.push('/result')
 }
 
 // ================================== computed ==================================
@@ -451,6 +456,17 @@ onMounted(async() => {
         // 若 knockout 設高度
         if (player.texture.key === 'knockout') player.setY(player.y + 40);
         // if(!$store.knockOut && !$store.invincible) player.setTexture('player')
+        
+        // 跳去 result 頁面
+        let sec = ref(0);
+        const interval = setInterval(() => {
+          sec.value++;
+          
+          if (sec.value === 3) {
+            GotoResult();
+            clearInterval(interval);
+          }
+        }, 1000);
       }
       return;
     }
