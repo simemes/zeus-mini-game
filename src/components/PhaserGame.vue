@@ -1,7 +1,7 @@
 <template>
   <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
   <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-    <div v-if="!isLoaded" class="absolute w-full h-full bg-black z-10"></div>
+    <div v-if="!$store.isLoaded" class="absolute w-full h-full bg-black z-10"></div>
   </transition>
   <div>
     <!-- UI -->
@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, computed } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed, watch } from "vue";
 import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
@@ -110,7 +110,6 @@ const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
 // 預載入圖片
-const isLoaded = ref(false)
 const imageList: string[] = [
   '/images/bg_blue_sky.jpg',
   '/images/arrow_l.png',
@@ -156,7 +155,7 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(1)
+let clockSec = ref(5)
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -211,7 +210,7 @@ function activeGameStart() {
 }
 // 預載入圖片
 function preloadImages(imageUrls: string[]) {
-  console.log("[pre-register]: preloadImages from Home ...")
+  console.log("[zeus]: preloadImages from Home ...")
   return Promise.all(
     imageUrls.map(
       (src) =>
@@ -223,10 +222,6 @@ function preloadImages(imageUrls: string[]) {
         })
     )
   );
-}
-// 跳至 resultPage
-function GotoResult() {
-  router.push('/result')
 }
 
 // ================================== computed ==================================
@@ -243,7 +238,7 @@ const countdownSec = computed(() => {
 onMounted(async() => {
   // 預載入圖片
   await preloadImages(imageList);
-  isLoaded.value = true;
+  $store.isLoaded = true; 
 
   if (!gameContainer.value) return;
 
@@ -286,6 +281,7 @@ onMounted(async() => {
   let isTouching = false;
   let moveDirection = 0;
   let lastX = 0;
+  let hasGotoResult = false
 
   // StartCountdown();
 
@@ -314,6 +310,15 @@ onMounted(async() => {
     item.setVelocityY(randomSpeed)
     item.setScale(itemData.scale)
     item.setData('type', selectedKey) // 方便之後判斷
+  }
+
+  function GotoResult() {
+    // 跳去 result 頁面
+
+    // Nice to have: resultTimeout 在外面定義成 ref
+    const resultTimeout = setTimeout(() => {
+      router.push('/result')
+    }, 3000);
   }
 
   // ------------- *** preload *** -------------
@@ -456,17 +461,12 @@ onMounted(async() => {
         // 若 knockout 設高度
         if (player.texture.key === 'knockout') player.setY(player.y + 40);
         // if(!$store.knockOut && !$store.invincible) player.setTexture('player')
-        
-        // 跳去 result 頁面
-        let sec = ref(0);
-        const interval = setInterval(() => {
-          sec.value++;
-          
-          if (sec.value === 3) {
-            GotoResult();
-            clearInterval(interval);
-          }
-        }, 1000);
+
+        // 啟動一次 去 result 頁
+        if (!hasGotoResult) {
+          hasGotoResult = true
+          GotoResult()
+        }
       }
       return;
     }
@@ -522,7 +522,10 @@ onMounted(async() => {
 });
 
 onBeforeUnmount(() => {
-  game?.destroy(true);
+  game?.destroy(true)
+
+  // Nice to have: 保險起見，離開頁面前把 timeout/interval 都清理乾淨
+  // clearTimeout(resultTimeout)
 });
 </script>
 <style scoped>

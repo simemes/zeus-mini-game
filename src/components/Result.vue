@@ -1,15 +1,90 @@
 <template>
-  <h1>{{ $store.resultPage.title }}</h1>
-  <img src="/images/pepe_in_chest.png"/>
+  <div class="absolute top-0 z-1 w-full h-full">
+    <div class="asolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] aspect-[720/1280] max-w-[101%] max-h-[101%] z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center">
+      <!-- gold bg -->
+      <div class="relative overflow-hidden [clip-path:ellipse(100%_85%_at_50%_0%)]">
+        <img src="/images/gold_background.jpg" class="w-full h-full object-cover object-top -z-1 ">
+        <img src="/images/pepe_in_chest.png" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%]">
+      </div>
+      <div class="relative">
+        <img src="/images/game_results.png" class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[60%]">
+      </div>
+      <!-- 深藍邊線 -->
+      <div class="bg-[#012D57] absolute top-13 left-0 w-full h-full object-cover -z-2 [clip-path:ellipse(100%_45%_at_50%_0%)]"></div>
+      <!-- 漸層區 -->
+      <div class="bg-white absolute top-0 left-0 w-full h-full object-cover -z-3 bg-[linear-gradient(to_bottom,_#074375_50%,_#002B55_100%)]"></div>
+      <!-- 內容區 -->
+      <div class="w-[70%] mx-auto h-full flex flex-col justify-center items-center">
+        <!-- Rank & Score -->
+        <div class="flex-1 relative w-full flex flex-col justify-around items-center">
+          <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
+            <div>Ranking</div>
+            <div>{{ $store.rank || 0 }}</div>
+          </div>
+          <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
+            <div>Score</div>
+            <div>{{ $store.totalScore || 0 }}</div>
+          </div>
+          <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
+            <div>High Score</div>
+            <div>{{ ($store.highScore > $store.totalScore)?$store.highScore:$store.totalScore }}</div>
+          </div>
+        </div>
+        <!-- Share & Play Again -->
+        <div class="flex-1 relative w-full flex flex-col justify-center items-center">
+          <button class="btn btn-click type1 pointer-events-auto">Share</button>
+          <button @click="GoToStart" class="btn btn-click type1 pointer-events-auto">Play Again</button>
+        </div>
+        <!-- footer text -->
+        <div class="text-[11px] mb-5">
+          Players who share will get 1 additional play for the day.
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useStore } from '../stores/store'
 const $store = useStore()
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+function GoToStart() {
+  $store.totalScore = 0
+  $store.isStart = false
+  $store.isLoaded = false
+  router.push('/')
+}
 </script>
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+
+.circle-layout {
+  /* width: 680; */
+  height: 680;
+  top: -258px;
+  left: -152px;
+  border-width: 6px;
+  background: #FFFFFF;
+  border: 6px solid #08143E;
+  box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.btn {
+  @apply font-[Inter,sans-serif] text-center [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px];
+  @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#FBC222_50%,_#FFDC30_100%)];
+  border: 1px solid black !important;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+}
+.btn-click {
+  @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
+}
+.type1 {
+  @apply w-[100%] h-[48px] text-[14px];
 }
 </style>

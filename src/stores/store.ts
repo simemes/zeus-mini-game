@@ -7,10 +7,12 @@ export const useStore = defineStore('store', {
     isResult: false,
     isPaused: false,
     totalScore: 0,
+    highScore: 0,
+    rank: 0,
     knockOut: false,
     invincible: false,
-    MainPage: {
-      title: 'Start'
+    LoadingPage: {
+      title: 'Loading'
     },
     startPage: {
       title: 'Start'
