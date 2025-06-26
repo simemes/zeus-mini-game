@@ -32,8 +32,8 @@
         </div>
         <!-- Share & Play Again -->
         <div class="flex-1 relative w-full flex flex-col justify-center items-center">
-          <button class="btn btn-click type1 pointer-events-auto">Share</button>
-          <button @click="GoToStart" class="btn btn-click type1 pointer-events-auto">Play Again</button>
+          <button @click="Share" class="btn btn-click type1 pointer-events-auto">Share</button>
+          <button @click="GoToStart" class="btn btn-click type1 pointer-events-auto" :class="{ disabled: btnIsDisabled}" :disabled="btnIsDisabled">Play Again</button>
         </div>
         <!-- footer text -->
         <div class="text-[11px] mb-5">
@@ -45,10 +45,19 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useStore } from '../stores/store'
 const $store = useStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
+
+let btnIsDisabled = ref(true)
+
+function Share() {
+  console.log(btnIsDisabled)
+  btnIsDisabled.value = false
+  console.log(btnIsDisabled)
+}
 
 function GoToStart() {
   $store.totalScore = 0
@@ -86,5 +95,9 @@ function GoToStart() {
 }
 .type1 {
   @apply w-[100%] h-[48px] text-[14px];
+}
+
+.disabled {
+  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
 }
 </style>
