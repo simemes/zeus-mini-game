@@ -1,30 +1,40 @@
 <template>
+
+  <!-- 預載入圖片後遮罩消失 -->
+  <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+    <div v-if="!isLoaded" class="absolute w-full h-full bg-black z-10"></div>
+  </transition>
+  <div>
     <!-- UI -->
     <div
       class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
     >
+      <!-- 防其他頁面會穿幫的遮罩 -->
+      <div v-if="$store.isPaused || !$store.isStart" class="absolute bg-black w-[100%] h-full z-10"></div>
       <!-- Score -->
       <div
         class="absolute top-1 w-full h-[100px]"
         :style="{ maxWidth:  + 'px' }"
       >
-        <!-- 底 -->
-        <div class="w-full h-8 rounded-[20px] bg-[#C87637] border-[2px] border-black absolute top-4"></div>
-        <!-- logo -->
-        <img src="/images/simemes_logo.png" class="w-25 absolute top-2 left-4" />
-        <!-- 分數區 -->
-        <div class="w-[37%] h-15 rounded-[13px] bg-[#C87637] border-[2px] border-black absolute top-0 left-[31.5%] flex justify-center items-center">
-          <div class="w-[92%] h-[80%] rounded-[10px] bg-[#643B1B] text-center text-[32px] font-[Impact]">
-            {{$store.totalScore}}
+        <div class="relative">
+          <!-- 底 -->
+          <div class="w-[95%] h-8 left-[2.5%] rounded-[20px] bg-[#C87637] border-[2px] border-black absolute top-4"></div>
+          <!-- logo -->
+          <img src="/images/simemes_logo.png" class="w-25 absolute top-2 left-4" />
+          <!-- 分數區 -->
+          <div class="w-[37%] h-15 rounded-[13px] bg-[#C87637] border-[2px] border-black absolute top-0 left-[31.5%] flex justify-center items-center">
+            <div class="w-[92%] h-[80%] rounded-[10px] bg-[#643B1B] text-center text-[32px] font-[Impact]">
+              {{$store.totalScore}}
+            </div>
           </div>
-        </div>
-        <!-- 暫停按鈕區 -->
-        <div class="w-12 h-12 rounded-[10px] bg-[#C87637] border-[2px] border-black absolute top-2 right-5 flex justify-center items-center">
-          <img
-            @click="togglePause"
-            src="/images/pause_btn.png"
-            class="w-[90%] h-[90%] top-2 left-4 pointer-events-auto" 
-          />
+          <!-- 暫停按鈕區 -->
+          <div class="w-12 h-12 rounded-[10px] bg-[#C87637] border-[2px] border-black absolute top-2 right-5 flex justify-center items-center">
+            <img
+              @click="togglePause"
+              src="/images/pause_btn.png"
+              class="w-[90%] h-[90%] top-2 left-4 pointer-events-auto" 
+            />
+          </div>
         </div>
       </div>
       <!-- Start -->
@@ -78,9 +88,13 @@
       class="relative w-screen h-screen mx-auto"
     >
     </div>
-    <div v-if="$store.isPaused" class="absolute z-1 w-full h-full">
-      <Pause @pauseEvent = "togglePause"></Pause>
-    </div>
+  </div>
+  <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full">
+    <Start @startEvent = "activeGameStart"></Start>
+  </div>
+  <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full">
+    <Pause @pauseEvent = "togglePause"></Pause>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -88,10 +102,40 @@ import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
+import Start from '../components/Start.vue'
 const $store = useStore()
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
+
+// 預載入圖片
+const isLoaded = ref(false)
+const imageList: string[] = [
+  '/images/bg_blue_sky.jpg',
+  '/images/arrow_l.png',
+  '/images/arrow_r.png',
+  '/images/bomb.png',
+  '/images/clock.png',
+  '/images/clock_gold.png',
+  '/images/clock_icon.png',
+  '/images/coin.png',
+  '/images/gmove.png',
+  '/images/hat.png',
+  '/images/invincible.png',
+  '/images/knockout.png',
+  '/images/pause_btn.png',
+  '/images/pepe_in_chest.png',
+  '/images/player.png',
+  '/images/poseidon.png',
+  '/images/simemes_bg.png',
+  '/images/simemes_logo.png',
+  '/images/smoke.png',
+  '/images/star.png',
+  '/images/thunder.png',
+  '/images/time_bar.png',
+  '/images/zeus_drop_logo.png',
+  '/images/zeus.png',
+];
 
 const itemList = [
   // 得分 - weight 大
@@ -140,7 +184,7 @@ function StartClock() {
 }
 // 暫停按鈕
 function togglePause() {
-  if(gameStart.value) {
+  if(gameStart.value && clockSec.value != 0) {
     $store.isPaused = !$store.isPaused;
     // 確保遊戲存在且目前場景是活躍狀態
     if (game && game.scene.isActive('default')) {
@@ -159,6 +203,26 @@ function togglePause() {
     }
   }
 }
+// 開始遊戲按鈕
+function activeGameStart() {
+  $store.isStart = true
+  StartCountdown();
+}
+// 預載入圖片
+function preloadImages(imageUrls: string[]) {
+  console.log("[pre-register]: preloadImages from Home ...")
+  return Promise.all(
+    imageUrls.map(
+      (src) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = reject;
+        })
+    )
+  );
+}
 
 // ================================== computed ==================================
 
@@ -171,7 +235,11 @@ const countdownSec = computed(() => {
 
 // ================================== onMounted ==================================
 
-onMounted(() => {
+onMounted(async() => {
+  // 預載入圖片
+  await preloadImages(imageList);
+  isLoaded.value = true;
+
   if (!gameContainer.value) return;
 
   const config: Phaser.Types.Core.GameConfig = {
@@ -214,7 +282,7 @@ onMounted(() => {
   let moveDirection = 0;
   let lastX = 0;
 
-  StartCountdown();
+  // StartCountdown();
 
   // ------------- 背景響應式調整 -------------
   function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {

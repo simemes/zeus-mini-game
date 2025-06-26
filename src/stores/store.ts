@@ -2,7 +2,8 @@ import { defineStore } from 'pinia'
 
 export const useStore = defineStore('store', {
   state: () => ({
-    isStart: true,
+    isLoaded: false,
+    isStart: false,
     isResult: false,
     isPaused: false,
     totalScore: 0,

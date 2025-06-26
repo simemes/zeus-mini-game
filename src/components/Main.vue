@@ -13,10 +13,7 @@ const router = useRouter()
 
 // ============= 切換頁面 =============
 function GoToStart() {
-  router.push('/start')
-
-  $store.isStart = false
-  $store.isResult = true
+  router.push('/home')
 }
 
 </script>
