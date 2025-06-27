@@ -615,10 +615,10 @@ onMounted(async() => {
     // 玩家移動 （不能 knockout）
     if ((moveDirection === -1 || cursors.left?.isDown) && !$store.knockOut) {
       // console.log('左移')
-      player.setVelocityX(-300);
+      player.setVelocityX(-600);
     } else if ((moveDirection === 1 || cursors.right?.isDown) && !$store.knockOut) {
       // console.log('右移')
-      player.setVelocityX(300);
+      player.setVelocityX(600);
     } else {
       // console.log('停')
       player.setVelocityX(0);
