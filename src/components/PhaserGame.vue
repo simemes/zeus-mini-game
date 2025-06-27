@@ -144,7 +144,6 @@ const imageList: string[] = [
   './images/zeus.png',
 ];
 let itemList = [
-  // 得分 - weight 大
   { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 }
 ];
 const itemList1 = [
@@ -216,13 +215,12 @@ function StartClock() {
       clockSec.value--;
       // STAGE 2
       if (clockSec.value === 40) {
-        $store.stage2 = true
+        $store.stage = 2
         console.log('STAGE 2!')
       }
       // STAGE 3
       if (clockSec.value === 20) {
-        $store.stage2 = false
-        $store.stage3 = true
+        $store.stage = 3
         console.log('STAGE 3!')
       }
       // 時間結束
@@ -328,12 +326,12 @@ onMounted(async() => {
   let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
   let b_changeDirCooldown = 0;
   let hasStarted = false;
+  let hasStage2 = false;
+  let hasStage3 = false;
   let isTouching = false;
   let moveDirection = 0;
   let lastX = 0;
   let hasGotoResult = false
-
-  // StartCountdown();
 
   // ------------- 背景響應式調整 -------------
   function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
@@ -343,14 +341,12 @@ onMounted(async() => {
   }
 
   // ------------- 隨機掉落物品 -------------
-
-
   function dropRandomItem(x: number, y: number) {
     // 依照 weight 建立擴展陣列
     const weightedList: string[] = []
-    if(!$store.stage2 && !$store.stage3) {
+    if($store.stage == 1) {
       itemList = itemList1
-    } else if($store.stage2) {
+    } else if($store.stage == 2) {
       itemList = itemList2
     } else {
       itemList = itemList3
@@ -471,7 +467,7 @@ onMounted(async() => {
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
         clockSec.value += itemInfo!.plus_time
-        if(clockSec.value >= 60) clockSec.value = 60
+        if(clockSec.value >= $store.stageTime) clockSec.value = $store.stageTime
       // 得分
       } else if (['coin', 'gmove', 'hat', 'poseidon', 'thunder'].includes(type)) {
         $store.totalScore += itemInfo!.scores
@@ -493,6 +489,23 @@ onMounted(async() => {
 
   }
 
+  // ----------- 開始定時丟東西 -----------
+  function droppingItems(scene: Phaser.Scene) {
+    timerEvent.value = scene.time.addEvent({
+      delay: $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 1000,
+      loop: true,
+      callback: () => {
+        dropRandomItem(boss.x, boss.y + 50);
+      },
+    });
+  }
+  function stopDroppingItems() {
+  if (timerEvent.value) {
+    timerEvent.value.remove(false);
+    timerEvent.value = null;
+  }
+}
+
   // ------------- *** update *** -------------
   function update(this: Phaser.Scene) {
     
@@ -500,14 +513,25 @@ onMounted(async() => {
     if(gameStart.value && !hasStarted) {
       hasStarted = true;
       // 定時丟東西
-      timerEvent.value = this.time.addEvent({
-        delay: $store.stage3?30:$store.stage2?100:1000,
-        loop: true,
-        callback: () => {
-          dropRandomItem(boss.x, boss.y + 50)
-        },
-      });
+      droppingItems(this);
     }
+    // 監控遊戲是否開始，只做一次
+    if( clockSec.value <= 40 && !hasStage2) {
+      hasStage2 = true;
+      $store.stageTime = 40
+      stopDroppingItems();
+      // 定時丟東西
+      droppingItems(this);
+    }
+    // 監控遊戲是否開始，只做一次
+    if(clockSec.value <= 20 && !hasStage3) {
+      hasStage3 = true;
+      $store.stageTime = 20
+      stopDroppingItems();
+      // 定時丟東西
+      droppingItems(this);
+    }
+
     // 處理遊戲尚未開始 or 已經結束 or 暫停
     if (!hasStarted || clockSec.value <= 0 || $store.isPaused) {
       // 設為零，不然會滑動到邊界
@@ -537,7 +561,7 @@ onMounted(async() => {
     // 每 60 幀（大約 1 秒）有機率改變方向
     if (Math.random() < 0.5) {
         b_direction *= -1;
-        b_speed = $store.stage3?Phaser.Math.Between(15, 20):$store.stage2?Phaser.Math.Between(6, 15):Phaser.Math.Between(2, 6) // ✅ 隨機新速度
+        b_speed = $store.stage == 3 ?Phaser.Math.Between(15, 20) : $store.stage == 2 ?Phaser.Math.Between(6, 15) : Phaser.Math.Between(2, 6) // ✅ 隨機新速度
       }
       b_changeDirCooldown = 60; // 重設冷卻
     }
