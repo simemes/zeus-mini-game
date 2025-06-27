@@ -97,7 +97,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, computed, watch } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
@@ -109,32 +109,35 @@ const $store = useStore()
 const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
 
+let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
+
 // 預載入圖片
 const imageList: string[] = [
-  '/images/bg_blue_sky.jpg',
-  '/images/arrow_l.png',
-  '/images/arrow_r.png',
-  '/images/bomb.png',
-  '/images/clock.png',
-  '/images/clock_gold.png',
-  '/images/clock_icon.png',
-  '/images/coin.png',
-  '/images/gmove.png',
-  '/images/hat.png',
-  '/images/invincible.png',
-  '/images/knockout.png',
-  '/images/pause_btn.png',
-  '/images/pepe_in_chest.png',
-  '/images/player.png',
-  '/images/poseidon.png',
-  '/images/simemes_bg.png',
-  '/images/simemes_logo.png',
-  '/images/smoke.png',
-  '/images/star.png',
-  '/images/thunder.png',
-  '/images/time_bar.png',
-  '/images/zeus_drop_logo.png',
-  '/images/zeus.png',
+  './images/bg_blue_sky.jpg',
+  './images/arrow_l.png',
+  './images/arrow_r.png',
+  './images/bomb.png',
+  './images/clock.png',
+  './images/clock_gold.png',
+  './images/clock_icon.png',
+  './images/coin.png',
+  './images/gmove.png',
+  './images/hat.png',
+  './images/invincible.png',
+  './images/knockout.png',
+  './images/pause_btn.png',
+  './images/pepe_in_chest.png',
+  './images/player.png',
+  './images/poseidon.png',
+  './images/simemes_bg.png',
+  './images/simemes_logo.png',
+  './images/smoke.png',
+  './images/star.png',
+  './images/thunder.png',
+  './images/time_bar.png',
+  './images/zeus_drop_logo.png',
+  './images/zeus.png',
 ];
 
 const itemList = [
@@ -277,7 +280,6 @@ onMounted(async() => {
   let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
   let b_changeDirCooldown = 0;
   let hasStarted = false;
-  let timerEvent: Phaser.Time.TimerEvent;
   let isTouching = false;
   let moveDirection = 0;
   let lastX = 0;
@@ -293,7 +295,7 @@ onMounted(async() => {
   }
 
   // ------------- 隨機掉落物品 -------------
-  function dropRandomItem(scene: Phaser.Scene, x: number, y: number) {
+  function dropRandomItem(x: number, y: number) {
     // 依照 weight 建立擴展陣列
     const weightedList: string[] = []
     itemList.forEach(item => {
@@ -314,9 +316,7 @@ onMounted(async() => {
 
   function GotoResult() {
     // 跳去 result 頁面
-
-    // Nice to have: resultTimeout 在外面定義成 ref
-    const resultTimeout = setTimeout(() => {
+    resultTimeout.value = setTimeout(() => {
       router.push('/result')
     }, 3000);
   }
@@ -324,22 +324,22 @@ onMounted(async() => {
   // ------------- *** preload *** -------------
   function preload(this: Phaser.Scene) {
     // bg
-    this.load.image("bg", "/images/bg_blue_sky.jpg");
+    this.load.image("bg", "./images/bg_blue_sky.jpg");
     // char
-    this.load.image("boss", "/images/zeus.png");
-    this.load.image("player", "/images/player.png");
-    this.load.image("invincible", "/images/invincible.png");
-    this.load.image("knockout", "/images/knockout.png");
+    this.load.image("boss", "./images/zeus.png");
+    this.load.image("player", "./images/player.png");
+    this.load.image("invincible", "./images/invincible.png");
+    this.load.image("knockout", "./images/knockout.png");
     // item
-    this.load.image("bomb", "/images/bomb.png");
-    this.load.image("clock", "/images/clock.png");
-    this.load.image("clock_gold", "/images/clock_gold.png");
-    this.load.image("coin", "/images/coin.png");
-    this.load.image("star", "/images/star.png");
-    this.load.image("gmove", "/images/gmove.png");
-    this.load.image("hat", "/images/hat.png");
-    this.load.image("poseidon", "/images/poseidon.png");
-    this.load.image("thunder", "/images/thunder.png");
+    this.load.image("bomb", "./images/bomb.png");
+    this.load.image("clock", "./images/clock.png");
+    this.load.image("clock_gold", "./images/clock_gold.png");
+    this.load.image("coin", "./images/coin.png");
+    this.load.image("star", "./images/star.png");
+    this.load.image("gmove", "./images/gmove.png");
+    this.load.image("hat", "./images/hat.png");
+    this.load.image("poseidon", "./images/poseidon.png");
+    this.load.image("thunder", "./images/thunder.png");
   }
 
   // ------------- *** create *** -------------
@@ -393,7 +393,7 @@ onMounted(async() => {
     // Items group
     items = this.physics.add.group();
     // 碰撞判定
-    this.physics.add.overlap(player, items, (player, item) => {
+    this.physics.add.overlap(player, items, (_, item) => {
       const gameItem = item as Phaser.GameObjects.GameObject & Phaser.Physics.Arcade.Body
       const type = (gameItem as any).getData?.('type')
       const itemInfo = itemList.find(i => i.key === type);
@@ -442,11 +442,11 @@ onMounted(async() => {
     if(gameStart.value && !hasStarted) {
       hasStarted = true;
       // 定時丟東西
-      timerEvent = this.time.addEvent({
+      timerEvent.value = this.time.addEvent({
         delay: 1000,
         loop: true,
         callback: () => {
-          dropRandomItem(this, boss.x, boss.y + 50)
+          dropRandomItem(boss.x, boss.y + 50)
         },
       });
     }
@@ -524,8 +524,10 @@ onMounted(async() => {
 onBeforeUnmount(() => {
   game?.destroy(true)
 
-  // Nice to have: 保險起見，離開頁面前把 timeout/interval 都清理乾淨
-  // clearTimeout(resultTimeout)
+  if (resultTimeout.value) {
+    clearTimeout(resultTimeout.value);
+    resultTimeout.value = null;
+  }
 });
 </script>
 <style scoped>

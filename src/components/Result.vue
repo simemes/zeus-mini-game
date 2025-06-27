@@ -58,9 +58,9 @@ const router = useRouter()
 
 // 預載入圖片
 const imageList: string[] = [
-  '/images/gold_background.jpg',
-  '/images/game_results.png',
-  '/images/pepe_in_chest.png',
+  './images/gold_background.jpg',
+  './images/game_results.png',
+  './images/pepe_in_chest.png',
 ];
 
 let btnIsDisabled = ref(true)
