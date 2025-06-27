@@ -50,6 +50,22 @@
           <img src="/images/arrow_r.png" class="w-[50%]">
         </div>
       </div>
+      <!-- Stage2 Hint -->
+      <div
+        v-if="clockSec == 40 && !hasStage2"
+        class="absolute top-[40%] w-full text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        STAGE - 2
+      </div>
+      <!-- Stage3 Hint -->
+      <div
+        v-if="clockSec == 20 && !hasStage3"
+        class="absolute top-[40%] w-full text-[100px] leading-[100px] tracking-[0%] text-center font-[Impact]"
+        :style="{ maxWidth:  + 'px' }"
+      >
+        STAGE - 3
+      </div>
       <!-- Time -->
       <div
         class="absolute bottom-0 w-full"
@@ -115,6 +131,8 @@ let game: Phaser.Game | null = null;
 
 let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
+let hasStage2 = false;
+let hasStage3 = false;
 
 // 預載入圖片
 const imageList: string[] = [
@@ -326,8 +344,6 @@ onMounted(async() => {
   let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
   let b_changeDirCooldown = 0;
   let hasStarted = false;
-  let hasStage2 = false;
-  let hasStage3 = false;
   let isTouching = false;
   let moveDirection = 0;
   let lastX = 0;
