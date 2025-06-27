@@ -53,8 +53,8 @@
 import { ref, onMounted } from 'vue'
 import { useStore } from '../stores/store'
 const $store = useStore()
-import { useRouter } from 'vue-router'
-const router = useRouter()
+// import { useRouter } from 'vue-router'
+// const router = useRouter()
 
 // 預載入圖片
 const imageList: string[] = [
@@ -76,7 +76,9 @@ function GoToStart() {
   $store.isStart = false
   $store.isLoaded = false
   $store.resultLoaded = false
-  router.push('/')
+  $store.isResult = false
+  $store.isLoadPage = true
+  // router.push('/')
 }
 
 // 預載入圖片
