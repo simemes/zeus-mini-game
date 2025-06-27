@@ -143,8 +143,11 @@ const imageList: string[] = [
   './images/zeus_drop_logo.png',
   './images/zeus.png',
 ];
-
-const itemList = [
+let itemList = [
+  // 得分 - weight 大
+  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 }
+];
+const itemList1 = [
   // 得分 - weight 大
   { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
   { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
@@ -158,6 +161,36 @@ const itemList = [
   { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 2, plus_time: 0 },
   // 無敵 - weight 小
   { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+];
+const itemList2 = [
+  // 得分 - weight 大
+  { key: 'gmove', scale: 0.15, speed: [600, 1500], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [600, 1500], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [600, 1500], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'poseidon', scale: 0.15, speed: [600, 1500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [600, 1500], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  // 加時 - weight 中
+  { key: 'clock', scale: 0.15, speed: [600, 1500], weight: 3, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [600, 1500], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  // 暈眩 - weight 中
+  { key: 'bomb', scale: 0.15, speed: [600, 1500], weight: 20, scores: 0, delay: 2, plus_time: 0 },
+  // 無敵 - weight 小
+  { key: 'star', scale: 0.15, speed: [600, 1500], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+];
+const itemList3 = [
+  // 得分 - weight 大
+  { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'poseidon', scale: 0.15, speed: [900, 2500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  // 加時 - weight 中
+  { key: 'clock', scale: 0.15, speed: [900, 2500], weight: 3, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [900, 2500], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  // 暈眩 - weight 中
+  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 40, scores: 0, delay: 2, plus_time: 0 },
+  // 無敵 - weight 小
+  { key: 'star', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let gameStart = ref(false)
@@ -181,6 +214,17 @@ function StartClock() {
   const interval = setInterval(() => {
     if (!$store.isPaused) {
       clockSec.value--;
+      // STAGE 2
+      if (clockSec.value === 40) {
+        $store.stage2 = true
+        console.log('STAGE 2!')
+      }
+      // STAGE 3
+      if (clockSec.value === 20) {
+        $store.stage2 = false
+        $store.stage3 = true
+        console.log('STAGE 3!')
+      }
       // 時間結束
       if (clockSec.value === 0) {
         console.log('Time\'s Up!')
@@ -299,9 +343,18 @@ onMounted(async() => {
   }
 
   // ------------- 隨機掉落物品 -------------
+
+
   function dropRandomItem(x: number, y: number) {
     // 依照 weight 建立擴展陣列
     const weightedList: string[] = []
+    if(!$store.stage2 && !$store.stage3) {
+      itemList = itemList1
+    } else if($store.stage2) {
+      itemList = itemList2
+    } else {
+      itemList = itemList3
+    }
     itemList.forEach(item => {
       for (let i = 0; i < item.weight; i++) {
         weightedList.push(item.key)
@@ -448,7 +501,7 @@ onMounted(async() => {
       hasStarted = true;
       // 定時丟東西
       timerEvent.value = this.time.addEvent({
-        delay: 1000,
+        delay: $store.stage3?30:$store.stage2?100:1000,
         loop: true,
         callback: () => {
           dropRandomItem(boss.x, boss.y + 50)
@@ -484,7 +537,7 @@ onMounted(async() => {
     // 每 60 幀（大約 1 秒）有機率改變方向
     if (Math.random() < 0.5) {
         b_direction *= -1;
-        b_speed = Phaser.Math.Between(2, 6); // ✅ 隨機新速度
+        b_speed = $store.stage3?Phaser.Math.Between(15, 20):$store.stage2?Phaser.Math.Between(6, 15):Phaser.Math.Between(2, 6) // ✅ 隨機新速度
       }
       b_changeDirCooldown = 60; // 重設冷卻
     }

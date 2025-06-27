@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 
 export const useStore = defineStore('store', {
   state: () => ({
+    stage2: false,
+    stage3: false,
     isLoadPage: true,
     isLoaded: false,
     resultLoaded : false,

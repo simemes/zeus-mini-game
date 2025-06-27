@@ -78,6 +78,7 @@ function GoToStart() {
   $store.resultLoaded = false
   $store.isResult = false
   $store.isLoadPage = true
+  $store.stage3 = false
   // router.push('/')
 }
 
