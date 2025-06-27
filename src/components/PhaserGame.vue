@@ -410,6 +410,8 @@ onMounted(async() => {
     this.load.image("hat", "./images/hat.png");
     this.load.image("poseidon", "./images/poseidon.png");
     this.load.image("thunder", "./images/thunder.png");
+    // atlas
+    this.load.atlas("bomb_smoke", "./images/bomb_smoke.png", "./images/bomb_smoke.json")
   }
 
   // ------------- *** create *** -------------
@@ -459,6 +461,19 @@ onMounted(async() => {
     });
     // Controls
     cursors = this.input.keyboard!.createCursorKeys();
+    // bomb_smoke_anim
+    this.anims.create({
+      key: 'bomb_smoke_anim',
+      frames: this.anims.generateFrameNames('bomb_smoke', {
+        prefix: 'Smoke_000',
+        start: 0,
+        end: 43,
+        suffix: '.png',
+        zeroPad: 2 // 00000 -> zeroPad: 5，但你的是 000，所以填 2 就夠
+      }),
+      frameRate: 30, // 或 24, 60 根據需要
+      repeat: 0 // 播放一次
+    });
 
     // Items group
     items = this.physics.add.group();
@@ -480,6 +495,7 @@ onMounted(async() => {
             clearInterval(interval)
           }
         }, 1000);
+        smokeAnim(this);
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
         clockSec.value += itemInfo!.plus_time
@@ -504,7 +520,16 @@ onMounted(async() => {
     })
 
   }
-
+  // ----------- bomb_smoke_anim -----------
+  function smokeAnim(scene: Phaser.Scene) {
+    // play anim
+    const smoke = scene.add.sprite(player.x, player.y - 180, 'bomb_smoke', 'Smoke_00000.png');
+    smoke.play('bomb_smoke_anim');
+    // 播放完畢後移除
+    smoke.on('animationcomplete', () => {
+      smoke.destroy();
+    });
+  }
   // ----------- 開始定時丟東西 -----------
   function droppingItems(scene: Phaser.Scene) {
     timerEvent.value = scene.time.addEvent({
