@@ -88,6 +88,9 @@
     >
     </div>
   </div>
+  <div v-if="!$store.isLoaded || $store.isLoadPage" class="absolute top-0 z-3 w-full h-full">
+    <LoadPage></LoadPage>
+  </div>
   <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full">
     <Start @startEvent = "activeGameStart"></Start>
   </div>
@@ -102,8 +105,9 @@ import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
-import { useRouter } from 'vue-router'
-const router = useRouter()
+import LoadPage from '../components/LoadPage.vue'
+// import { useRouter } from 'vue-router'
+// const router = useRouter()
 const $store = useStore()
 
 const gameContainer = ref<HTMLDivElement | null>(null);
@@ -158,7 +162,7 @@ const itemList = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(5)
+let clockSec = ref(60)
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -317,7 +321,8 @@ onMounted(async() => {
   function GotoResult() {
     // 跳去 result 頁面
     resultTimeout.value = setTimeout(() => {
-      router.push('/result')
+      // router.push('/result')
+      $store.isResult = true
     }, 3000);
   }
 
