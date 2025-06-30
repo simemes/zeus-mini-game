@@ -347,14 +347,12 @@ onMounted(async() => {
 
   let boss: Phaser.GameObjects.Sprite;
   let player: Phaser.Physics.Arcade.Sprite;
-  let cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   let items: Phaser.Physics.Arcade.Group;
   let b_direction = Math.random() < 0.5 ? -1 : 1; // 初始方向
   let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
   let b_changeDirCooldown = 0;
   let hasStarted = false;
   let isTouching = false;
-  let lastX = 0;
   let hasGotoResult = false
 
   // ------------- 背景響應式調整 -------------
@@ -456,8 +454,6 @@ onMounted(async() => {
       pointerX = null;
     });
 
-    // Controls
-    cursors = this.input.keyboard!.createCursorKeys();
     // bomb_smoke_anim
     this.anims.create({
       key: 'bomb_smoke_anim',
