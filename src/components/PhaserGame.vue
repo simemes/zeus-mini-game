@@ -218,6 +218,10 @@ const itemList3 = [
 let gameStart = ref(false)
 let sec = ref(0)
 let clockSec = ref(60)
+let pointerX: number | null = null;
+const pointerDeadZone = 10; // 觸碰位置與玩家位置間，不移動的緩衝區間
+const playerMaxSpeed = 10000; // 玩家最大速度
+const inputScale = 25; // 速度係數，數字越小，速度變化越慢
 
 // 預備三秒後啟動
 function StartCountdown() {
@@ -350,7 +354,6 @@ onMounted(async() => {
   let b_changeDirCooldown = 0;
   let hasStarted = false;
   let isTouching = false;
-  let moveDirection = 0;
   let lastX = 0;
   let hasGotoResult = false
 
@@ -439,31 +442,20 @@ onMounted(async() => {
       .sprite(360, 1060, "player")
       .setCollideWorldBounds(true);
     player.setScale(0.4);
-    // Player 觸控控制
+
+    // 玩家觸控控制
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
       isTouching = true;
-      lastX = pointer.x;
+      pointerX = pointer.x;
     });
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
-      if (!isTouching) return;
-      const deltaX = pointer.x - lastX;
-      const swipeThreshold = 2; // 最小移動才能判斷方向
-      if (deltaX > swipeThreshold) {
-        // console.log('右滑')
-        moveDirection = 1;
-      } else if (deltaX < -swipeThreshold) {
-        // console.log('左滑')
-        moveDirection = -1;
-      } else {
-        // console.log('停住')
-      }
-      lastX = pointer.x; // 更新位置
+        pointerX = pointer.x;
     });
     this.input.on("pointerup", () => {
-      // console.log('pointerup')
       isTouching = false;
-      moveDirection = 0;
+      pointerX = null;
     });
+
     // Controls
     cursors = this.input.keyboard!.createCursorKeys();
     // bomb_smoke_anim
@@ -617,17 +609,18 @@ onMounted(async() => {
       b_direction *= -1;
     }
 
-    // 玩家移動 （不能 knockout）
-    if ((moveDirection === -1 || cursors.left?.isDown) && !$store.knockOut) {
-      // console.log('左移')
-      player.setVelocityX(-600);
-    } else if ((moveDirection === 1 || cursors.right?.isDown) && !$store.knockOut) {
-      // console.log('右移')
-      player.setVelocityX(600);
+    if (isTouching && pointerX !== null && !$store.knockOut) {
+      let dx = pointerX - player.x;
+      // 加入 pointerDeadZone
+      if (Math.abs(dx) < pointerDeadZone) {
+        dx = 0;
+      }
+      const vx = Phaser.Math.Clamp(dx * inputScale, -playerMaxSpeed, playerMaxSpeed);
+      player.setVelocityX(vx);
     } else {
-      // console.log('停')
       player.setVelocityX(0);
     }
+
     // knockout 關閉碰撞
     if ($store.knockOut) {
       player.body!.checkCollision.none = true;
