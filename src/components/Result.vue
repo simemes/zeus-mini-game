@@ -1,49 +1,48 @@
 <template>
-
-  <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
-  <transition leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-    <div v-if="!$store.resultLoaded" class="absolute w-full h-full bg-white z-10"></div>
-  </transition>
-  <div class="absolute top-0 z-1 w-full h-full">
-    <div class="asolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] aspect-[720/1280] max-w-[101%] max-h-[101%] z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center">
-      <!-- gold bg -->
-      <div class="relative overflow-hidden [clip-path:ellipse(100%_85%_at_50%_0%)]">
-        <img src="/images/gold_background.jpg" class="w-full h-full object-cover object-top -z-1 ">
-        <img src="/images/pepe_in_chest.png" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%]">
+  <div
+      class="relative inset-0 aspect-[720/1280] max-w-screen max-h-screen z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center"
+    >
+    <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
+    <transition leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+      <div v-if="!$store.resultLoaded" class="absolute w-full h-full bg-white z-10"></div>
+    </transition>
+    <!-- gold bg -->
+    <div class="relative overflow-hidden [clip-path:ellipse(100%_85%_at_50%_0%)]">
+      <img src="/images/gold_background.jpg" class="w-full h-full object-cover object-top -z-1 ">
+      <img src="/images/pepe_in_chest.png" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%]">
+    </div>
+    <div class="relative">
+      <img src="/images/game_results.png" class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[60%]">
+    </div>
+    <!-- 深藍邊線 -->
+    <div class="bg-[#012D57] absolute top-13 left-0 w-full h-full object-cover -z-2 [clip-path:ellipse(100%_45%_at_50%_0%)]"></div>
+    <!-- 漸層區 -->
+    <div class="bg-white absolute top-0 left-0 w-full h-full object-cover -z-3 bg-[linear-gradient(to_bottom,_#074375_50%,_#002B55_100%)]"></div>
+    <!-- 內容區 -->
+    <div class="w-[70%] mx-auto h-full flex flex-col justify-center items-center">
+      <!-- Rank & Score -->
+      <div class="flex-1 relative w-full flex flex-col justify-around items-center">
+        <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
+          <div>Ranking</div>
+          <div>{{ $store.rank || 0 }}</div>
+        </div>
+        <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
+          <div>Score</div>
+          <div>{{ $store.totalScore || 0 }}</div>
+        </div>
+        <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
+          <div>High Score</div>
+          <div>{{ ($store.highScore > $store.totalScore)?$store.highScore:$store.totalScore }}</div>
+        </div>
       </div>
-      <div class="relative">
-        <img src="/images/game_results.png" class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[60%]">
+      <!-- Share & Play Again -->
+      <div class="flex-1 relative w-full flex flex-col justify-center items-center">
+        <button @click="Share" class="btn btn-click type1 pointer-events-auto">Share</button>
+        <button @click="GoToStart" class="btn btn-click type1 pointer-events-auto" :class="{ disabled: btnIsDisabled}" :disabled="btnIsDisabled">Play Again</button>
       </div>
-      <!-- 深藍邊線 -->
-      <div class="bg-[#012D57] absolute top-13 left-0 w-full h-full object-cover -z-2 [clip-path:ellipse(100%_45%_at_50%_0%)]"></div>
-      <!-- 漸層區 -->
-      <div class="bg-white absolute top-0 left-0 w-full h-full object-cover -z-3 bg-[linear-gradient(to_bottom,_#074375_50%,_#002B55_100%)]"></div>
-      <!-- 內容區 -->
-      <div class="w-[70%] mx-auto h-full flex flex-col justify-center items-center">
-        <!-- Rank & Score -->
-        <div class="flex-1 relative w-full flex flex-col justify-around items-center">
-          <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
-            <div>Ranking</div>
-            <div>{{ $store.rank || 0 }}</div>
-          </div>
-          <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
-            <div>Score</div>
-            <div>{{ $store.totalScore || 0 }}</div>
-          </div>
-          <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
-            <div>High Score</div>
-            <div>{{ ($store.highScore > $store.totalScore)?$store.highScore:$store.totalScore }}</div>
-          </div>
-        </div>
-        <!-- Share & Play Again -->
-        <div class="flex-1 relative w-full flex flex-col justify-center items-center">
-          <button @click="Share" class="btn btn-click type1 pointer-events-auto">Share</button>
-          <button @click="GoToStart" class="btn btn-click type1 pointer-events-auto" :class="{ disabled: btnIsDisabled}" :disabled="btnIsDisabled">Play Again</button>
-        </div>
-        <!-- footer text -->
-        <div class="text-[11px] mb-5">
-          Players who share will get 1 additional play for the day.
-        </div>
+      <!-- footer text -->
+      <div class="text-[11px] mb-5">
+        Players who share will get 1 additional play for the day.
       </div>
     </div>
   </div>

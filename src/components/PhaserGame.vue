@@ -6,10 +6,10 @@
   <div>
     <!-- UI -->
     <div
-      class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
+      class="absolute translate-x-[calc(50vw-50.1%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none"
     >
       <!-- 遮罩，startPanel & pausePanel 都在遊戲上層，遊戲層可能邊緣會露出 -->
-      <div v-if="$store.isPaused || !$store.isStart" class="absolute bg-black w-[100%] h-full z-10"></div>
+      <div v-if="$store.isPaused || !$store.isStart" class="absolute bg-black w-[100.1%] h-full z-10"></div>
       <!-- Score -->
       <div
         class="absolute top-1 w-full h-[100px]"
@@ -104,14 +104,19 @@
     >
     </div>
   </div>
-  <div v-if="!$store.isLoaded || $store.isLoadPage" class="absolute top-0 z-3 w-full h-full">
-    <LoadPage></LoadPage>
-  </div>
-  <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full">
-    <Start @startEvent = "activeGameStart"></Start>
-  </div>
-  <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full">
-    <Pause @pauseEvent = "togglePause"></Pause>
+
+  <div
+    class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none overflow-hidden"
+  >
+    <div v-if="!$store.isLoaded || $store.isLoadPage" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center">
+      <LoadPage></LoadPage>
+    </div>
+    <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full flex flex-col justify-center">
+      <Start @startEvent = "activeGameStart"></Start>
+    </div>
+    <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full flex flex-col justify-center">
+      <Pause @pauseEvent = "togglePause"></Pause>
+    </div>
   </div>
 </template>
 
@@ -212,7 +217,7 @@ const itemList3 = [
 
 let gameStart = ref(false)
 let sec = ref(0)
-let clockSec = ref(60)
+let clockSec = ref(5)
 
 // 預備三秒後啟動
 function StartCountdown() {

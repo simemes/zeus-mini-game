@@ -1,7 +1,7 @@
 <template>
-  <div class="asolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] aspect-[720/1280] max-w-[101%] max-h-[101%] z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center">
+  <!-- <div class="asolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] aspect-[720/1280] max-w-[101%] max-h-[101%] z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center"> -->
     <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
-    <div class="w-full flex flex-col justify-center items-center">
+    <div class="relative w-[100%] flex flex-col justify-center items-center">
       <!-- logo -->
       <div class="w-[35%] relative">
         <img src="/images/zeus_drop_logo.png">
@@ -11,7 +11,7 @@
       <!-- btn -->
       <button @click="GameStart" class="btn btn-click type1 pointer-events-auto">Game Start</button>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script setup lang="ts">
