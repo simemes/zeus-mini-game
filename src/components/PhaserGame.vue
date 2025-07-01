@@ -46,7 +46,7 @@
             <div
               v-for="tip in timeTips"
               :key="tip.id"
-              class="relative top-20 text-white text-[30px] font-bold px-2 py-1 rounded w-[100%] font-[Impact] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px]"
+              class="relative top-20 text-white text-[16px]text-[16px] sm:text-[20px] md:text-[30px] lg:text-[40px] xl:text-[50px] font-bold px-2 py-1 rounded w-[100%] font-[Impact] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px]"
             >
               +{{ tip.value }} SECONDS
             </div>
