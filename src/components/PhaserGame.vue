@@ -253,7 +253,7 @@ let hasStarted = false;
 let isTouching = false;
 let hasGotoResult = false
 
-let tipId = 0;
+let timeTipId = 0;
 
 // ================================== function ==================================
 
@@ -404,12 +404,34 @@ function smokeAnim(scene: Phaser.Scene) {
 
 // ----------- 顯示加時提示 -----------
 function showTimeTip(amount: number) {
-  const id = tipId++;
+  const id = timeTipId++;
   timeTips.value.push({ id, value: amount });
 
   setTimeout(() => {
     timeTips.value = timeTips.value.filter((t) => t.id !== id);
   }, 1500); // 1.5 秒後移除提示
+}
+
+// ----------- 顯示加分提示 -----------
+function showScoreTip(scene: Phaser.Scene, x: number, y: number, text: string) {
+  const scoreText = scene.add.text(x, y, text, {
+    fontFamily: 'Impact',
+    fontSize: '40px',
+    color: '#ffffff',
+    stroke: '#000000',
+    strokeThickness: 4,
+  }).setOrigin(0.5)
+
+  scene.tweens.add({
+    targets: scoreText,
+    y: y - 200,
+    alpha: 0,
+    duration: 800,
+    ease: 'ease.out',
+    onComplete: () => {
+      scoreText.destroy()
+    }
+  });
 }
 
 // ------------- 跳去 result 頁面 -------------
@@ -560,11 +582,14 @@ onMounted(async() => {
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
         clockSec.value += itemInfo!.plus_time
+        // 顯示於 UI
         showTimeTip(itemInfo!.plus_time);
         if(clockSec.value >= $store.stageTime) clockSec.value = $store.stageTime
       // 得分
       } else if (['coin', 'gmove', 'hat', 'poseidon', 'thunder'].includes(type)) {
         $store.totalScore += itemInfo!.scores
+        // 顯示於 UI
+        showScoreTip(this, player.x, player.y - 200, '+' + itemInfo!.scores)
       // 無敵
       } else if (type === 'star') {
         $store.invincible = true
