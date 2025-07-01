@@ -132,13 +132,12 @@ import LoadPage from '../components/LoadPage.vue'
 const $store = useStore()
 
 const gameContainer = ref<HTMLDivElement | null>(null);
-let game: Phaser.Game | null = null;
-
-let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
-let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
-let hasStage2 = false;
-let hasStage3 = false;
-
+// 觸碰位置與玩家位置間，不移動的緩衝區間
+const pointerDeadZone = 10;
+// 玩家最大速度
+const playerMaxSpeed = 10000;
+// 速度係數，數字越小，速度變化越慢
+const inputScale = 25;
 // 預載入圖片
 const imageList: string[] = [
   './images/bg_blue_sky.jpg',
@@ -166,9 +165,7 @@ const imageList: string[] = [
   './images/zeus_drop_logo.png',
   './images/zeus.png',
 ];
-let itemList = [
-  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 }
-];
+// Stage 1、2、3 itemList settings
 const itemList1 = [
   // 得分 - weight 大
   { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
@@ -215,15 +212,62 @@ const itemList3 = [
   { key: 'star', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
+let game: Phaser.Game | null = null;
+let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
+let hasStage2 = false;
+let hasStage3 = false;
 let gameStart = ref(false)
 let sec = ref(0)
 let clockSec = ref(60)
 let pointerX: number | null = null;
-const pointerDeadZone = 10; // 觸碰位置與玩家位置間，不移動的緩衝區間
-const playerMaxSpeed = 10000; // 玩家最大速度
-const inputScale = 25; // 速度係數，數字越小，速度變化越慢
+let itemList = [
+  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 }
+];
 
-// 預備三秒後啟動
+let boss: Phaser.GameObjects.Sprite;
+let player: Phaser.Physics.Arcade.Sprite;
+let items: Phaser.Physics.Arcade.Group;
+let b_direction = Math.random() < 0.5 ? -1 : 1; // 初始方向
+let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
+let b_changeDirCooldown = 0;
+let hasStarted = false;
+let isTouching = false;
+let hasGotoResult = false
+
+
+// ================================== function ==================================
+
+// ------------- 預載入圖片 -------------
+function preloadImages(imageUrls: string[]) {
+  console.log("[zeus]: preloadImages from Home ...")
+  return Promise.all(
+    imageUrls.map(
+      (src) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.src = src;
+          img.onload = resolve;
+          img.onerror = reject;
+        })
+    )
+  );
+}
+
+// ------------- 背景響應式調整 -------------
+function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
+  const { width, height } = scene.scale;
+  const scale = Math.max(width / bg.width, height / bg.height);
+  bg.setScale(scale);
+}
+
+// ------------- 開始遊戲按鈕 -------------
+function activeGameStart() {
+  $store.isStart = true
+  StartCountdown();
+}
+
+// ------------- 預備三秒後啟動 -------------
 function StartCountdown() {
   const interval = setInterval(() => {
     sec.value++;
@@ -234,7 +278,8 @@ function StartCountdown() {
     if (sec.value === 4) clearInterval(interval);
   }, 1000);
 }
-// 時鐘開始倒數
+
+// ------------- 時鐘開始倒數 -------------
 function StartClock() {
   console.log("StartClock!")
   const interval = setInterval(() => {
@@ -258,7 +303,8 @@ function StartClock() {
     }
   }, 1000);
 }
-// 暫停按鈕
+
+// ------------- 暫停按鈕 -------------
 function togglePause() {
   if(gameStart.value && clockSec.value != 0) {
     $store.isPaused = !$store.isPaused;
@@ -279,25 +325,70 @@ function togglePause() {
     }
   }
 }
-// 開始遊戲按鈕
-function activeGameStart() {
-  $store.isStart = true
-  StartCountdown();
+
+// ------------- 隨機掉落物品 -------------
+function dropRandomItem(x: number, y: number) {
+  // 依照 weight 建立擴展陣列
+  const weightedList: string[] = []
+  if($store.stage == 1) {
+    itemList = itemList1
+  } else if($store.stage == 2) {
+    itemList = itemList2
+  } else {
+    itemList = itemList3
+  }
+  itemList.forEach(item => {
+    for (let i = 0; i < item.weight; i++) {
+      weightedList.push(item.key)
+    }
+  })
+  const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
+  const itemData = itemList.find(i => i.key === selectedKey)
+  if (!itemData) return
+
+  const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
+  const randomSpeed = Phaser.Math.Between(itemData.speed[0], itemData.speed[1]);
+  item.setVelocityY(randomSpeed)
+  item.setScale(itemData.scale)
+  item.setData('type', selectedKey) // 方便之後判斷
 }
-// 預載入圖片
-function preloadImages(imageUrls: string[]) {
-  console.log("[zeus]: preloadImages from Home ...")
-  return Promise.all(
-    imageUrls.map(
-      (src) =>
-        new Promise((resolve, reject) => {
-          const img = new Image();
-          img.src = src;
-          img.onload = resolve;
-          img.onerror = reject;
-        })
-    )
-  );
+
+// ----------- 開始定時丟東西 -----------
+function droppingItems(scene: Phaser.Scene) {
+  timerEvent.value = scene.time.addEvent({
+    delay: $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 1000,
+    loop: true,
+    callback: () => {
+      dropRandomItem(boss.x, boss.y + 50);
+    },
+  });
+}
+
+// ----------- 取消定時丟東西 -----------
+function stopDroppingItems() {
+  if (timerEvent.value) {
+    timerEvent.value.remove(false);
+    timerEvent.value = null;
+  }
+}
+
+// ----------- bomb_smoke_anim -----------
+function smokeAnim(scene: Phaser.Scene) {
+  // play anim
+  const smoke = scene.add.sprite(player.x, player.y - 180, 'bomb_smoke', 'Smoke_00000.png');
+  smoke.play('bomb_smoke_anim');
+  // 播放完畢後移除
+  smoke.on('animationcomplete', () => {
+    smoke.destroy();
+  });
+}
+
+// ------------- 跳去 result 頁面 -------------
+function GotoResult() {
+  resultTimeout.value = setTimeout(() => {
+    // router.push('/result')
+    $store.isResult = true
+  }, 3000);
 }
 
 // ================================== computed ==================================
@@ -345,59 +436,7 @@ onMounted(async() => {
   game = new Phaser.Game(config);
   // console.log('🟢 ', game.canvas)
 
-  let boss: Phaser.GameObjects.Sprite;
-  let player: Phaser.Physics.Arcade.Sprite;
-  let items: Phaser.Physics.Arcade.Group;
-  let b_direction = Math.random() < 0.5 ? -1 : 1; // 初始方向
-  let b_speed = Phaser.Math.Between(2, 6); // 初始速度 2~6
-  let b_changeDirCooldown = 0;
-  let hasStarted = false;
-  let isTouching = false;
-  let hasGotoResult = false
-
-  // ------------- 背景響應式調整 -------------
-  function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
-    const { width, height } = scene.scale;
-    const scale = Math.max(width / bg.width, height / bg.height);
-    bg.setScale(scale);
-  }
-
-  // ------------- 隨機掉落物品 -------------
-  function dropRandomItem(x: number, y: number) {
-    // 依照 weight 建立擴展陣列
-    const weightedList: string[] = []
-    if($store.stage == 1) {
-      itemList = itemList1
-    } else if($store.stage == 2) {
-      itemList = itemList2
-    } else {
-      itemList = itemList3
-    }
-    itemList.forEach(item => {
-      for (let i = 0; i < item.weight; i++) {
-        weightedList.push(item.key)
-      }
-    })
-    const selectedKey = Phaser.Utils.Array.GetRandom(weightedList)
-    const itemData = itemList.find(i => i.key === selectedKey)
-    if (!itemData) return
-
-    const item = items.create(x, y, selectedKey) as Phaser.Physics.Arcade.Sprite
-    const randomSpeed = Phaser.Math.Between(itemData.speed[0], itemData.speed[1]);
-    item.setVelocityY(randomSpeed)
-    item.setScale(itemData.scale)
-    item.setData('type', selectedKey) // 方便之後判斷
-  }
-
-  function GotoResult() {
-    // 跳去 result 頁面
-    resultTimeout.value = setTimeout(() => {
-      // router.push('/result')
-      $store.isResult = true
-    }, 3000);
-  }
-
-  // ------------- *** preload *** -------------
+  // -------------------------- *** preload *** --------------------------
   function preload(this: Phaser.Scene) {
     // bg
     this.load.image("bg", "./images/bg_blue_sky.jpg");
@@ -420,7 +459,7 @@ onMounted(async() => {
     this.load.atlas("bomb_smoke", "./images/bomb_smoke.png", "./images/bomb_smoke.json")
   }
 
-  // ------------- *** create *** -------------
+  // -------------------------- *** create *** --------------------------
   function create(this: Phaser.Scene) {
     
     // background
@@ -513,34 +552,8 @@ onMounted(async() => {
     })
 
   }
-  // ----------- bomb_smoke_anim -----------
-  function smokeAnim(scene: Phaser.Scene) {
-    // play anim
-    const smoke = scene.add.sprite(player.x, player.y - 180, 'bomb_smoke', 'Smoke_00000.png');
-    smoke.play('bomb_smoke_anim');
-    // 播放完畢後移除
-    smoke.on('animationcomplete', () => {
-      smoke.destroy();
-    });
-  }
-  // ----------- 開始定時丟東西 -----------
-  function droppingItems(scene: Phaser.Scene) {
-    timerEvent.value = scene.time.addEvent({
-      delay: $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 1000,
-      loop: true,
-      callback: () => {
-        dropRandomItem(boss.x, boss.y + 50);
-      },
-    });
-  }
-  function stopDroppingItems() {
-  if (timerEvent.value) {
-    timerEvent.value.remove(false);
-    timerEvent.value = null;
-  }
-}
 
-  // ------------- *** update *** -------------
+  // -------------------------- *** update *** --------------------------
   function update(this: Phaser.Scene) {
     
     // 監控遊戲是否開始，只做一次
