@@ -597,13 +597,13 @@ onMounted(async() => {
     // 每 60 幀（大約 1 秒）有機率改變方向
     if (Math.random() < 0.5) {
       // 不設 if(boss.x < 710 - halfWidth || boss.x > 10 + halfWidth) 有機會在邊界反彈卡死
-      if(boss.x < 710 - halfWidth || boss.x > 10 + halfWidth) b_direction *= -1;
+      if(boss.x < 710 - halfWidth && boss.x > 10 + halfWidth) b_direction *= -1;
         b_speed = $store.stage == 3 ?Phaser.Math.Between(15, 20) : $store.stage == 2 ?Phaser.Math.Between(6, 15) : Phaser.Math.Between(2, 6) // ✅ 隨機新速度
       }
       b_changeDirCooldown = 60; // 重設冷卻
     }
     //避免魔王走出畫面
-    if (boss.x > 720 - halfWidth || boss.x < 0 + halfWidth) {
+    if (boss.x >= 720 - halfWidth || boss.x <= 0 + halfWidth) {
       b_direction *= -1;
     }
 
