@@ -34,6 +34,23 @@
               class="w-[90%] h-[90%] top-2 left-4 pointer-events-auto" 
             />
           </div>
+          <!-- 加時提示 -->
+          <transition-group name="tip" tag="div" class="absolute top-5 z-20 flex flex-col w-[30%]"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 translate-y-4"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-300 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 -translate-y-4"
+            >
+            <div
+              v-for="tip in timeTips"
+              :key="tip.id"
+              class="relative top-20 text-white text-[30px] font-bold px-2 py-1 rounded w-[100%] font-[Impact] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px]"
+            >
+              +{{ tip.value }} SECONDS
+            </div>
+          </transition-group>
         </div>
       </div>
       <!-- Start -->
@@ -138,6 +155,7 @@ const pointerDeadZone = 10;
 const playerMaxSpeed = 10000;
 // 速度係數，數字越小，速度變化越慢
 const inputScale = 25;
+const timeTips = ref<{ id: number; value: number }[]>([]);
 // 預載入圖片
 const imageList: string[] = [
   './images/bg_blue_sky.jpg',
@@ -235,6 +253,7 @@ let hasStarted = false;
 let isTouching = false;
 let hasGotoResult = false
 
+let tipId = 0;
 
 // ================================== function ==================================
 
@@ -381,6 +400,16 @@ function smokeAnim(scene: Phaser.Scene) {
   smoke.on('animationcomplete', () => {
     smoke.destroy();
   });
+}
+
+// ----------- 顯示加時提示 -----------
+function showTimeTip(amount: number) {
+  const id = tipId++;
+  timeTips.value.push({ id, value: amount });
+
+  setTimeout(() => {
+    timeTips.value = timeTips.value.filter((t) => t.id !== id);
+  }, 1500); // 1.5 秒後移除提示
 }
 
 // ------------- 跳去 result 頁面 -------------
@@ -531,6 +560,7 @@ onMounted(async() => {
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
         clockSec.value += itemInfo!.plus_time
+        showTimeTip(itemInfo!.plus_time);
         if(clockSec.value >= $store.stageTime) clockSec.value = $store.stageTime
       // 得分
       } else if (['coin', 'gmove', 'hat', 'poseidon', 'thunder'].includes(type)) {
