@@ -201,18 +201,18 @@ const itemList1 = [
 ];
 const itemList2 = [
   // 得分 - weight 大
-  { key: 'gmove', scale: 0.15, speed: [600, 1500], weight: 5, scores: 100, delay: 0, plus_time: 0 },
-  { key: 'hat', scale: 0.15, speed: [600, 1500], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'thunder', scale: 0.15, speed: [600, 1500], weight: 5, scores: 200, delay: 0, plus_time: 0 },
-  { key: 'poseidon', scale: 0.15, speed: [600, 1500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
-  { key: 'coin', scale: 0.15, speed: [600, 1500], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  { key: 'gmove', scale: 0.15, speed: [600, 1300], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [600, 1300], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'poseidon', scale: 0.15, speed: [600, 1300], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [600, 1300], weight: 5, scores: 500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
-  { key: 'clock', scale: 0.15, speed: [600, 1500], weight: 3, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: [600, 1500], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'clock', scale: 0.15, speed: [600, 1300], weight: 3, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [600, 1300], weight: 3, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [600, 1500], weight: 10, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [600, 1300], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [600, 1500], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'star', scale: 0.15, speed: [600, 1300], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
