@@ -1,11 +1,11 @@
 <template>
+  <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
+  <transition leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+    <div v-if="!$store.resultLoaded" class="absolute w-full h-full bg-white z-10"></div>
+  </transition>
   <div
       class="relative inset-0 aspect-[720/1280] max-w-screen max-h-screen z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center"
     >
-    <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
-    <transition leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-      <div v-if="!$store.resultLoaded" class="absolute w-full h-full bg-white z-10"></div>
-    </transition>
     <!-- gold bg -->
     <div class="relative overflow-hidden [clip-path:ellipse(100%_85%_at_50%_0%)]">
       <img src="/images/gold_background.jpg" class="w-full h-full object-cover object-top -z-1 ">
