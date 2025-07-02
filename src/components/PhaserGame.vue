@@ -188,46 +188,40 @@ const itemList1 = [
   // 得分 - weight 大
   { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
   { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 },
-  { key: 'poseidon', scale: 0.15, speed: [200, 900], weight: 5, scores: 300, delay: 0, plus_time: 0 },
   { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
   { key: 'clock', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
   { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 2, plus_time: 0 },
-  // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  // 扣分
+  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 }
 ];
 const itemList2 = [
   // 得分 - weight 大
   { key: 'gmove', scale: 0.15, speed: [600, 1300], weight: 5, scores: 100, delay: 0, plus_time: 0 },
   { key: 'hat', scale: 0.15, speed: [600, 1300], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
-  { key: 'poseidon', scale: 0.15, speed: [600, 1300], weight: 5, scores: 300, delay: 0, plus_time: 0 },
   { key: 'coin', scale: 0.15, speed: [600, 1300], weight: 5, scores: 500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
   { key: 'clock', scale: 0.15, speed: [600, 1300], weight: 3, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [600, 1300], weight: 3, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
   { key: 'bomb', scale: 0.15, speed: [600, 1300], weight: 10, scores: 0, delay: 2, plus_time: 0 },
-  // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [600, 1300], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  // 扣分
+  { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
   { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 100, delay: 0, plus_time: 0 },
   { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 200, delay: 0, plus_time: 0 },
-  { key: 'poseidon', scale: 0.15, speed: [900, 2500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
   { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
   { key: 'clock', scale: 0.15, speed: [900, 2500], weight: 3, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [900, 2500], weight: 3, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
   { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 20, scores: 0, delay: 2, plus_time: 0 },
-  // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  // 扣分
+  { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 200, delay: 0, plus_time: 0 },
 ];
 
 let game: Phaser.Game | null = null;
@@ -240,7 +234,19 @@ let sec = ref(0)
 let clockSec = ref(60)
 let pointerX: number | null = null;
 let itemList = [
-  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 }
+  // 得分 - weight 大
+  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  // { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  // { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  // { key: 'poseidon', scale: 0.15, speed: [200, 900], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  // { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  // // 加時 - weight 中
+  // { key: 'clock', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 2 },
+  // { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  // // 暈眩 - weight 中
+  // { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 2, plus_time: 0 },
+  // // 無敵 - weight 小
+  // { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let boss: Phaser.GameObjects.Sprite;
@@ -414,10 +420,12 @@ function showTimeTip(amount: number) {
 
 // ----------- 顯示加分提示 -----------
 function showScoreTip(scene: Phaser.Scene, x: number, y: number, text: string) {
+  // 判斷文字顏色：+ 白色，- 紅色
+  const color = text.startsWith('+') ? '#ffffff' : text.startsWith('-') ? '#ff4444' : '#ffffff';
   const scoreText = scene.add.text(x, y, text, {
     fontFamily: 'Impact',
     fontSize: '40px',
-    color: '#ffffff',
+    color: color,
     stroke: '#000000',
     strokeThickness: 4,
   }).setOrigin(0.5)
@@ -586,10 +594,15 @@ onMounted(async() => {
         showTimeTip(itemInfo!.plus_time);
         if(clockSec.value >= $store.stageTime) clockSec.value = $store.stageTime
       // 得分
-      } else if (['coin', 'gmove', 'hat', 'poseidon', 'thunder'].includes(type)) {
+      } else if (['coin', 'gmove', 'hat', 'poseidon'].includes(type)) {
         $store.totalScore += itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '+' + itemInfo!.scores)
+      // 扣分
+      } else if (type === 'thunder') {
+        $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore -= itemInfo!.scores
+        // 顯示於 UI
+        showScoreTip(this, player.x, player.y - 200, '-' + itemInfo!.scores)
       // 無敵
       } else if (type === 'star') {
         $store.invincible = true
