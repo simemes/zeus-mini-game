@@ -670,9 +670,12 @@ onMounted(async() => {
       }
       b_changeDirCooldown = 60; // 重設冷卻
     }
-    //避免魔王走出畫面
-    if (boss.x >= 720 - halfWidth || boss.x <= 0 + halfWidth) {
-      b_direction *= -1;
+    // 避免魔王走出畫面
+    // 也避免速度太快出框後卡死抖動，要分開寫
+    if (boss.x >= 720 - halfWidth) {
+      b_direction = -1;
+    } else if (boss.x <= 0 + halfWidth) {
+      b_direction = 1;
     }
 
     if (isTouching && pointerX !== null && !$store.knockOut) {
