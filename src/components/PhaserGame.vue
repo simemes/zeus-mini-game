@@ -656,7 +656,7 @@ onMounted(async() => {
         // 把碰撞關掉
         player.body!.checkCollision.none = true;
         // 若 knockout 設高度
-        if (player.texture.key === 'knockout') player.setY(player.y + 40);
+        if (player.texture.key === 'knockout') player.setY(player.y + 50);
         // if(!$store.knockOut && !$store.invincible) player.setTexture('player')
 
         // 啟動一次 去 result 頁
@@ -715,7 +715,7 @@ onMounted(async() => {
       player.setTexture('invincible')
     } else if($store.knockOut) {
       player.setTexture('knockout')
-      player.setY(player.y + 40);
+      player.setY(player.y + 50);
     } else {
       player.setTexture('player')
     }
