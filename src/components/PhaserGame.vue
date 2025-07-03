@@ -190,38 +190,38 @@ const itemList1 = [
   { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
   { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
-  { key: 'clock', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'clock', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 4, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 }
 ];
 const itemList2 = [
   // 得分 - weight 大
-  { key: 'gmove', scale: 0.15, speed: [600, 1300], weight: 5, scores: 100, delay: 0, plus_time: 0 },
-  { key: 'hat', scale: 0.15, speed: [600, 1300], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'coin', scale: 0.15, speed: [600, 1300], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  { key: 'gmove', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [600, 1300], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [600, 1300], weight: 5, scores: 1000, delay: 0, plus_time: 0 },
   // 加時 - weight 中
-  { key: 'clock', scale: 0.15, speed: [600, 1300], weight: 3, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: [600, 1300], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'clock', scale: 0.15, speed: [600, 1300], weight: 1, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [600, 1300], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
   { key: 'bomb', scale: 0.15, speed: [600, 1300], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
-  { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 400, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
-  { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 100, delay: 0, plus_time: 0 },
-  { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 450, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 1500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
-  { key: 'clock', scale: 0.15, speed: [900, 2500], weight: 3, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: [900, 2500], weight: 3, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'clock', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
   { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 20, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
-  { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 600, delay: 0, plus_time: 0 },
 ];
 
 let game: Phaser.Game | null = null;
@@ -381,7 +381,7 @@ function dropRandomItem(x: number, y: number) {
 // ----------- 開始定時丟東西 -----------
 function droppingItems(scene: Phaser.Scene) {
   timerEvent.value = scene.time.addEvent({
-    delay: $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 1000,
+    delay: $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 900,
     loop: true,
     callback: () => {
       dropRandomItem(boss.x, boss.y + 50);
