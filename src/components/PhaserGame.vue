@@ -632,7 +632,9 @@ onMounted(async() => {
     }
     // 監控遊戲是否開始，只做一次
     if( clockSec.value <= 40 && !hasStage2) {
-      hasStage2 = true;
+      setTimeout(() => {
+        hasStage2 = true;
+      }, 1000)
       $store.stageTime = 40
       stopDroppingItems();
       // 定時丟東西
@@ -640,7 +642,9 @@ onMounted(async() => {
     }
     // 監控遊戲是否開始，只做一次
     if(clockSec.value <= 20 && !hasStage3) {
-      hasStage3 = true;
+      setTimeout(() => {
+        hasStage3 = true;
+      }, 1000)
       $store.stageTime = 20
       stopDroppingItems();
       // 定時丟東西
