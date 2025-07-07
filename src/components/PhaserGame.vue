@@ -159,6 +159,9 @@ const timeTips = ref<{ id: number; value: number }[]>([]);
 // 預載入圖片
 const imageList: string[] = [
   './images/bg_blue_sky.jpg',
+  './images/bg_cyan.png',
+  './images/bg_gold.png',
+  './images/bg_black.png',
   './images/arrow_l.png',
   './images/arrow_r.png',
   './images/bomb.png',
@@ -179,6 +182,7 @@ const imageList: string[] = [
   './images/smoke.png',
   './images/star.png',
   './images/thunder.png',
+  './images/fortune.png',
   './images/time_bar.png',
   './images/zeus_drop_logo.png',
   './images/zeus.png',
@@ -195,7 +199,9 @@ const itemList1 = [
   // 暈眩 - weight 中
   { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 4, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
-  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 }
+  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  // 機會命運 - weight 小
+  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList2 = [
   // 得分 - weight 大
@@ -209,6 +215,8 @@ const itemList2 = [
   { key: 'bomb', scale: 0.15, speed: [600, 1300], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 400, delay: 0, plus_time: 0 },
+  // 機會命運 - weight 小
+  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
@@ -222,11 +230,82 @@ const itemList3 = [
   { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 20, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 600, delay: 0, plus_time: 0 },
+  // 機會命運 - weight 小
+  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+];
+
+// ------------------- 機會命運雨 -------------------
+
+// bombs rain
+const itemListBombs = [
+  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 20, scores: 0, delay: 2, plus_time: 0 }
+];
+
+// thunder rain
+const itemListThunders1 = [
+  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 }
+];
+const itemListThunders2 = [
+  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 400, delay: 0, plus_time: 0 }
+];
+const itemListThunders3 = [
+  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 600, delay: 0, plus_time: 0 }
+];
+
+// treasure rain
+const itemListTreasure1 = [
+  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 }
+];
+const itemListTreasure2 = [
+  { key: 'gmove', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [600, 1300], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [600, 1300], weight: 5, scores: 1000, delay: 0, plus_time: 0 }
+];
+const itemListTreasure3 = [
+  { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 450, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 1500, delay: 0, plus_time: 0 }
+];
+
+// gmove rain
+const itemListGmove1 = [
+  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+];
+const itemListGmove2 = [
+  { key: 'gmove', scale: 0.15, speed: [600, 1300], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+];
+const itemListGmove3 = [
+  { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+];
+
+// hat rain
+const itemListHat1 = [
+  { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+];
+const itemListHat2 = [
+  { key: 'hat', scale: 0.15, speed: [600, 1300], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+];
+const itemListHat3 = [
+  { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 450, delay: 0, plus_time: 0 },
+];
+
+// coin rain
+const itemListCoin1 = [
+  { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 }
+];
+const itemListCoin2 = [
+  { key: 'coin', scale: 0.15, speed: [600, 1300], weight: 5, scores: 1000, delay: 0, plus_time: 0 }
+];
+const itemListCoin3 = [
+  { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 1500, delay: 0, plus_time: 0 }
 ];
 
 let game: Phaser.Game | null = null;
 let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
+let fortuneTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let hasStage2 = false;
 let hasStage3 = false;
 let gameStart = ref(false)
@@ -247,6 +326,8 @@ let itemList = [
   // { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 2, plus_time: 0 },
   // // 無敵 - weight 小
   // { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  // // 機會命運 - weight 小
+  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 let boss: Phaser.GameObjects.Sprite;
@@ -258,8 +339,8 @@ let b_changeDirCooldown = 0;
 let hasStarted = false;
 let isTouching = false;
 let hasGotoResult = false
-
 let timeTipId = 0;
+let bg: Phaser.GameObjects.Image | null = null;
 
 // ================================== function ==================================
 
@@ -284,6 +365,18 @@ function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
   const { width, height } = scene.scale;
   const scale = Math.max(width / bg.width, height / bg.height);
   bg.setScale(scale);
+}
+
+// ------------- 背景切換 -------------
+function changBackground(new_bg: string, scene: Phaser.Scene) {
+  bg?.destroy()
+  bg = scene.add.image(0, -90, new_bg).setOrigin(0);
+  fitBackground(bg, scene);
+  scene.children.sendToBack(bg);
+  // 監聽畫面縮放
+  scene.scale.on("resize", () => {
+    fitBackground(bg!, scene);
+  });
 }
 
 // ------------- 開始遊戲按鈕 -------------
@@ -356,11 +449,11 @@ function dropRandomItem(x: number, y: number) {
   // 依照 weight 建立擴展陣列
   const weightedList: string[] = []
   if($store.stage == 1) {
-    itemList = itemList1
+    itemList = $store.fortuneType == 6 ? itemListCoin1 : $store.fortuneType == 5 ? itemListHat1 : $store.fortuneType == 4 ? itemListGmove1 : $store.fortuneType == 3 ? itemListTreasure1 : $store.fortuneType == 2 ? itemListThunders1 : $store.fortuneType == 1 ? itemListBombs : itemList1
   } else if($store.stage == 2) {
-    itemList = itemList2
+    itemList = $store.fortuneType == 6 ? itemListCoin2 : $store.fortuneType == 5 ? itemListHat2 : $store.fortuneType == 4 ? itemListGmove2 : $store.fortuneType == 3 ? itemListTreasure2 : $store.fortuneType == 2 ? itemListThunders2 : $store.fortuneType == 1 ? itemListBombs : itemList2
   } else {
-    itemList = itemList3
+    itemList = $store.fortuneType == 6 ? itemListCoin3 : $store.fortuneType == 5 ? itemListHat3 : $store.fortuneType == 4 ? itemListGmove3 : $store.fortuneType == 3 ? itemListTreasure3 : $store.fortuneType == 2 ? itemListThunders3 : $store.fortuneType == 1 ? itemListBombs : itemList3
   }
   itemList.forEach(item => {
     for (let i = 0; i < item.weight; i++) {
@@ -381,7 +474,8 @@ function dropRandomItem(x: number, y: number) {
 // ----------- 開始定時丟東西 -----------
 function droppingItems(scene: Phaser.Scene) {
   timerEvent.value = scene.time.addEvent({
-    delay: $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 900,
+    // 先看是否機會命運，再看 stage，並賦予丟東西頻率
+    delay: $store.fortuneType > 0 ? 100 : $store.stage == 3 ? 300 : $store.stage == 2 ? 600 : 900,
     loop: true,
     callback: () => {
       dropRandomItem(boss.x, boss.y + 50);
@@ -395,6 +489,25 @@ function stopDroppingItems() {
     timerEvent.value.remove(false);
     timerEvent.value = null;
   }
+}
+
+// ----------- 開始機會命運倒計時 -----------
+function startFortune(scene: Phaser.Scene) {
+  // 藉由 $store.fortuneType 切換 itemList(dropRandomItem)、zeus 頻率(droppingItems)
+  // 0: 沒有/ 1: bombs/ 2:thunders/ 3: treasures/ 4: gmove/ 5: hat/ 6: coin
+  const table = [1, 1, 1, 1, 2, 2, 2, 2, 3, 4, 5, 6]
+  $store.fortuneType = table[Math.floor(Math.random() * table.length)];
+  stopDroppingItems()
+  droppingItems(scene)
+  const new_bg = $store.fortuneType == 1 ? "bg_black" : $store.fortuneType == 2 ? "bg_cyan" : "bg_gold"
+  changBackground(new_bg, scene)
+  fortuneTimeout.value = setTimeout(() => {
+    // fortuneType 歸零
+    $store.fortuneType = 0
+    stopDroppingItems()
+    droppingItems(scene)
+    changBackground("bg", scene)
+  }, 5000);
 }
 
 // ----------- bomb_smoke_anim -----------
@@ -499,6 +612,9 @@ onMounted(async() => {
   function preload(this: Phaser.Scene) {
     // bg
     this.load.image("bg", "./images/bg_blue_sky.jpg");
+    this.load.image("bg_cyan", "./images/bg_cyan.png");
+    this.load.image("bg_gold", "./images/bg_gold.png");
+    this.load.image("bg_black", "./images/bg_black.png");
     // char
     this.load.image("boss", "./images/zeus.png");
     this.load.image("player", "./images/player.png");
@@ -514,6 +630,7 @@ onMounted(async() => {
     this.load.image("hat", "./images/hat.png");
     this.load.image("poseidon", "./images/poseidon.png");
     this.load.image("thunder", "./images/thunder.png");
+    this.load.image("fortune", "./images/fortune.png");
     // atlas
     this.load.atlas("bomb_smoke", "./images/bomb_smoke.png", "./images/bomb_smoke.json")
   }
@@ -522,12 +639,7 @@ onMounted(async() => {
   function create(this: Phaser.Scene) {
     
     // background
-    const bg = this.add.image(0, -90, "bg").setOrigin(0);
-    fitBackground(bg, this);
-    // 監聽畫面縮放
-    this.scale.on("resize", () => {
-      fitBackground(bg, this);
-    });
+    changBackground("bg", this)
 
     // Boss
     boss = this.add.sprite(360, 250, "boss");
@@ -573,6 +685,10 @@ onMounted(async() => {
       const gameItem = item as Phaser.GameObjects.GameObject & Phaser.Physics.Arcade.Body
       const type = (gameItem as any).getData?.('type')
       const itemInfo = itemList.find(i => i.key === type);
+      if (!itemInfo) {
+        // console.warn(`未知 item type: ${type}`);
+        return;
+      }
       // console.log(itemInfo)
       // 暈眩
       if (type === 'bomb') {
@@ -600,9 +716,14 @@ onMounted(async() => {
         showScoreTip(this, player.x, player.y - 200, '+' + itemInfo!.scores)
       // 扣分
       } else if (type === 'thunder') {
-        $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore -= itemInfo!.scores
+        // console.log($store.totalScore + ' - ' + itemInfo!.scores + ' = ' + ($store.totalScore - itemInfo!.scores))
+        $store.totalScore = $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore - itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '-' + itemInfo!.scores)
+      // 機會命運
+      } else if (type === 'fortune') {
+        // 開啟機會命運 function
+        startFortune(this)
       // 無敵
       } else if (type === 'star') {
         $store.invincible = true
