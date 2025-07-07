@@ -341,6 +341,7 @@ let isTouching = false;
 let hasGotoResult = false
 let timeTipId = 0;
 let bg: Phaser.GameObjects.Image | null = null;
+let audioMap: Record<string, HTMLAudioElement> = {};
 
 // ================================== function ==================================
 
@@ -387,6 +388,7 @@ function activeGameStart() {
 
 // ------------- 預備三秒後啟動 -------------
 function StartCountdown() {
+  AudioPlay('TimeCountdown.wav')
   const interval = setInterval(() => {
     sec.value++;
     if (sec.value === 3) {
@@ -400,6 +402,7 @@ function StartCountdown() {
 // ------------- 時鐘開始倒數 -------------
 function StartClock() {
   console.log("StartClock!")
+  AudioPlay('BGM.mp3', true)
   const interval = setInterval(() => {
     if (!$store.isPaused) {
       clockSec.value--;
@@ -416,6 +419,8 @@ function StartClock() {
       // 時間結束
       if (clockSec.value === 0) {
         console.log('Time\'s Up!')
+        AudioPause('BGM.mp3')
+        AudioPlay('Completed.wav')
         clearInterval(interval);
       }
     }
@@ -553,6 +558,23 @@ function showScoreTip(scene: Phaser.Scene, x: number, y: number, text: string) {
       scoreText.destroy()
     }
   });
+}
+
+// ----------- 播放音效 -----------
+function AudioPlay(audio_name: string, loop: boolean = false) {
+  if (!audioMap[audio_name]) {
+    audioMap[audio_name] = new Audio('./sounds/' + audio_name);
+    if(loop) audioMap[audio_name].loop = true;
+  }
+  audioMap[audio_name].currentTime = 0;
+  audioMap[audio_name].play();
+}
+// ----------- 暫停音效 -----------
+function AudioPause(audio_name: string) {
+  const audio = audioMap[audio_name];
+  if (audio) {
+    audio.pause();
+  }
 }
 
 // ------------- 跳去 result 頁面 -------------
@@ -695,6 +717,7 @@ onMounted(async() => {
         if($store.invincible) return
         $store.knockOut = true
         let knockout_time = 0
+        AudioPlay('Bomb.mp3')
         const interval = setInterval(() => {
           knockout_time++
           if (knockout_time === itemInfo!.delay) {
@@ -705,27 +728,32 @@ onMounted(async() => {
         smokeAnim(this);
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
+        AudioPlay('Score.mp3')
         clockSec.value += itemInfo!.plus_time
         // 顯示於 UI
         showTimeTip(itemInfo!.plus_time);
         if(clockSec.value >= $store.stageTime) clockSec.value = $store.stageTime
       // 得分
       } else if (['coin', 'gmove', 'hat', 'poseidon'].includes(type)) {
+        AudioPlay('Score.mp3')
         $store.totalScore += itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '+' + itemInfo!.scores)
       // 扣分
       } else if (type === 'thunder') {
+        AudioPlay('Score.mp3')
         // console.log($store.totalScore + ' - ' + itemInfo!.scores + ' = ' + ($store.totalScore - itemInfo!.scores))
         $store.totalScore = $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore - itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '-' + itemInfo!.scores)
       // 機會命運
       } else if (type === 'fortune') {
+        AudioPlay('Score.mp3')
         // 開啟機會命運 function
         startFortune(this)
       // 無敵
       } else if (type === 'star') {
+        AudioPlay('Score.mp3')
         $store.invincible = true
         let invincible_time = 0
         const interval = setInterval(() => {
