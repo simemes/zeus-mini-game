@@ -4,6 +4,7 @@ export const useStore = defineStore('store', {
   state: () => ({
     stage: 1,
     stageTime: 60,
+    fortuneType: 0,
     isLoadPage: true,
     isLoaded: false,
     resultLoaded : false,
