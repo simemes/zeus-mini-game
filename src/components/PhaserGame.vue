@@ -159,6 +159,9 @@ const timeTips = ref<{ id: number; value: number }[]>([]);
 // 預載入圖片
 const imageList: string[] = [
   './images/bg_blue_sky.jpg',
+  './images/bg_cyan.png',
+  './images/bg_gold.png',
+  './images/bg_black.png',
   './images/arrow_l.png',
   './images/arrow_r.png',
   './images/bomb.png',
@@ -336,8 +339,8 @@ let b_changeDirCooldown = 0;
 let hasStarted = false;
 let isTouching = false;
 let hasGotoResult = false
-
 let timeTipId = 0;
+let bg: Phaser.GameObjects.Image | null = null;
 
 // ================================== function ==================================
 
@@ -362,6 +365,18 @@ function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
   const { width, height } = scene.scale;
   const scale = Math.max(width / bg.width, height / bg.height);
   bg.setScale(scale);
+}
+
+// ------------- 背景切換 -------------
+function changBackground(new_bg: string, scene: Phaser.Scene) {
+  bg?.destroy()
+  bg = scene.add.image(0, -90, new_bg).setOrigin(0);
+  fitBackground(bg, scene);
+  scene.children.sendToBack(bg);
+  // 監聽畫面縮放
+  scene.scale.on("resize", () => {
+    fitBackground(bg!, scene);
+  });
 }
 
 // ------------- 開始遊戲按鈕 -------------
@@ -484,11 +499,14 @@ function startFortune(scene: Phaser.Scene) {
   $store.fortuneType = table[Math.floor(Math.random() * table.length)];
   stopDroppingItems()
   droppingItems(scene)
+  const new_bg = $store.fortuneType == 1 ? "bg_black" : $store.fortuneType == 2 ? "bg_cyan" : "bg_gold"
+  changBackground(new_bg, scene)
   fortuneTimeout.value = setTimeout(() => {
     // fortuneType 歸零
     $store.fortuneType = 0
     stopDroppingItems()
     droppingItems(scene)
+    changBackground("bg", scene)
   }, 5000);
 }
 
@@ -594,6 +612,9 @@ onMounted(async() => {
   function preload(this: Phaser.Scene) {
     // bg
     this.load.image("bg", "./images/bg_blue_sky.jpg");
+    this.load.image("bg_cyan", "./images/bg_cyan.png");
+    this.load.image("bg_gold", "./images/bg_gold.png");
+    this.load.image("bg_black", "./images/bg_black.png");
     // char
     this.load.image("boss", "./images/zeus.png");
     this.load.image("player", "./images/player.png");
@@ -618,12 +639,7 @@ onMounted(async() => {
   function create(this: Phaser.Scene) {
     
     // background
-    const bg = this.add.image(0, -90, "bg").setOrigin(0);
-    fitBackground(bg, this);
-    // 監聽畫面縮放
-    this.scale.on("resize", () => {
-      fitBackground(bg, this);
-    });
+    changBackground("bg", this)
 
     // Boss
     boss = this.add.sprite(360, 250, "boss");
