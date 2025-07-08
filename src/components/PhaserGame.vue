@@ -51,6 +51,22 @@
               +{{ tip.value }} SECONDS
             </div>
           </transition-group>
+          <!-- 加時提示 -->
+          <transition-group name="tip" tag="div" class="absolute top-5 z-20 flex flex-col w-[30%]"
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 translate-y-4"
+            enter-to-class="opacity-100 translate-y-0"
+            leave-active-class="transition duration-300 ease-in"
+            leave-from-class="opacity-100 translate-y-0"
+            leave-to-class="opacity-0 -translate-y-4"
+            >
+            <div
+              v-if="comboCount != 0"
+              class="relative top-10 text-[#FFAE00] text-[16px]text-[16px] sm:text-[20px] md:text-[30px] lg:text-[40px] xl:text-[50px] font-bold px-2 py-1 rounded w-[100%] font-[Impact] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px]"
+            >
+              {{ comboCount }} COMBO
+            </div>
+          </transition-group>
         </div>
       </div>
       <!-- Start -->
@@ -190,18 +206,18 @@ const imageList: string[] = [
 // Stage 1、2、3 itemList settings
 const itemList1 = [
   // 得分 - weight 大
-  { key: 'gmove', scale: 0.15, speed: [200, 900], weight: 5, scores: 100, delay: 0, plus_time: 0 },
-  { key: 'hat', scale: 0.15, speed: [200, 900], weight: 5, scores: 150, delay: 0, plus_time: 0 },
-  { key: 'coin', scale: 0.15, speed: [200, 900], weight: 5, scores: 500, delay: 0, plus_time: 0 },
+  { key: 'gmove', scale: 0.15, speed: [400, 1100], weight: 5, scores: 100, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [400, 1100], weight: 5, scores: 150, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [400, 1100], weight: 5, scores: 500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
-  { key: 'clock', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'clock', scale: 0.15, speed: [400, 1100], weight: 1, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [400, 1100], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 10, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [400, 1100], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
-  { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [400, 1100], weight: 5, scores: 200, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
-  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'fortune', scale: 0.15, speed: [400, 1100], weight: 0, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList2 = [
   // 得分 - weight 大
@@ -216,22 +232,22 @@ const itemList2 = [
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 400, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
-  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 0, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
-  { key: 'gmove', scale: 0.15, speed: [900, 2500], weight: 5, scores: 300, delay: 0, plus_time: 0 },
-  { key: 'hat', scale: 0.15, speed: [900, 2500], weight: 5, scores: 450, delay: 0, plus_time: 0 },
-  { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 1500, delay: 0, plus_time: 0 },
+  { key: 'gmove', scale: 0.15, speed: [800, 1400], weight: 5, scores: 300, delay: 0, plus_time: 0 },
+  { key: 'hat', scale: 0.15, speed: [800, 1400], weight: 5, scores: 450, delay: 0, plus_time: 0 },
+  { key: 'coin', scale: 0.15, speed: [800, 1400], weight: 5, scores: 1500, delay: 0, plus_time: 0 },
   // 加時 - weight 中
-  { key: 'clock', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 2 },
-  { key: 'clock_gold', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 5 },
+  { key: 'clock', scale: 0.15, speed: [800, 1400], weight: 1, scores: 0, delay: 0, plus_time: 2 },
+  { key: 'clock_gold', scale: 0.15, speed: [800, 1400], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 10, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [800, 1400], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
-  { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 600, delay: 0, plus_time: 0 },
+  { key: 'thunder', scale: 0.15, speed: [800, 1400], weight: 5, scores: 600, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
-  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 0, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 // ------------------- 機會命運雨 -------------------
@@ -306,6 +322,7 @@ let game: Phaser.Game | null = null;
 let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
 let fortuneTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let comboResetTimeout: ReturnType<typeof setTimeout> | null = null;
 let hasStage2 = false;
 let hasStage3 = false;
 let gameStart = ref(false)
@@ -342,6 +359,8 @@ let hasGotoResult = false
 let timeTipId = 0;
 let bg: Phaser.GameObjects.Image | null = null;
 let audioMap: Record<string, HTMLAudioElement> = {};
+// let QKey: Phaser.Input.Keyboard.Key;
+let comboCount = ref(0)
 
 // ================================== function ==================================
 
@@ -476,6 +495,18 @@ function dropRandomItem(x: number, y: number) {
   item.setData('type', selectedKey) // 方便之後判斷
 }
 
+// ------------- 掉落指定物品 -------------
+function dropSpecificItem(x: number, y: number, key: string) {
+  const itemData = itemList.find(i => i.key === key);
+  if (!itemData) return;
+
+  const item = items.create(x, y, key) as Phaser.Physics.Arcade.Sprite;
+  const randomSpeed = Phaser.Math.Between(itemData.speed[0], itemData.speed[1]);
+  item.setVelocityY(randomSpeed);
+  item.setScale(itemData.scale);
+  item.setData('type', key);
+}
+
 // ----------- 開始定時丟東西 -----------
 function droppingItems(scene: Phaser.Scene) {
   timerEvent.value = scene.time.addEvent({
@@ -558,6 +589,34 @@ function showScoreTip(scene: Phaser.Scene, x: number, y: number, text: string) {
       scoreText.destroy()
     }
   });
+}
+
+function ComboHit() {
+  // 清除舊的 timeout
+  if (comboResetTimeout) {
+    clearTimeout(comboResetTimeout);
+  }
+  // 啟動新的 timeout
+  comboResetTimeout = setTimeout(() => {
+    comboCount.value = 0;
+  }, 5000);
+  // combo 4 以下
+  if(comboCount.value <= 4) {
+    comboCount.value += 1
+    // combo 5
+    if(comboCount.value == 5) {
+      // boss 丟機會命運
+      const fortuneItemData = itemList.find(item => item.key === 'fortune');
+      if (fortuneItemData) {
+        dropSpecificItem(boss.x, boss.y + 50, 'fortune');
+        // QKey.isDown = false;
+      } else {
+        console.warn("Fortune item data not found in itemList.");
+      }
+    }
+  } else {
+    comboCount.value = 1
+  }
 }
 
 // ----------- 播放音效 -----------
@@ -659,7 +718,8 @@ onMounted(async() => {
 
   // -------------------------- *** create *** --------------------------
   function create(this: Phaser.Scene) {
-    
+    // QKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+
     // background
     changBackground("bg", this)
 
@@ -726,6 +786,7 @@ onMounted(async() => {
           }
         }, 1000);
         smokeAnim(this);
+        comboCount.value = 0
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
         AudioPlay('Score.mp3')
@@ -739,13 +800,15 @@ onMounted(async() => {
         $store.totalScore += itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '+' + itemInfo!.scores)
+        ComboHit()
       // 扣分
       } else if (type === 'thunder') {
-        AudioPlay('Score.mp3')
+        AudioPlay('Descore.wav')
         // console.log($store.totalScore + ' - ' + itemInfo!.scores + ' = ' + ($store.totalScore - itemInfo!.scores))
         $store.totalScore = $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore - itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '-' + itemInfo!.scores)
+        comboCount.value = 0
       // 機會命運
       } else if (type === 'fortune') {
         AudioPlay('Score.mp3')
@@ -773,6 +836,17 @@ onMounted(async() => {
   // -------------------------- *** update *** --------------------------
   function update(this: Phaser.Scene) {
     
+    // Check for 'Q' key press
+    // if (QKey.isDown) {
+    //   const fortuneItemData = itemList.find(item => item.key === 'fortune');
+    //   if (fortuneItemData) {
+    //     dropSpecificItem(boss.x, boss.y + 50, 'fortune');
+    //     QKey.isDown = false;
+    //   } else {
+    //     console.warn("Fortune item data not found in itemList.");
+    //   }
+    // }
+
     // 監控遊戲是否開始，只做一次
     if(gameStart.value && !hasStarted) {
       hasStarted = true;
