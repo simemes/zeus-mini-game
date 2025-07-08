@@ -197,11 +197,11 @@ const itemList1 = [
   { key: 'clock', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 4, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [200, 900], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [200, 900], weight: 5, scores: 200, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
-  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList2 = [
   // 得分 - weight 大
@@ -216,7 +216,7 @@ const itemList2 = [
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 400, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
-  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
@@ -227,18 +227,18 @@ const itemList3 = [
   { key: 'clock', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [900, 2500], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 20, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 10, scores: 0, delay: 2, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [900, 2500], weight: 5, scores: 600, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
-  { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
+  // { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 5, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 // ------------------- 機會命運雨 -------------------
 
 // bombs rain
 const itemListBombs = [
-  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 20, scores: 0, delay: 2, plus_time: 0 }
+  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 10, scores: 0, delay: 2, plus_time: 0 }
 ];
 
 // thunder rain
