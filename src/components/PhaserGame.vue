@@ -592,6 +592,7 @@ function showScoreTip(scene: Phaser.Scene, x: number, y: number, text: string) {
 }
 
 function ComboHit() {
+  if($store.fortuneType != 0) return
   // 清除舊的 timeout
   if (comboResetTimeout) {
     clearTimeout(comboResetTimeout);
