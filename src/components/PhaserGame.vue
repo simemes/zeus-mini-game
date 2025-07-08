@@ -1,8 +1,8 @@
 <template>
   <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
-  <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-    <div v-if="!$store.isLoaded" class="absolute w-full h-full bg-black z-10"></div>
-  </transition>
+  <!-- <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
+    <div v-if="!$store.isPreloaded" class="absolute w-full h-full bg-black z-10"></div>
+  </transition> -->
   <div>
     <!-- UI -->
     <div
@@ -141,10 +141,12 @@
   <div
     class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none overflow-hidden"
   >
-    <div v-if="!$store.isLoaded || $store.isLoadPage" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center">
+    <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full flex flex-col justify-center">
       <LoadPage></LoadPage>
     </div>
-    <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full flex flex-col justify-center">
+    <!-- StartPanel mask -->
+    <div v-if="!$store.isStart && $store.isReady" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
+    <div v-if="!$store.isStart && $store.isReady" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>
     </div>
     <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full flex flex-col justify-center">
@@ -154,15 +156,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeUnmount, ref, computed } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed, watch } from "vue";
 import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
 import LoadPage from '../components/LoadPage.vue'
+import { animate, createSpring } from 'animejs';
 // import { useRouter } from 'vue-router'
 // const router = useRouter()
 const $store = useStore()
+
+const startPanelTrans = ref(null)
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 // 觸碰位置與玩家位置間，不移動的緩衝區間
@@ -654,12 +659,24 @@ const countdownSec = computed(() => {
   return result?result:3-sec.value
 })
 
+watch(startPanelTrans, () => {
+  if (startPanelTrans.value) {
+    animate(startPanelTrans.value, {
+      translateY: [ 100, 0 ],
+      opacity: [ 0, 1 ],
+      delay: 0,
+      duration: 300,
+      ease: createSpring({ stiffness: 120 }),
+    })
+  }
+})
+
 // ================================== onMounted ==================================
 
 onMounted(async() => {
   // 預載入圖片
   await preloadImages(imageList);
-  $store.isLoaded = true; 
+  $store.isPreloaded = true; 
 
   if (!gameContainer.value) return;
 

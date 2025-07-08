@@ -1,6 +1,6 @@
 <template>
   <!-- items -->
-  <div class="w-[67%] h-full flex flex-col justify-center font-[Inter,sans-serif] font-bold text-[14px]">
+  <div class="w-[100%] h-full flex flex-col justify-center font-[Inter,sans-serif] font-bold text-[14px]">
     <!-- =================== 1st row =================== -->
     <div class="w-full h-full flex flex-row justify-center my-1">
       <!-- 1st col -->
@@ -23,54 +23,28 @@
       <!-- 1st col -->
       <div class="w-full h-full flex flex-row justify-start items-center">
         <div class="bg-[#00000040] rounded-[12px] w-[40%] p-2 mx-2">
-          <img src="/images/thunder.png" class="">
-        </div>
-        <div>+200</div>
-      </div>
-      <!-- 2nd col -->
-      <div class="w-full h-full flex flex-row justify-start items-center">
-        <div class="bg-[#00000040] rounded-[12px] w-[40%] p-2 mx-2">
-          <img src="/images/poseidon.png" class="">
-        </div>
-        <div>+300</div>
-      </div>
-    </div>
-    <!-- =================== 3rd row =================== -->
-    <div class="w-full h-full flex flex-row justify-center my-1">
-      <!-- 1st col -->
-      <div class="w-full h-full flex flex-row justify-start items-center">
-        <div class="bg-[#00000040] rounded-[12px] w-[40%] p-2 mx-2">
           <img src="/images/coin.png" class="">
         </div>
         <div>+500</div>
       </div>
       <!-- 2nd col -->
       <div class="w-full h-full flex flex-row justify-start items-center">
-        <!-- <div class="bg-[#00000040] rounded-[12px] w-[40%] p-2 mx-2">
-          <img src="/images/poseidon.png" class="">
+        <div class="bg-[#00000040] rounded-[12px] w-[40%] p-2 mx-2">
+          <img src="/images/thunder.png" class="">
         </div>
-        <div>+300</div> -->
+        <div>-100</div>
       </div>
     </div>
-    <!-- =================== 4th row =================== -->
+    <!-- =================== 3rd row =================== -->
     <div class="w-full h-full flex flex-row justify-center my-1">
       <div class="w-full h-full flex flex-row justify-start items-center">
         <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
           <img src="/images/clock.png" class="">
         </div>
-        <div>Randomly adds 2 seconds.</div>
+        <div>Adds 2 or 5 seconds.</div>
       </div>
     </div>
-    <!-- =================== 5th row =================== -->
-    <div class="w-full h-full flex flex-row justify-center my-1">
-      <div class="w-full h-full flex flex-row justify-start items-center">
-        <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
-          <img src="/images/clock_gold.png" class="">
-        </div>
-        <div>Randomly adds 5 seconds.</div>
-      </div>
-    </div>
-    <!-- =================== 6th row =================== -->
+    <!-- =================== 4th row =================== -->
     <div class="w-full h-full flex flex-row justify-center my-1">
       <div class="w-full h-full flex flex-row justify-start items-center">
         <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
@@ -79,13 +53,13 @@
         <div>Each hit stuns the player for 2 seconds.</div>
       </div>
     </div>
-    <!-- =================== 7th row =================== -->
+    <!-- =================== 5th row =================== -->
     <div class="w-full h-full flex flex-row justify-center my-1">
       <div class="w-full h-full flex flex-row justify-start items-center">
         <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
-          <img src="/images/star.png" class="">
+          <img src="/images/fortune.png" class="">
         </div>
-        <div>Invincibility lasts 2 seconds.</div>
+        <div>Red pill or blue pill, your pick.</div>
       </div>
     </div>
   </div>

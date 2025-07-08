@@ -1,13 +1,13 @@
 <template>
-  <!-- <div class="asolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] aspect-[720/1280] max-w-[101%] max-h-[101%] z-[1] pointer-events-none overflow-hidden bg-black flex flex-col justify-center"> -->
-    <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
-    <div class="w-full flex flex-col justify-center items-center">
-      <!-- items -->
+  <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
+  <div class="w-full flex flex-col justify-center items-center">
+    <!-- items -->
+    <div class="w-[67%]">
       <ItemPanel></ItemPanel>
-      <!-- btn -->
-      <button @click="Continue" class="btn btn-click type1 pointer-events-auto mt-5">Continue</button>
     </div>
-  <!-- </div> -->
+    <!-- btn -->
+    <button @click="Continue" class="btn btn-click type1 pointer-events-auto mt-5">Continue</button>
+  </div>
 </template>
 
 <script setup lang="ts">
