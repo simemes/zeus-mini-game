@@ -750,6 +750,10 @@ onMounted(async() => {
       .sprite(360, 1060, "player")
       .setCollideWorldBounds(true);
     player.setScale(0.4);
+    // 開啟可視 collider
+    // this.physics.world.createDebugGraphic();
+    // 重設 collider 大小
+    player.body!.setSize(240, 450).setOffset(80, 180);
 
     // 玩家觸控控制
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
@@ -963,6 +967,7 @@ onMounted(async() => {
       player.setY(player.y + 50);
     } else {
       player.setTexture('player')
+      player.setY(1060);
     }
 
   }
