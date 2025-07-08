@@ -40,7 +40,7 @@ let interval = ref<ReturnType<typeof setInterval> | null>(null);
 
 function Ready() {
   $store.isReady = true
-  console.log($store.isReady)
+  // console.log($store.isReady)
 }
 
 onMounted(() => {
