@@ -38,8 +38,9 @@
     <!-- =================== 3rd row =================== -->
     <div class="w-full h-full flex flex-row justify-center my-1">
       <div class="w-full h-full flex flex-row justify-start items-center">
-        <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
-          <img src="/images/clock.png" class="">
+        <div class="relative bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
+          <img src="/images/clock.png" class="relative w-[90%] -top-1 -left-1">
+          <img src="/images/clock_gold.png" class="absolute w-[70%] top-2 right-1 -z-0">
         </div>
         <div>Adds 2 or 5 seconds.</div>
       </div>
