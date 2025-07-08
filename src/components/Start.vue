@@ -12,7 +12,7 @@
     <!-- btn -->
     <button @click="GameStart" class="btn btn-click type1 pointer-events-auto">
       <div class="">Start</div>
-      <div class="text-[14px] text-black">( {{ $store.thisRound }} / {{ $store.totalRounds }} )</div>
+      <div class="text-[14px] text-black [text-shadow:none]">( {{ $store.thisRound }} / {{ $store.totalRounds }} )</div>
     </button>
   </div>
 </template>

@@ -86,6 +86,6 @@ onBeforeUnmount(() => {
   @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
 }
 .type1 {
-  @apply w-[100%] h-[60px] text-[14px];
+  @apply w-[100%] h-[60px] text-[24px];
 }
 </style>
