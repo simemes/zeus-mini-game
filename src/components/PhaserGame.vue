@@ -433,11 +433,13 @@ function StartClock() {
       // STAGE 2
       if (clockSec.value === 40) {
         $store.stage = 2
+        audioMap['BGM.mp3'].playbackRate = 1.4
         console.log('STAGE 2!')
       }
       // STAGE 3
       if (clockSec.value === 20) {
         $store.stage = 3
+        audioMap['BGM.mp3'].playbackRate = 1.8
         console.log('STAGE 3!')
       }
       // 時間結束
@@ -626,13 +628,15 @@ function ComboHit() {
 }
 
 // ----------- 播放音效 -----------
-function AudioPlay(audio_name: string, loop: boolean = false) {
+function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0) {
   if (!audioMap[audio_name]) {
     audioMap[audio_name] = new Audio('./sounds/' + audio_name);
-    if(loop) audioMap[audio_name].loop = true;
+    audioMap[audio_name].loop = loop;
   }
-  audioMap[audio_name].currentTime = 0;
-  audioMap[audio_name].play();
+  const audio = audioMap[audio_name];
+  audio.currentTime = 0;
+  audio.playbackRate = rate; // << 加速播放
+  audio.play();
 }
 // ----------- 暫停音效 -----------
 function AudioPause(audio_name: string) {
