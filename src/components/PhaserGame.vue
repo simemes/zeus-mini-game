@@ -99,6 +99,41 @@
       >
         STAGE - 3
       </div>
+      <!-- Star -->
+      <div
+        v-if="$store.canInvincible || $store.invincible"
+        class="absolute top-[50%] right-[5px] w-[10%] h-full"
+      >
+        <div class="absolute rounded-full w-[100%] aspect-square" :class="{'border-[#00000030] border-[2.5px] box-border' : invincibleCircle < 180}"></div>
+        <div @touchstart="ActiveInvincible" class="absolute bg-[#00000020] rounded-full p-[10%] pointer-events-auto">
+          <!-- 白邊旋轉層 -->
+          <svg
+            v-if="invincibleCircle < 180"
+            viewBox="0 0 64 64"
+            class="absolute -top-[5%] -left-[5%] w-[110%]"
+            :style="{
+              transform: 'rotate(-90deg) scale(1, -1)'
+            }"
+          >
+            <g
+              class="transition"
+              :style="{
+                  stroke: 'gray',
+                  fill: 'none'
+              }"
+            >
+              <circle
+                r="45%" cx="50%" cy="50%" stroke-linecap="round"
+                class="stroke-white transition-all stroke-[4.5] opacity-100 duration-100"
+                :style="{
+                    strokeDasharray: `${invincibleCircle} 180`,
+                }"
+              ></circle>
+            </g>
+          </svg>
+          <img src="/images/star.png" class="relative z-20">
+        </div>
+      </div>
       <!-- Time -->
       <div
         class="absolute bottom-0 w-full"
@@ -223,6 +258,8 @@ const itemList1 = [
   { key: 'thunder', scale: 0.15, speed: [400, 1100], weight: 5, scores: 200, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
   { key: 'fortune', scale: 0.15, speed: [400, 1100], weight: 0, scores: 0, delay: 0, plus_time: 0 },
+  // 無敵 - weight 小
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList2 = [
   // 得分 - weight 大
@@ -238,6 +275,8 @@ const itemList2 = [
   { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 400, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
   { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 0, scores: 0, delay: 0, plus_time: 0 },
+  // 無敵 - weight 小
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
@@ -253,6 +292,8 @@ const itemList3 = [
   { key: 'thunder', scale: 0.15, speed: [800, 1400], weight: 5, scores: 600, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
   { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 0, scores: 0, delay: 0, plus_time: 0 },
+  // 無敵 - weight 小
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 // ------------------- 機會命運雨 -------------------
@@ -330,6 +371,7 @@ let fortuneTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let knockoutTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let knockoutCoolingTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let comboResetTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let invincibleTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let flickerTween: Phaser.Tweens.Tween | null = null;
 let hasStage2 = false;
 let hasStage3 = false;
@@ -369,6 +411,8 @@ let bg: Phaser.GameObjects.Image | null = null;
 let audioMap: Record<string, HTMLAudioElement> = {};
 // let QKey: Phaser.Input.Keyboard.Key;
 let comboCount = ref(0)
+let lastTapTime = ref(0);
+let invincibleCircle = ref(180);
 
 // ================================== function ==================================
 
@@ -630,6 +674,25 @@ function ComboHit() {
   }
 }
 
+// ----------- 啟動無敵 -----------
+function ActiveInvincible() {
+  if(!$store.canInvincible) return
+  $store.invincible = true
+  $store.canInvincible = false
+  //  增加 invincibleCircle 讓星星倒數效果轉起來
+  const interval = setInterval(() => {
+    invincibleCircle.value -= 9
+    if (invincibleCircle.value <= 0) {
+      clearInterval(interval)
+    }
+  }, 100);
+  // 2 秒後重置無敵狀態
+  invincibleTimeout.value = setTimeout(() => {
+    $store.invincible = false
+    invincibleCircle.value = 180
+  }, 2000);
+}
+
 // ----------- 播放音效 -----------
 function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0) {
   if (!audioMap[audio_name]) {
@@ -763,14 +826,44 @@ onMounted(async() => {
     player.body!.setSize(240, 450).setOffset(80, 180);
 
     // 玩家觸控控制
+    this.input.addPointer(2);
+    // let pointer1Down = false;
+    // let pointer2Down = false;
     this.input.on("pointerdown", (pointer: Phaser.Input.Pointer) => {
+      // 設定兩指按下狀態
+      // if (pointer.id === 1) {
+      //   pointer1Down = true;
+      //   console.log("👉 第一指 down");
+      // } else if (pointer.id === 2) {
+      //   pointer2Down = true;
+      //   console.log("👉 第二指 down");
+      // }
+      // if (pointer1Down && pointer2Down) {
+      //   console.log("🚀 兩指同時按下！");
+      // }
+      // 雙擊啟動無敵
+      const currentTime = pointer.downTime; // Phaser 提供的按下時間
+      const timeSinceLastTap = currentTime - lastTapTime.value;
+      if (timeSinceLastTap < 300) { // 小於 300ms 就當作雙擊
+        console.log("🚀 Double Tap!");
+        ActiveInvincible()
+      }
+      lastTapTime.value = currentTime;
+      // 設定觸碰位置
       isTouching = true;
       pointerX = pointer.x;
     });
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
         pointerX = pointer.x;
     });
-    this.input.on("pointerup", () => {
+    this.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
+      // 重置兩指按下狀態
+      // if (pointer.id === 1) {
+      //   pointer1Down = false;
+      // } else if (pointer.id === 2) {
+      //   pointer2Down = false;
+      // }
+      // 重置觸碰狀態
       isTouching = false;
       pointerX = null;
     });
@@ -862,16 +955,8 @@ onMounted(async() => {
       // 無敵
       } else if (type === 'star') {
         AudioPlay('Score.mp3')
-        $store.invincible = true
-        let invincible_time = 0
-        const interval = setInterval(() => {
-          invincible_time++
-          if (invincible_time === 2) {
-            $store.invincible = false
-            clearInterval(interval)
-          }
-        }, 1000);
-
+        // 得到星星以待使用時機
+        $store.canInvincible = true
       }
       item.destroy()
     })
@@ -883,13 +968,7 @@ onMounted(async() => {
     
     // Check for 'Q' key press
     // if (QKey.isDown) {
-    //   const fortuneItemData = itemList.find(item => item.key === 'fortune');
-    //   if (fortuneItemData) {
-    //     dropSpecificItem(boss.x, boss.y + 50, 'fortune');
-    //     QKey.isDown = false;
-    //   } else {
-    //     console.warn("Fortune item data not found in itemList.");
-    //   }
+    // 
     // }
 
     // 監控遊戲是否開始，只做一次
@@ -1020,6 +1099,10 @@ onBeforeUnmount(() => {
   if (knockoutCoolingTimeout.value) {
     clearTimeout(knockoutCoolingTimeout.value);
     knockoutCoolingTimeout.value = null;
+  }
+  if (invincibleTimeout.value) {
+    clearTimeout(invincibleTimeout.value);
+    invincibleTimeout.value = null;
   }
 });
 </script>
