@@ -856,7 +856,8 @@ onMounted(async() => {
     this.input.on("pointermove", (pointer: Phaser.Input.Pointer) => {
         pointerX = pointer.x;
     });
-    this.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
+    this.input.on("pointerup", () => {
+    // this.input.on("pointerup", (pointer: Phaser.Input.Pointer) => {
       // 重置兩指按下狀態
       // if (pointer.id === 1) {
       //   pointer1Down = false;
