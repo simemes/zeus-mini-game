@@ -955,6 +955,7 @@ onMounted(async() => {
         startFortune(this)
       // 無敵
       } else if (type === 'star') {
+        if($store.canInvincible) return
         AudioPlay('Score.mp3')
         // 得到星星以待使用時機
         $store.canInvincible = true
