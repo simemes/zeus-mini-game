@@ -218,7 +218,7 @@ const itemList1 = [
   { key: 'clock', scale: 0.15, speed: [400, 1100], weight: 1, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [400, 1100], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [400, 1100], weight: 10, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [400, 1100], weight: 10, scores: 0, delay: 1, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [400, 1100], weight: 5, scores: 200, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
@@ -233,7 +233,7 @@ const itemList2 = [
   { key: 'clock', scale: 0.15, speed: [600, 1300], weight: 1, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [600, 1300], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [600, 1300], weight: 10, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [600, 1300], weight: 10, scores: 0, delay: 1, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [600, 1300], weight: 5, scores: 400, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
@@ -248,7 +248,7 @@ const itemList3 = [
   { key: 'clock', scale: 0.15, speed: [800, 1400], weight: 1, scores: 0, delay: 0, plus_time: 2 },
   { key: 'clock_gold', scale: 0.15, speed: [800, 1400], weight: 1, scores: 0, delay: 0, plus_time: 5 },
   // 暈眩 - weight 中
-  { key: 'bomb', scale: 0.15, speed: [800, 1400], weight: 10, scores: 0, delay: 2, plus_time: 0 },
+  { key: 'bomb', scale: 0.15, speed: [800, 1400], weight: 10, scores: 0, delay: 1, plus_time: 0 },
   // 扣分
   { key: 'thunder', scale: 0.15, speed: [800, 1400], weight: 5, scores: 600, delay: 0, plus_time: 0 },
   // 機會命運 - weight 小
@@ -259,7 +259,7 @@ const itemList3 = [
 
 // bombs rain
 const itemListBombs = [
-  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 10, scores: 0, delay: 2, plus_time: 0 }
+  { key: 'bomb', scale: 0.15, speed: [900, 2500], weight: 10, scores: 0, delay: 1, plus_time: 0 }
 ];
 
 // thunder rain
@@ -327,7 +327,10 @@ let game: Phaser.Game | null = null;
 let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
 let fortuneTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
-let comboResetTimeout: ReturnType<typeof setTimeout> | null = null;
+let knockoutTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let knockoutCoolingTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let comboResetTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+let flickerTween: Phaser.Tweens.Tween | null = null;
 let hasStage2 = false;
 let hasStage3 = false;
 let gameStart = ref(false)
@@ -601,11 +604,11 @@ function showScoreTip(scene: Phaser.Scene, x: number, y: number, text: string) {
 function ComboHit() {
   if($store.fortuneType != 0) return
   // 清除舊的 timeout
-  if (comboResetTimeout) {
-    clearTimeout(comboResetTimeout);
+  if (comboResetTimeout.value) {
+    clearTimeout(comboResetTimeout.value);
   }
   // 啟動新的 timeout
-  comboResetTimeout = setTimeout(() => {
+  comboResetTimeout.value = setTimeout(() => {
     comboCount.value = 0;
   }, 5000);
   // combo 4 以下
@@ -788,7 +791,7 @@ onMounted(async() => {
 
     // Items group
     items = this.physics.add.group();
-    // 碰撞判定
+    // Item Collision 碰撞判定
     this.physics.add.overlap(player, items, (_, item) => {
       const gameItem = item as Phaser.GameObjects.GameObject & Phaser.Physics.Arcade.Body
       const type = (gameItem as any).getData?.('type')
@@ -800,19 +803,34 @@ onMounted(async() => {
       // console.log(itemInfo)
       // 暈眩
       if (type === 'bomb') {
-        if($store.invincible) return
+        if($store.invincible || $store.knockoutCooling) return
         $store.knockOut = true
-        let knockout_time = 0
         AudioPlay('Bomb.mp3')
-        const interval = setInterval(() => {
-          knockout_time++
-          if (knockout_time === itemInfo!.delay) {
-            $store.knockOut = false
-            clearInterval(interval)
-          }
-        }, 1000);
         smokeAnim(this);
         comboCount.value = 0
+        // 暈眩倒數
+        knockoutTimeout.value = setTimeout(() => {
+          $store.knockOut = false
+          // 暈眩冷卻
+          $store.knockoutCooling = true
+
+          flickerTween = this.tweens.add({
+            targets: player,
+            alpha: { from: 1, to: 0 },
+            duration: 100,
+            yoyo: true,
+            repeat: -1 // 無限閃爍
+          });
+
+          knockoutCoolingTimeout.value = setTimeout(() => {
+            $store.knockoutCooling = false
+            if (flickerTween) {
+              flickerTween.stop();
+              player.alpha = 1; // 恢復可見
+            }
+          }, 1000)
+        }, itemInfo!.delay * 1000);
+        
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
         AudioPlay('Score.mp3')
@@ -829,6 +847,7 @@ onMounted(async() => {
         ComboHit()
       // 扣分
       } else if (type === 'thunder') {
+        if($store.invincible) return
         AudioPlay('Descore.wav')
         // console.log($store.totalScore + ' - ' + itemInfo!.scores + ' = ' + ($store.totalScore - itemInfo!.scores))
         $store.totalScore = $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore - itemInfo!.scores
@@ -944,6 +963,7 @@ onMounted(async() => {
       b_direction = 1;
     }
 
+    // player 可移動前提
     if (isTouching && pointerX !== null && !$store.knockOut) {
       let dx = pointerX - player.x;
       // 加入 pointerDeadZone
@@ -984,6 +1004,22 @@ onBeforeUnmount(() => {
   if (resultTimeout.value) {
     clearTimeout(resultTimeout.value);
     resultTimeout.value = null;
+  }
+  if (fortuneTimeout.value) {
+    clearTimeout(fortuneTimeout.value);
+    fortuneTimeout.value = null;
+  }
+  if (comboResetTimeout.value) {
+    clearTimeout(comboResetTimeout.value);
+    comboResetTimeout.value = null;
+  }
+  if (knockoutTimeout.value) {
+    clearTimeout(knockoutTimeout.value);
+    knockoutTimeout.value = null;
+  }
+  if (knockoutCoolingTimeout.value) {
+    clearTimeout(knockoutCoolingTimeout.value);
+    knockoutCoolingTimeout.value = null;
   }
 });
 </script>

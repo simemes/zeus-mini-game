@@ -19,6 +19,7 @@ export const useStore = defineStore('store', {
     thisRound: 1,
     knockOut: false,
     invincible: false,
+    knockoutCooling: false,
     LoadingPage: {
       title: 'Loading'
     },
