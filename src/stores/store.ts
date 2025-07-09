@@ -18,7 +18,9 @@ export const useStore = defineStore('store', {
     totalRounds: 1,
     thisRound: 1,
     knockOut: false,
+    canInvincible: false,
     invincible: false,
+    knockoutCooling: false,
     LoadingPage: {
       title: 'Loading'
     },
