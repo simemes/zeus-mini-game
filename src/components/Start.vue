@@ -1,6 +1,6 @@
 <template>
   <!-- box -->
-  <div class="relative w-[90%] flex flex-col justify-center items-center bg-[#C87637] rounded-[20px] p-1">
+  <div class="relative w-[90%] flex flex-col justify-center items-center bg-[#C87637] rounded-[20px] p-1 border-[2px] border-[#3A1D07]">
     <!-- close -->
     <div @click="Close" class="absolute -top-2 -right-2 w-[10%] z-1 pointer-events-auto">
       <img src="/images/close.png" class="">

@@ -32,7 +32,7 @@
         <div class="bg-[#00000040] rounded-[12px] w-[40%] p-2 mx-2">
           <img src="/images/thunder.png" class="">
         </div>
-        <div>-100</div>
+        <div>-200</div>
       </div>
     </div>
     <!-- =================== 3rd row =================== -->
@@ -51,7 +51,7 @@
         <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
           <img src="/images/bomb.png" class="">
         </div>
-        <div>Each hit stuns the player for 2 seconds.</div>
+        <div>Stuns 2 seconds.</div>
       </div>
     </div>
     <!-- =================== 5th row =================== -->
