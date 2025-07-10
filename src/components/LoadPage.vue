@@ -16,7 +16,9 @@
         <div class="my-5">But beware, as time ticks on, the challenge accelerates.</div>
         <div class="my-5">Top 30% on the leaderboard will qualify for rewards after the event ends.</div>
       </div>
-      <button @click="Ready" class="btn btn-click type1 pointer-events-auto">Ready</button>
+      <div @click="Ready" class="btn-box btn-click">
+        <div class="strokeText " data-stroke="Ready">Ready</div>
+      </div>
     </div>
 
   </div>
@@ -72,9 +74,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.btn {
-  @apply font-[Inter,sans-serif] text-center [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px];
+.btn-box {
+  @apply font-[Inter,sans-serif] text-center my-[2px];
   @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
+  @apply h-[60px] rounded-[8px] -z-1 relative pointer-events-auto;
   border: 1px solid black !important;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -85,7 +88,13 @@ onBeforeUnmount(() => {
 .btn-click {
   @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
 }
-.type1 {
-  @apply w-[100%] h-[60px] text-[24px];
+.strokeText {
+  @apply relative top-[10px] w-full text-[24px] text-[#FFFFFF];
+}
+.strokeText::before {
+  content: attr(data-stroke);
+  -webkit-text-stroke: 5px black;
+  text-stroke: 5px black;
+  @apply absolute top-[0px] left-[0px] w-full -z-1;
 }
 </style>

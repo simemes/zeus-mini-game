@@ -36,9 +36,11 @@
         </div>
       </div>
       <!-- Share & Play Again -->
-      <div class="flex-1 relative w-full flex flex-col justify-center items-center">
-        <button @click="Share" class="btn btn-click type1 pointer-events-auto">Share</button>
-        <button @click="GoToStart" class="btn btn-click type1 pointer-events-auto" :class="{ disabled: btnIsDisabled}" :disabled="btnIsDisabled">Play Again</button>
+      <div @click="Share" class="btn-box btn-click">
+        <div class="strokeText " data-stroke="Share">Share</div>
+      </div>
+      <div @click="GoToStart" class="btn-box btn-click" :class="{ disabled: btnIsDisabled}" :disabled="btnIsDisabled">
+        <div class="strokeText " data-stroke="Play Again">Play Again</div>
       </div>
       <!-- footer text -->
       <div class="text-[11px] mb-5">
@@ -123,6 +125,8 @@ function preloadImages(imageUrls: string[]) {
 }
 
 onMounted(async() => {
+  // $store.users_profile.todayPlayCount = 1
+  // $store.users_profile.maxPlayCount = 1
   // 預載入圖片
   await preloadImages(imageList);
   $store.resultLoaded = true; 
@@ -160,9 +164,10 @@ onMounted(async() => {
   box-shadow: 0px 4px 4px 0px #00000040;
 }
 
-.btn {
-  @apply font-[Inter,sans-serif] text-center [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[2px];
-  @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#FBC222_50%,_#FFDC30_100%)];
+.btn-box {
+  @apply font-[Inter,sans-serif] text-center my-[2px];
+  @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
+  @apply h-[48px] w-full rounded-[8px] -z-1 relative pointer-events-auto;
   border: 1px solid black !important;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -170,14 +175,19 @@ onMounted(async() => {
   user-select: none;
   touch-action: manipulation;
 }
+.disabled {
+  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
+}
 .btn-click {
   @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
 }
-.type1 {
-  @apply w-[100%] h-[48px] text-[14px];
+.strokeText {
+  @apply relative top-[14px] w-full text-[14px] text-[#FFFFFF];
 }
-
-.disabled {
-  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
+.strokeText::before {
+  content: attr(data-stroke);
+  -webkit-text-stroke: 3px black;
+  text-stroke: 3px black;
+  @apply absolute top-[0px] left-[0px] w-full -z-1;
 }
 </style>

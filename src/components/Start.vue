@@ -10,10 +10,11 @@
       <ItemPanel></ItemPanel>
     </div>
     <!-- btn -->
-    <button @click="GameStart" class="btn btn-click type1 pointer-events-auto" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount">
-      <div class="">Start</div>
-      <div class="text-[14px] text-black [text-shadow:none]">( {{ $store.users_profile.todayPlayCount }} / {{ $store.users_profile.maxPlayCount }} )</div>
-    </button>
+    <div @click="GameStart" class="btn-box btn-click" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount">
+      <div class="strokeText " data-stroke="Start">Start</div>
+      <div class="play-count">x {{ $store.users_profile.maxPlayCount - $store.users_profile.todayPlayCount }}</div>
+    </div>
+
   </div>
 </template>
 
@@ -47,25 +48,35 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.btn {
-  @apply font-[Inter,sans-serif] text-center [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000] my-[10px];
+.btn-box {
+  @apply font-[Inter,sans-serif] text-center my-[15px];
   @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
+  @apply h-[60px] rounded-[8px] relative pointer-events-auto;
   border: 1px solid black !important;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   touch-action: manipulation;
-  padding: 0;
+  @apply max-w-[400px] w-[65%] h-[72px];
+}
+.disabled {
+  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
 }
 .btn-click {
   @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
 }
-.type1 {
-  @apply max-w-[400px] w-[65%] h-[72px] text-[24px];
+.strokeText {
+  @apply relative top-[10px] w-full text-[24px] text-[#FFFFFF] z-0;
+}
+.strokeText::before {
+  content: attr(data-stroke);
+  -webkit-text-stroke: 5px black;
+  text-stroke: 5px black;
+  @apply absolute top-[0px] left-[0px] w-full -z-1;
 }
 
-.disabled {
-  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
+.play-count {
+  @apply text-[14px] text-[#000000] mt-[5px];
 }
 </style>
