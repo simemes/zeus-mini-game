@@ -815,7 +815,7 @@ onMounted(async() => {
 
     // Boss
     boss = this.add.sprite(360, 250, "boss");
-    boss.setScale(0.3);
+    // boss.setScale(0.3);
 
     // Player
     player = this.physics.add
