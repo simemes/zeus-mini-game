@@ -78,6 +78,8 @@ function GoToStart() {
   $store.isResult = false
   $store.stage = 1
   $store.stageTime = 60
+  $store.canInvincible = false
+  $store.invincible = false
   // router.push('/')
 }
 
