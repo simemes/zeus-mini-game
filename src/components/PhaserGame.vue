@@ -259,7 +259,7 @@ const itemList1 = [
   // 機會命運 - weight 小
   { key: 'fortune', scale: 0.15, speed: [400, 1100], weight: 0, scores: 0, delay: 0, plus_time: 0 },
   // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList2 = [
   // 得分 - weight 大
@@ -276,7 +276,7 @@ const itemList2 = [
   // 機會命運 - weight 小
   { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 0, scores: 0, delay: 0, plus_time: 0 },
   // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 0 },
 ];
 const itemList3 = [
   // 得分 - weight 大
@@ -293,7 +293,7 @@ const itemList3 = [
   // 機會命運 - weight 小
   { key: 'fortune', scale: 0.15, speed: [200, 900], weight: 0, scores: 0, delay: 0, plus_time: 0 },
   // 無敵 - weight 小
-  { key: 'star', scale: 0.15, speed: [200, 900], weight: 1, scores: 0, delay: 0, plus_time: 0 },
+  { key: 'star', scale: 0.15, speed: [200, 900], weight: 3, scores: 0, delay: 0, plus_time: 0 },
 ];
 
 // ------------------- 機會命運雨 -------------------
