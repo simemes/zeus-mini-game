@@ -181,9 +181,15 @@
     </div>
     <!-- StartPanel mask -->
     <div v-if="!$store.isStart && $store.isReady" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
+    <!-- Start -->
     <div v-if="!$store.isStart && $store.isReady" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>
     </div>
+    <!-- BuyChance -->
+    <div v-if="$store.isBuyChance" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
+      <BuyChance @startEvent = "activeGameStart"></BuyChance>
+    </div>
+    <!-- Pause -->
     <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full flex flex-col justify-center">
       <Pause @pauseEvent = "togglePause"></Pause>
     </div>
@@ -196,6 +202,7 @@ import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
+import BuyChance from '../components/BuyChance.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 // import { useRouter } from 'vue-router'
@@ -203,6 +210,7 @@ import { animate, createSpring } from 'animejs';
 const $store = useStore()
 
 const startPanelTrans = ref(null)
+const buyChanceTrans = ref(null)
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 // 觸碰位置與玩家位置間，不移動的緩衝區間
@@ -731,9 +739,22 @@ const countdownSec = computed(() => {
   return result?result:3-sec.value
 })
 
+// ================================== watch ==================================
+
 watch(startPanelTrans, () => {
   if (startPanelTrans.value) {
     animate(startPanelTrans.value, {
+      translateY: [ 100, 0 ],
+      opacity: [ 0, 1 ],
+      delay: 0,
+      duration: 300,
+      ease: createSpring({ stiffness: 120 }),
+    })
+  }
+})
+watch(buyChanceTrans, () => {
+  if (buyChanceTrans.value) {
+    animate(buyChanceTrans.value, {
       translateY: [ 100, 0 ],
       opacity: [ 0, 1 ],
       delay: 0,

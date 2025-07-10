@@ -3,11 +3,13 @@
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
-    <div class="flex flex-1 justify-between">
-      <div class="relative w-[12%] m-5 bg-[#00000050] rounded-full p-2 aspect-square flex justify-center items-center">
+    <div v-if="$store.isLoaded" class="flex flex-1 justify-between">
+      <!-- pass -->
+      <div @click="getPass" class="relative w-[12%] m-5 bg-[#00000050] rounded-full p-2 aspect-square flex justify-center items-center pointer-events-auto">
         <img src="/images/zeus_pass.png" class="rotate-[-15deg]">
       </div>
-      <div class="relative w-[18%] h-[35%] m-5 bg-[#00000050] rounded-full p-2 flex justify-center items-center">
+      <!-- chance -->
+      <div @click="get3Chance" class="relative w-[18%] h-[35%] m-5 bg-[#00000050] rounded-full p-2 flex justify-center items-center pointer-events-auto">
         <div class="flex-1">
           <img src="/images/zeus_3chance.png" class="rotate-[-15deg]">
         </div>
@@ -28,14 +30,14 @@
       <p v-if="load_point >= 3">.</p>
     </div>
     <!-- Ready Zone -->
-    <div v-if="$store.isLoaded" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-[Inter,sans-serif] font-bold text-[12px]">
+    <div v-if="$store.isLoaded" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
       <div>
         <div class="my-5">Collect items, avoid bombs, score big, and climb the leaderboard!</div>
         <div class="my-5">But beware, as time ticks on, the challenge accelerates.</div>
         <div class="my-5">Top 30% on the leaderboard will qualify for rewards after the event ends.</div>
       </div>
       <div @click="Ready" class="btn-box btn-click">
-        <div class="strokeText " data-stroke="Ready">Ready</div>
+        <div class="strokeText" data-stroke="Ready">Ready</div>
       </div>
     </div>
 
@@ -61,6 +63,15 @@ let interval = ref<ReturnType<typeof setInterval> | null>(null);
 function Ready() {
   $store.isReady = true
   // console.log($store.isReady)
+}
+
+function getPass() {
+  console.log('getPass!')
+}
+
+function get3Chance() {
+  console.log('get3Chance!')
+  $store.isBuyChance = true
 }
 
 onMounted(() => {
@@ -93,7 +104,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .btn-box {
-  @apply font-[Inter,sans-serif] text-center my-[2px];
+  @apply text-center my-[2px] font-[800];
   @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
   @apply h-[60px] rounded-[8px] -z-1 relative pointer-events-auto;
   border: 1px solid black !important;

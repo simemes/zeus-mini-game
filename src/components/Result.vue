@@ -89,7 +89,7 @@ const displayedScore = computed(() => {
     return ($store.users_profile.highScore > $store.score)
       ? $store.users_profile.highScore
       : $store.score;
-  })
+})
 
 
 

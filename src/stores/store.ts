@@ -22,6 +22,7 @@ export const useStore = defineStore('store', {
     isPreloaded: false,
     resultLoaded : false,
     isStart: false,
+    isBuyChance: false,
     isResult: false,
     isPaused: false,
     knockOut: false,
