@@ -3,7 +3,7 @@
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
-    <div v-if="$store.isLoaded" class="flex flex-1 justify-between">
+    <div v-if="$store.isLoaded" class="flex flex-1 justify-between mt-6">
       <!-- pass -->
       <div @click="getPass" class="relative w-[12%] m-5 bg-[#00000050] rounded-full p-2 aspect-square flex justify-center items-center pointer-events-auto">
         <img src="/images/zeus_pass.png" class="rotate-[-15deg]">
