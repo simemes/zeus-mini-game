@@ -23,7 +23,7 @@
           <!-- 分數區 -->
           <div class="w-[37%] h-15 rounded-[13px] bg-[#C87637] border-[2px] border-black absolute top-0 left-[31.5%] flex justify-center items-center">
             <div class="w-[92%] h-[80%] rounded-[10px] bg-[#643B1B] text-center text-[32px] font-[Impact]">
-              {{$store.totalScore}}
+              {{$store.score}}
             </div>
           </div>
           <!-- 暫停按鈕區 -->
@@ -935,7 +935,7 @@ onMounted(async() => {
       // 得分
       } else if (['coin', 'gmove', 'hat', 'poseidon'].includes(type)) {
         AudioPlay('Score.mp3')
-        $store.totalScore += itemInfo!.scores
+        $store.score += itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '+' + itemInfo!.scores)
         ComboHit()
@@ -943,8 +943,8 @@ onMounted(async() => {
       } else if (type === 'thunder') {
         if($store.invincible) return
         AudioPlay('Descore.wav')
-        // console.log($store.totalScore + ' - ' + itemInfo!.scores + ' = ' + ($store.totalScore - itemInfo!.scores))
-        $store.totalScore = $store.totalScore <= itemInfo!.scores ? 0 : $store.totalScore - itemInfo!.scores
+        // console.log($store.score + ' - ' + itemInfo!.scores + ' = ' + ($store.score - itemInfo!.scores))
+        $store.score = $store.score <= itemInfo!.scores ? 0 : $store.score - itemInfo!.scores
         // 顯示於 UI
         showScoreTip(this, player.x, player.y - 200, '-' + itemInfo!.scores)
         comboCount.value = 0

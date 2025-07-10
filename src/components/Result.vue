@@ -28,11 +28,11 @@
         </div>
         <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
           <div>Score</div>
-          <div>{{ $store.totalScore || 0 }}</div>
+          <div>{{ $store.score || 0 }}</div>
         </div>
         <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
           <div>High Score</div>
-          <div>{{ ($store.highScore > $store.totalScore)?$store.highScore:$store.totalScore }}</div>
+          <div>{{ ($store.users_profile.highScore > $store.score)?$store.users_profile.highScore:$store.score }}</div>
         </div>
       </div>
       <!-- Share & Play Again -->
@@ -51,6 +51,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useStore } from '../stores/store'
+import axios from 'axios';
 const $store = useStore()
 // import { useRouter } from 'vue-router'
 // const router = useRouter()
@@ -71,7 +72,7 @@ function Share() {
 }
 
 function GoToStart() {
-  $store.totalScore = 0
+  $store.score = 0
   $store.isStart = false
   $store.isLoaded = false
   $store.resultLoaded = false
@@ -103,6 +104,24 @@ onMounted(async() => {
   // 預載入圖片
   await preloadImages(imageList);
   $store.resultLoaded = true; 
+
+  // 結束遊戲 (把結果送到server/ 還有另一種可能是玩家關掉 app 時)
+  // const url_finish = $store.api + 'games/finish';
+  // axios.post(url_finish, {
+  //   score: $store.score
+  // }, {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': `tma ${$store.token}`
+  //   }
+  // })
+  //   .then(response => {
+  //     console.log('post 結束遊戲:', response.data);
+  //   })
+  //   .catch(error => {
+  //     console.error('post 結束遊戲錯誤:', error);
+  //     console.error('錯誤訊息:', error.response?.data);
+  //   });
 })
 </script>
 

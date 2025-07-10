@@ -10,14 +10,15 @@
       <ItemPanel></ItemPanel>
     </div>
     <!-- btn -->
-    <button @click="GameStart" class="btn btn-click type1 pointer-events-auto">
+    <button @click="GameStart" class="btn btn-click type1 pointer-events-auto" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount">
       <div class="">Start</div>
-      <div class="text-[14px] text-black [text-shadow:none]">( {{ $store.thisRound }} / {{ $store.totalRounds }} )</div>
+      <div class="text-[14px] text-black [text-shadow:none]">( {{ $store.users_profile.todayPlayCount }} / {{ $store.users_profile.maxPlayCount }} )</div>
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import ItemPanel from '../components/ItemPanel.vue'
 import { useStore } from '../stores/store'
 const $store = useStore()
@@ -25,14 +26,23 @@ const emit = defineEmits(['startEvent'])
 
 // ============= 切換頁面 =============
 
-// 暫停按鈕
+// 開始按鈕
 function GameStart() {
+  if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+    console.warn('todayPlayCount greater than maxPlayCount')
+    return
+  }
   emit('startEvent')
 }
 // 關閉 start
 function Close() {
   $store.isReady = false
 }
+
+onMounted(() => {
+  // $store.users_profile.todayPlayCount = 1
+  // $store.users_profile.maxPlayCount = 2
+})
 
 </script>
 
@@ -53,5 +63,9 @@ function Close() {
 }
 .type1 {
   @apply max-w-[400px] w-[65%] h-[72px] text-[24px];
+}
+
+.disabled {
+  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
 }
 </style>
