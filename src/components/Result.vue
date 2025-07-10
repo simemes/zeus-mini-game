@@ -105,7 +105,7 @@ onMounted(async() => {
   await preloadImages(imageList);
   $store.resultLoaded = true; 
 
-  // 結束遊戲 (把結果送到server)
+  // 結束遊戲 (把結果送到server/ 還有另一種可能是玩家關掉 app 時)
   // const url_finish = $store.api + 'games/finish';
   // axios.post(url_finish, {
   //   score: $store.score
