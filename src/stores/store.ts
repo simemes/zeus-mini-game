@@ -8,7 +8,7 @@ export const useStore = defineStore('store', {
       highScore: 0,
       lastPlayedAt: 0
     },
-
+    user_id: null,
     score: 0,
     rank: 0,
     api: 'https://simm-dev-441009.de.r.appspot.com/api/v1/',

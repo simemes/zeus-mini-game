@@ -454,6 +454,8 @@ function changBackground(new_bg: string, scene: Phaser.Scene) {
 // ------------- 開始遊戲按鈕 -------------
 function activeGameStart() {
   $store.isStart = true
+  // 這裏是否就要向 server 丟 +1 ?
+  $store.users_profile.todayPlayCount += 1
   StartCountdown();
 }
 

@@ -7,14 +7,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { init,postEvent } from '@telegram-apps/sdk';
 import { useStore } from './stores/store'
 import Game from './components/Game.vue'
 import Result from './components/Result.vue'
-import axios from 'axios';
+// import axios from 'axios';
 const $store = useStore()
-const token = ref('')
+// const token = ref('')
 
 // 作業系統
 const getOS = () => {
@@ -54,6 +54,7 @@ onMounted(() => {
     console.log("[Telegram.WebApp] - user: ", user);
     console.log("經由", startParam, "推薦進來的");
     console.log("init_data: ", init_data);
+    $store.user_id = user.id
 
     // // 登入取得 token
     // const url_login = $store.api + 'users/login';

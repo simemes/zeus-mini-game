@@ -49,9 +49,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useStore } from '../stores/store'
-import axios from 'axios';
+import { shareURL } from '@telegram-apps/sdk';
+// import axios from 'axios';
 const $store = useStore()
 // import { useRouter } from 'vue-router'
 // const router = useRouter()
@@ -63,12 +64,33 @@ const imageList: string[] = [
   './images/pepe_in_chest.png',
 ];
 
-let btnIsDisabled = ref(true)
+// let btnIsDisabled = ref(true)
+
+const btnIsDisabled = computed(() => {
+  let result
+  // console.log($store.users_profile.todayPlayCount, $store.users_profile.maxPlayCount)
+  if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+    result = true
+  } else {
+    result = false
+  }
+  return result
+})
 
 function Share() {
-  console.log(btnIsDisabled)
-  btnIsDisabled.value = false
-  console.log(btnIsDisabled)
+  // console.log(btnIsDisabled)
+  // btnIsDisabled.value = false
+  // console.log(btnIsDisabled)
+
+  try {
+    const link = `https://t.me/SIMemes_bot?startapp=${$store.user_id}`
+    if (shareURL.isAvailable()) {
+      shareURL(link, '⚡️ let\'s play with zeus!');
+    }
+  }
+  catch (error) {
+    console.log("[Telegram.WebApp]: ", error);
+  }
 }
 
 function GoToStart() {
