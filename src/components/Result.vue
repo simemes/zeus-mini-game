@@ -20,20 +20,23 @@
     <div class="bg-white absolute top-0 left-0 w-full h-full object-cover -z-3 bg-[linear-gradient(to_bottom,_#074375_50%,_#002B55_100%)]"></div>
     <!-- 內容區 -->
     <div class="w-[70%] mx-auto h-full flex flex-col justify-center items-center">
+
       <!-- Rank & Score -->
-      <div class="flex-1 relative w-full flex flex-col justify-around items-center">
-        <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
-          <div>Ranking</div>
-          <div>{{ $store.rank || 0 }}</div>
+      <div class="flex-1 relative w-full flex flex-col justify-center items-center font-[900]">
+        <!-- score -->
+        <div class="w-[65%]">
+          <div class="text-[14px] font-[700]">Your current score</div>
+          <div class="bg-[#00000060] rounded-full text-[18px] my-1 py-1">
+            <div>{{ $store.score || 0 }}</div>
+          </div>
         </div>
-        <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
-          <div>Score</div>
-          <div>{{ $store.score || 0 }}</div>
+        <!-- high score -->
+        <div class="text-[#FFEB89] mt-3">
+          <div class="text-[14px] strokeText-2 font-[700]" data-stroke="Your highest score and rankings">Your highest score and rankings</div>
+          <div class="text-[18px] strokeText-2" :data-stroke="displayedScore">{{ displayedScore }}</div>
         </div>
-        <div class="bg-[#00000040] rounded-[8px] w-full p-2 mx-2 flex justify-between">
-          <div>High Score</div>
-          <div>{{ ($store.users_profile.highScore > $store.score)?$store.users_profile.highScore:$store.score }}</div>
-        </div>
+        <!-- high ranking -->
+        <div class="text-[12px] text-[#FFEB89] mb-3 font-[700]">You are in top {{ $store.rank || 0 }}%</div>
       </div>
       <!-- Share & Play Again -->
       <div @click="Share" class="btn-box btn-click">
@@ -43,7 +46,7 @@
         <div class="strokeText " data-stroke="Play Again">Play Again</div>
       </div>
       <!-- footer text -->
-      <div class="text-[11px] mb-5">
+      <div class="text-[11px] mb-5 font-[700]">
         Players who share will get 1 additional play for the day.
       </div>
     </div>
@@ -68,6 +71,8 @@ const imageList: string[] = [
 
 // let btnIsDisabled = ref(true)
 
+// ================================== computed ==================================
+
 const btnIsDisabled = computed(() => {
   let result
   // console.log($store.users_profile.todayPlayCount, $store.users_profile.maxPlayCount)
@@ -78,6 +83,17 @@ const btnIsDisabled = computed(() => {
   }
   return result
 })
+
+
+const displayedScore = computed(() => {
+    return ($store.users_profile.highScore > $store.score)
+      ? $store.users_profile.highScore
+      : $store.score;
+  })
+
+
+
+// ================================== function ==================================
 
 function Share() {
   // console.log(btnIsDisabled)
@@ -124,6 +140,8 @@ function preloadImages(imageUrls: string[]) {
   );
 }
 
+// ================================== onMounted ==================================
+
 onMounted(async() => {
   // $store.users_profile.todayPlayCount = 1
   // $store.users_profile.maxPlayCount = 1
@@ -165,7 +183,7 @@ onMounted(async() => {
 }
 
 .btn-box {
-  @apply font-[Inter,sans-serif] text-center my-[2px];
+  @apply text-center my-[2px] text-[#FFFFFF] font-[900];
   @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
   @apply h-[48px] w-full rounded-[8px] -z-1 relative pointer-events-auto;
   border: 1px solid black !important;
@@ -176,18 +194,28 @@ onMounted(async() => {
   touch-action: manipulation;
 }
 .disabled {
-  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
+  @apply bg-[linear-gradient(to_bottom,_#858191_50%,_#736F80_50%,_#858191_100%)] pointer-events-none text-[#9A95A7];
 }
 .btn-click {
   @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
 }
 .strokeText {
-  @apply relative top-[14px] w-full text-[14px] text-[#FFFFFF];
+  @apply relative top-[14px] w-full text-[14px];
 }
 .strokeText::before {
   content: attr(data-stroke);
   -webkit-text-stroke: 3px black;
   text-stroke: 3px black;
+  @apply absolute top-[0px] left-[0px] w-full -z-1;
+}
+
+.strokeText-2 {
+  @apply relative w-full;
+}
+.strokeText-2::before {
+  content: attr(data-stroke);
+  -webkit-text-stroke: 2.5px #A4510C;
+  text-stroke: 2.5px #A4510C;
   @apply absolute top-[0px] left-[0px] w-full -z-1;
 }
 </style>
