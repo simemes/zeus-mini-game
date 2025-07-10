@@ -7,13 +7,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { init,postEvent } from '@telegram-apps/sdk';
 import { useStore } from './stores/store'
 import Game from './components/Game.vue'
 import Result from './components/Result.vue'
 import axios from 'axios';
 const $store = useStore()
+const token = ref('')
 
 // 作業系統
 const getOS = () => {
@@ -53,30 +54,73 @@ onMounted(() => {
     console.log("[Telegram.WebApp] - user: ", user);
     console.log("經由", startParam, "推薦進來的");
     console.log("init_data: ", init_data);
-    // console.log("tg: ", tg);
 
-    const url = 'https://simm-dev-441009.de.r.appspot.com/api/v1/users/login';
-    const data = init_data
-    axios.post(url, data)
+    // 登入取得 token
+    const url_login = $store.api + 'users/login';
+    axios.post(url_login, {
+      data: init_data
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
       .then(response => {
-        console.log('回應資料:', response.data);
+        console.log('login 回應資料:', response.data);
+        $store.token = response.data.token
+        console.log('token: ', $store.token)
+
+        // 用 token 取得玩家 Profile
+        const url_user_profile = $store.api + 'users/profile';
+        axios.get(url_user_profile, {
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            console.log('get 玩家 Profile:', response.data);
+          })
+          .catch(error => {
+            console.error('get 玩家 Profile 錯誤:', error);
+          });
+
+        // 用 token 取得遊戲資訊 (highScore/ todayPlayCount/ maxPlayCount/ lastPlayedAt)
+        const url_games = $store.api + 'games';
+        axios.get(url_games, {
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            console.log('get 遊戲資訊:', response.data);
+            $store.users_profile = response.data
+          })
+          .catch(error => {
+            console.error('get 遊戲資訊錯誤:', error);
+          });
+
+        // 結束遊戲 (把結果送到server)
+        // const url_finish = $store.api + 'games/finish';
+        // axios.post(url_finish, {
+        //   score: 101
+        // }, {
+        //   headers: {
+        //     'Content-Type': 'application/json',
+        //     'Authorization': `tma ${$store.token}`
+        //   }
+        // })
+        //   .then(response => {
+        //     console.log('post 結束遊戲:', response.data);
+        //   })
+        //   .catch(error => {
+        //     console.error('post 結束遊戲錯誤:', error);
+        //     console.error('錯誤訊息:', error.response?.data);
+        //   });
+
       })
       .catch(error => {
-        console.error('請求錯誤:', error);
+        console.error('login 請求錯誤:', error);
       });
 
-
-    // axios.post(url, data, {
-    //   headers: {
-    //     Authorization: `tma ${token}`
-    //   }
-    // })
-    //   .then(response => {
-    //     console.log('回應資料:', response.data);
-    //   })
-    //   .catch(error => {
-    //     console.error('請求錯誤:', error);
-    //   });
 
   }
   catch (error) {
