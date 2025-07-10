@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
 import { useStore } from '../stores/store'
-import { shareURL } from '@telegram-apps/sdk';
+// import { shareURL } from '@telegram-apps/sdk';
 // import axios from 'axios';
 const $store = useStore()
 // import { useRouter } from 'vue-router'
@@ -82,15 +82,15 @@ function Share() {
   // btnIsDisabled.value = false
   // console.log(btnIsDisabled)
 
-  try {
-    const link = `https://t.me/SIMemes_bot?startapp=${$store.user_id}`
-    if (shareURL.isAvailable()) {
-      shareURL(link, '⚡️ let\'s play with zeus!');
-    }
-  }
-  catch (error) {
-    console.log("[Telegram.WebApp]: ", error);
-  }
+  // try {
+  //   const link = `https://t.me/SIMemes_bot?startapp=${$store.user_id}`
+  //   if (shareURL.isAvailable()) {
+  //     shareURL(link, '⚡️ let\'s play with zeus!');
+  //   }
+  // }
+  // catch (error) {
+  //   console.log("[Telegram.WebApp]: ", error);
+  // }
 }
 
 function GoToStart() {
