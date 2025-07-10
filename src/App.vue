@@ -12,6 +12,7 @@ import { init,postEvent } from '@telegram-apps/sdk';
 import { useStore } from './stores/store'
 import Game from './components/Game.vue'
 import Result from './components/Result.vue'
+import axios from 'axios';
 const $store = useStore()
 
 // 作業系統
@@ -42,19 +43,41 @@ const getOS = () => {
 
 onMounted(() => {
 
-  // 從 <script src="https://telegram.org/js/telegram-web-app.js"> 引入的 sdk
+  // 從 <script src="https://telegram.org/js/telegram-web-app.js?58"> 引入的 sdk
   // 目前抓 userinfo 只能從這裡
   try {
     const tg = (window as any).Telegram.WebApp;
     const user = tg.initDataUnsafe?.user;
-
-    // const init_data = tg.initData;
+    const init_data = tg.initData;
     const startParam = tg.initDataUnsafe?.start_param;
-
     console.log("[Telegram.WebApp] - user: ", user);
     console.log("經由", startParam, "推薦進來的");
-    // console.log("init_data: ", init_data);
+    console.log("init_data: ", init_data);
     // console.log("tg: ", tg);
+
+    const url = 'https://simm-dev-441009.de.r.appspot.com/api/v1/users/login';
+    const data = init_data
+    axios.post(url, data)
+      .then(response => {
+        console.log('回應資料:', response.data);
+      })
+      .catch(error => {
+        console.error('請求錯誤:', error);
+      });
+
+
+    // axios.post(url, data, {
+    //   headers: {
+    //     Authorization: `tma ${token}`
+    //   }
+    // })
+    //   .then(response => {
+    //     console.log('回應資料:', response.data);
+    //   })
+    //   .catch(error => {
+    //     console.error('請求錯誤:', error);
+    //   });
+
   }
   catch (error) {
     console.log("[Telegram.WebApp]: ", error);
