@@ -180,7 +180,7 @@
       <LoadPage></LoadPage>
     </div>
     <!-- StartPanel mask -->
-    <div v-if="!$store.isStart && $store.isReady" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
+    <div v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
     <!-- Start -->
     <div v-if="!$store.isStart && $store.isReady" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>
@@ -188,6 +188,10 @@
     <!-- BuyChance -->
     <div v-if="$store.isBuyChance" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
       <BuyChance @startEvent = "activeGameStart"></BuyChance>
+    </div>
+    <!-- BuyPass -->
+    <div v-if="$store.isBuyPass" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
+      <BuyPass @startEvent = "activeGameStart"></BuyPass>
     </div>
     <!-- Pause -->
     <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full flex flex-col justify-center">
@@ -203,6 +207,7 @@ import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
 import BuyChance from '../components/BuyChance.vue'
+import BuyPass from '../components/BuyPass.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 // import { useRouter } from 'vue-router'

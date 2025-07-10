@@ -66,11 +66,10 @@ function Ready() {
 }
 
 function getPass() {
-  console.log('getPass!')
+  $store.isBuyPass = true
 }
 
 function get3Chance() {
-  console.log('get3Chance!')
   $store.isBuyChance = true
 }
 
