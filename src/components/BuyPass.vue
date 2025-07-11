@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- btn -->
-    <div v-if="!$store.isPassTime" @click="Purchase" class="btn-box btn-click" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount">
+    <div v-if="!$store.isPassTime" @click="Purchase" class="btn-box btn-click">
       <div class="strokeText" data-stroke="$ 1">$ 1</div>
     </div>
     <!-- text -->
