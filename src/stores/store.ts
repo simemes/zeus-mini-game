@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useStore = defineStore('store', {
   state: () => ({
     users_profile: {
-      todayPlayCount: 1,
+      todayPlayCount: 0,
       maxPlayCount: 1,
       highScore: 0,
       lastPlayedAt: 0
