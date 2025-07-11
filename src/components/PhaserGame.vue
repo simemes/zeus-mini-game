@@ -803,6 +803,9 @@ onMounted(async() => {
       create,
       update,
     },
+    audio: {
+      disableWebAudio: false
+    }
   };
 
   game = new Phaser.Game(config);
@@ -838,6 +841,13 @@ onMounted(async() => {
   // -------------------------- *** create *** --------------------------
   function create(this: Phaser.Scene) {
     // QKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
+
+    this.input.once('pointerdown', () => {
+      const sound = this.sound as Phaser.Sound.WebAudioSoundManager;
+        if (sound.context && sound.context.state === 'suspended') {
+          sound.context.resume();
+        }
+    });
 
     // background
     changBackground("bg", this)
