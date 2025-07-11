@@ -64,12 +64,13 @@ const imageUrls = [
   './images/zeus.png',
 ]
 
-const audioUrls = [
-  '/audio/bgm.mp3',
-  '/audio/click.wav',
-]
+// const audioUrls = [
+//   '/audio/bgm.mp3',
+//   '/audio/click.wav',
+// ]
 
-const total = imageUrls.length + audioUrls.length
+// const total = imageUrls.length + audioUrls.length
+const total = imageUrls.length
 let loaded = 0
 
 function updateProgress() {
@@ -92,27 +93,27 @@ function preloadImages() {
   })))
 }
 
-function preloadAudio() {
-  return Promise.all(audioUrls.map(url => new Promise<void>((resolve) => {
-    const audio = new Audio()
-    audio.src = url
-    audio.oncanplaythrough = () => {
-      updateProgress()
-      resolve()
-    }
-    audio.onerror = () => {
-      updateProgress()
-      resolve()
-    }
-  })))
-}
+// function preloadAudio() {
+//   return Promise.all(audioUrls.map(url => new Promise<void>((resolve) => {
+//     const audio = new Audio()
+//     audio.src = url
+//     audio.oncanplaythrough = () => {
+//       updateProgress()
+//       resolve()
+//     }
+//     audio.onerror = () => {
+//       updateProgress()
+//       resolve()
+//     }
+//   })))
+// }
 
 // ============= 切換頁面 =============
 
 onMounted(async() => {
 
   await preloadImages()
-  await preloadAudio()
+  // await preloadAudio()
   $store.isLoaded = true
   console.log('🔥[preload]!')
   router.push('/game')
