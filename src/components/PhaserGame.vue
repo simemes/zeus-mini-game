@@ -942,6 +942,8 @@ onMounted(async() => {
         AudioPlay('Bomb.mp3')
         smokeAnim(this);
         comboCount.value = 0
+        // 解決被炸後，這一秒內 itemInfo 改變（但照理講不會改變，因為碰不到任何東西），導致沒有 delay 參數而之後的閃爍停不下來的問題
+        const delaySec = itemInfo?.delay ?? 1
         // 暈眩倒數
         knockoutTimeout.value = setTimeout(() => {
           $store.knockOut = false
@@ -953,7 +955,7 @@ onMounted(async() => {
             alpha: { from: 1, to: 0 },
             duration: 100,
             yoyo: true,
-            repeat: -1 // 無限閃爍
+            repeat: 3 // 閃爍 3 下，避免閃爍停不下來的問題
           });
 
           knockoutCoolingTimeout.value = setTimeout(() => {
@@ -963,7 +965,7 @@ onMounted(async() => {
               player.alpha = 1; // 恢復可見
             }
           }, 1000)
-        }, itemInfo!.delay * 1000);
+        }, delaySec * 1000);
         
       // 加時
       } else if (['clock', 'clock_gold'].includes(type)) {
