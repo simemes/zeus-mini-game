@@ -3,13 +3,15 @@
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
-    <div v-if="$store.isLoaded" class="flex flex-1 justify-between mt-6">
+    <div v-if="$store.isLoaded" class="w-full flex flex-1 justify-between mt-6">
       <!-- pass -->
-      <div @click="getPass" class="relative w-[12%] m-5 bg-[#00000050] rounded-full p-2 aspect-square flex justify-center items-center pointer-events-auto">
-        <img src="/images/zeus_pass.png" class="rotate-[-15deg]">
+      <div class="w-[12%] relative m-5">
+        <div @click="getPass" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
+          <img src="/images/zeus_pass.png" class="rotate-[-15deg] w-[80%]">
+        </div>
       </div>
       <!-- chance -->
-      <div @click="get3Chance" class="relative w-[18%] h-[35%] m-5 bg-[#00000050] rounded-full p-2 flex justify-center items-center pointer-events-auto">
+      <div @click="get3Chance" class="relative w-[18%] h-[31%] m-5 bg-[#00000050] rounded-full p-3 flex justify-center items-center pointer-events-auto">
         <div class="flex-1">
           <img src="/images/zeus_3chance.png" class="rotate-[-15deg]">
         </div>
