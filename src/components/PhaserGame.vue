@@ -105,7 +105,8 @@
         class="absolute top-[50%] right-[5px] w-[10%] h-full"
       >
         <div class="absolute rounded-full w-[100%] aspect-square" :class="{'border-[#00000030] border-[2.5px] box-border' : invincibleCircle < 180}"></div>
-        <div @touchstart="ActiveInvincible" class="absolute bg-[#00000020] rounded-full p-[10%] pointer-events-auto">
+        <div @touchstart.passive="ActiveInvincible" class="absolute bg-[#00000020] rounded-full p-[10%] pointer-events-auto">
+        <!-- <div @touchstart="ActiveInvincible" class="absolute bg-[#00000020] rounded-full p-[10%] pointer-events-auto"> -->
           <!-- 白邊旋轉層 -->
           <svg
             v-if="invincibleCircle < 180"
@@ -496,17 +497,17 @@ function StartClock() {
       if (clockSec.value === 40) {
         $store.stage = 2
         audioMap['BGM.mp3'].playbackRate = 1.4
-        console.log('STAGE 2!')
+        // console.log('STAGE 2!')
       }
       // STAGE 3
       if (clockSec.value === 20) {
         $store.stage = 3
         audioMap['BGM.mp3'].playbackRate = 1.8
-        console.log('STAGE 3!')
+        // console.log('STAGE 3!')
       }
       // 時間結束
       if (clockSec.value === 0) {
-        console.log('Time\'s Up!')
+        // console.log('Time\'s Up!')
         AudioPause('BGM.mp3')
         AudioPlay('Completed.wav')
         clearInterval(interval);
@@ -691,6 +692,7 @@ function ComboHit() {
 
 // ----------- 啟動無敵 -----------
 function ActiveInvincible() {
+  // console.log("⭐️ ActiveInvincible!");
   if(!$store.canInvincible) return
   $store.invincible = true
   $store.canInvincible = false
@@ -717,7 +719,9 @@ function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0
   const audio = audioMap[audio_name];
   audio.currentTime = 0;
   audio.playbackRate = rate; // << 加速播放
-  audio.play();
+  audio.play().catch((e) => {
+    console.error('Audio play failed:', e);
+  });;
 }
 // ----------- 暫停音效 -----------
 function AudioPause(audio_name: string) {
@@ -873,7 +877,6 @@ onMounted(async() => {
       const currentTime = pointer.downTime; // Phaser 提供的按下時間
       const timeSinceLastTap = currentTime - lastTapTime.value;
       if (timeSinceLastTap < 300) { // 小於 300ms 就當作雙擊
-        console.log("🚀 Double Tap!");
         ActiveInvincible()
       }
       lastTapTime.value = currentTime;

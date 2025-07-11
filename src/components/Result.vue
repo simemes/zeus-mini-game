@@ -22,7 +22,7 @@
     <div class="w-[70%] mx-auto h-full flex flex-col justify-center items-center">
 
       <!-- Rank & Score -->
-      <div class="flex-1 relative w-full flex flex-col justify-center items-center font-[900]">
+      <div class="relative w-full flex flex-col justify-center items-center font-[900]">
         <!-- score -->
         <div class="w-[65%]">
           <div class="text-[14px] font-[700]">Your current score</div>
@@ -54,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useStore } from '../stores/store'
 // import { shareURL } from '@telegram-apps/sdk';
 // import axios from 'axios';
@@ -69,20 +69,20 @@ const imageList: string[] = [
   './images/pepe_in_chest.png',
 ];
 
-// let btnIsDisabled = ref(true)
+let btnIsDisabled = ref(true)
 
 // ================================== computed ==================================
 
-const btnIsDisabled = computed(() => {
-  let result
-  // console.log($store.users_profile.todayPlayCount, $store.users_profile.maxPlayCount)
-  if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
-    result = true
-  } else {
-    result = false
-  }
-  return result
-})
+// const btnIsDisabled = computed(() => {
+//   let result
+//   // console.log($store.users_profile.todayPlayCount, $store.users_profile.maxPlayCount)
+//   if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+//     result = true
+//   } else {
+//     result = false
+//   }
+//   return result
+// })
 
 
 const displayedScore = computed(() => {
@@ -96,9 +96,9 @@ const displayedScore = computed(() => {
 // ================================== function ==================================
 
 function Share() {
-  // console.log(btnIsDisabled)
-  // btnIsDisabled.value = false
-  // console.log(btnIsDisabled)
+  console.log(btnIsDisabled)
+  btnIsDisabled.value = false
+  console.log(btnIsDisabled)
 
   // try {
   //   const link = `https://t.me/SIMemes_bot?startapp=${$store.user_id}`

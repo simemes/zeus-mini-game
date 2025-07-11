@@ -10,13 +10,14 @@
       <ItemPanel></ItemPanel>
     </div>
     <!-- btn -->
-    <div @click="GameStart" class="btn-box btn-click" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount">
+    <!-- <div @click="GameStart" class="btn-box btn-click" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount"> -->
+    <div @click="GameStart" class="btn-box btn-click">
       <div class="strokeText " data-stroke="Start">Start</div>
       <div class="flex justify-center my-1">
-        <div class="w-[10%] relative mx-1">
+        <div class="w-[10%] relative flex items-center justify-center">
           <img src="/images/zeus_3chance.png" class="rotate-[-15deg]">
         </div>
-        <div class="w-[10%] relative">
+        <div class="w-[20%] relative tracking-widest">
           <div class="play-count" :data-stroke="playCount">{{ playCount }}</div>
         </div>
       </div>
@@ -36,10 +37,10 @@ const emit = defineEmits(['startEvent'])
 
 // 開始按鈕
 function GameStart() {
-  if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
-    console.warn('todayPlayCount greater than maxPlayCount')
-    return
-  }
+  // if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+  //   console.warn('todayPlayCount greater than maxPlayCount')
+  //   return
+  // }
   emit('startEvent')
 }
 // 關閉 start
