@@ -106,7 +106,6 @@
       >
         <div class="absolute rounded-full w-[100%] aspect-square" :class="{'border-[#00000030] border-[2.5px] box-border' : invincibleCircle < 180}"></div>
         <div @touchstart.passive="ActiveInvincible" class="absolute bg-[#00000020] rounded-full p-[10%] pointer-events-auto">
-        <!-- <div @touchstart="ActiveInvincible" class="absolute bg-[#00000020] rounded-full p-[10%] pointer-events-auto"> -->
           <!-- 白邊旋轉層 -->
           <svg
             v-if="invincibleCircle < 180"
@@ -700,13 +699,13 @@ function ActiveInvincible() {
   const interval = setInterval(() => {
     invincibleCircle.value -= 9
     if (invincibleCircle.value <= 0) {
+      invincibleCircle.value = 180
       clearInterval(interval)
     }
   }, 100);
   // 2 秒後重置無敵狀態
   invincibleTimeout.value = setTimeout(() => {
     $store.invincible = false
-    invincibleCircle.value = 180
   }, 2000);
 }
 

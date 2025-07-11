@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 
 export const useStore = defineStore('store', {
   state: () => ({
+    // server related
     users_profile: {
       todayPlayCount: 0,
       maxPlayCount: 1,
@@ -13,7 +14,8 @@ export const useStore = defineStore('store', {
     rank: 0,
     api: 'https://simm-dev-441009.de.r.appspot.com/api/v1/',
     token: '',
-
+    passLeft: 30,
+    // non-server related
     stage: 1,
     stageTime: 60,
     fortuneType: 0,
@@ -25,7 +27,6 @@ export const useStore = defineStore('store', {
     isBuyChance: false,
     isBuyPass: false,
     isPassTime: false,
-    passLeft: 30,
     isResult: false,
     isPaused: false,
     knockOut: false,
