@@ -202,7 +202,7 @@
 
 <script lang="ts" setup>
 import { onMounted, onBeforeUnmount, ref, computed, watch } from "vue";
-import Phaser from "phaser";
+// import Phaser from "phaser";
 import { useStore } from '../stores/store'
 import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
@@ -210,8 +210,8 @@ import BuyChance from '../components/BuyChance.vue'
 import BuyPass from '../components/BuyPass.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
-// import { useRouter } from 'vue-router'
-// const router = useRouter()
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const $store = useStore()
 
 const startPanelTrans = ref(null)
@@ -733,7 +733,7 @@ function AudioPause(audio_name: string) {
 // ------------- 跳去 result 頁面 -------------
 function GotoResult() {
   resultTimeout.value = setTimeout(() => {
-    // router.push('/result')
+    router.push('/result')
     $store.isResult = true
   }, 3000);
 }

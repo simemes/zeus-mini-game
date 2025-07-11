@@ -1,17 +1,17 @@
 <template>
-  <!-- <div class="w-full h-full flex items-center justify-center"><router-view /></div> -->
-  <div class="w-full h-full flex items-center justify-center">
+  <div class="w-full h-full flex items-center justify-center"><router-view /></div>
+  <!-- <div class="w-full h-full flex items-center justify-center">
     <Game v-if="!$store.isResult"></Game>
     <Result v-if="$store.isResult"></Result>
-  </div>
+  </div> -->
 </template>
 
 <script setup lang="ts">
 import { onMounted } from 'vue';
 import { init,postEvent } from '@telegram-apps/sdk';
 import { useStore } from './stores/store'
-import Game from './components/Game.vue'
-import Result from './components/Result.vue'
+// import Game from './components/Game.vue'
+// import Result from './components/Result.vue'
 // import axios from 'axios';
 const $store = useStore()
 // const token = ref('')

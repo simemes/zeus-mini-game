@@ -59,8 +59,8 @@ import { useStore } from '../stores/store'
 // import { shareURL } from '@telegram-apps/sdk';
 // import axios from 'axios';
 const $store = useStore()
-// import { useRouter } from 'vue-router'
-// const router = useRouter()
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 // 預載入圖片
 const imageList: string[] = [
@@ -121,7 +121,7 @@ function GoToStart() {
   $store.stageTime = 60
   $store.canInvincible = false
   $store.invincible = false
-  // router.push('/')
+  router.push('/')
 }
 
 // 預載入圖片

@@ -25,12 +25,12 @@
     <img src="/images/zeus_drop_logo.png" class="flex-4 w-[60%] object-contain">
 
     <!-- Loading -->
-    <div v-if="!$store.isLoaded" class="flex-1 flex load-text font-[Inter,sans-serif] font-bold text-[20px] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000]">
+    <!-- <div v-if="!$store.isLoaded" class="flex-1 flex load-text font-[Inter,sans-serif] font-bold text-[20px] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000]">
       <p>Loading</p>
       <p v-if="load_point >= 1">.</p>
       <p v-if="load_point >= 2">.</p>
       <p v-if="load_point >= 3">.</p>
-    </div>
+    </div> -->
     <!-- Ready Zone -->
     <div v-if="$store.isLoaded" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
       <div>
