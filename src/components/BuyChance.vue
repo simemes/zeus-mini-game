@@ -15,7 +15,7 @@
     <!-- chance text -->
     <div class="strokeText-2" data-stroke="Chance: 3">Chance: 3</div>
     <!-- btn -->
-    <div @click="Purchase" class="btn-box btn-click" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount">
+    <div @click="Purchase" class="btn-box btn-click">
       <div class="strokeText " data-stroke="Purchase for ★ 24">Purchase for ★ 24</div>
     </div>
 
@@ -33,6 +33,8 @@ const emit = defineEmits(['startEvent'])
 // 開始按鈕
 function Purchase() {
   console.log('Purchase!')
+  $store.users_profile.maxPlayCount += 3
+  $store.isBuyChance = false
 }
 // 關閉 BuyChance
 function Close() {

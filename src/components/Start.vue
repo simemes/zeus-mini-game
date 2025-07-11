@@ -37,10 +37,13 @@ const emit = defineEmits(['startEvent'])
 
 // 開始按鈕
 function GameStart() {
-  // if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
-  //   console.warn('todayPlayCount greater than maxPlayCount')
-  //   return
-  // }
+  if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+    console.warn('todayPlayCount greater than maxPlayCount')
+    // 跳 buyChance, 關 start
+    $store.isBuyChance = true
+    $store.isReady = false
+    return
+  }
   emit('startEvent')
 }
 // 關閉 start
