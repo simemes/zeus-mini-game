@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
 import tailwindcss from '@tailwindcss/vite'
+// import obfuscatorPlugin from "vite-plugin-javascript-obfuscator";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,7 +12,16 @@ export default defineConfig({
     legacy({
       targets: ["ie>=11"],
       additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
-    })
+    }),
+    // obfuscatorPlugin({
+    //   include: ["src/path/to/file.js", "path/anyjs/**/*.js", /foo.js$/],
+    //   exclude: [/node_modules/],
+    //   apply: "build",
+    //   debugger: true,
+    //   options: {
+    //     debugProtection: true,
+    //   },
+    // }),
   ],
   base: './',
   server: {
