@@ -16,6 +16,8 @@ export const useStore = defineStore('store', {
     token: '',
     passLeft: 30,
     // non-server related
+    device: '',
+    isMobile: false,
     stage: 1,
     stageTime: 60,
     fortuneType: 0,

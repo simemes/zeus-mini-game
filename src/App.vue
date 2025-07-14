@@ -110,15 +110,18 @@ onMounted(() => {
     console.log("[Telegram.WebApp]: ", error);
   }
 
+  $store.device = getOS()
+  console.log("作業系統是:", $store.device);
+  // alert($store.device)
   try {
     // 初始化 @telegram-apps/sdk-vue
     init();
     postEvent('web_app_expand')
     postEvent('web_app_toggle_orientation_lock', { locked: true })
     // 若是 mobile 就滿版
-    if (getOS() == 'iOS' || getOS() == 'Android' || getOS() == 'Windows Phone' || getOS() == 'iPadOS') {
+    if ($store.device == 'iOS' || $store.device == 'Android' || $store.device == 'Windows Phone' || $store.device == 'iPadOS') {
       postEvent('web_app_request_fullscreen')
-      console.log("作業系統是:", getOS(), " web_app_request_fullscreen");
+      $store.isMobile = true
     }
   } catch (error) {
     console.log('[telegram-apps/sdk]: ',  error);

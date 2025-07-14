@@ -5,7 +5,7 @@
       <!-- bg -->
       <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
 
-      <div class="w-full h-full flex flex-col justify-center items-center">
+      <div v-if="$store.isMobile" class="w-full h-full flex flex-col justify-center items-center">
 
         <!-- zeus_drop_logo -->
          <div class="flex flex-4 w-[60%]">
@@ -17,6 +17,10 @@
           <p>Loading ... {{ progress }}%</p>
         </div>
 
+      </div>
+
+      <div v-if="!$store.isMobile" class="w-[80%] h-full mx-auto flex flex-col justify-center items-center">
+        <div class="strokeText" data-stroke="For better gaming experience, please switch to the telegram mobile app.">For better gaming experience, please switch to the telegram mobile app.</div>
       </div>
 
     </div>
@@ -111,16 +115,26 @@ function preloadImages() {
 // ============= 切換頁面 =============
 
 onMounted(async() => {
-
-  await preloadImages()
-  // await preloadAudio()
-  $store.isLoaded = true
-  console.log('🔥[preload]!')
-  router.push('/game')
+  if($store.isMobile) {
+    await preloadImages()
+    // await preloadAudio()
+    $store.isLoaded = true
+    console.log('🔥[preload]!')
+    router.push('/game')
+  }
   
 })
 
 </script>
 
 <style scoped>
+.strokeText {
+  @apply relative w-full text-[16px] text-[#FFFFFF] z-1 font-[800];
+}
+.strokeText::before {
+  content: attr(data-stroke);
+  -webkit-text-stroke: 2.5px black;
+  text-stroke: 2.5px black;
+  @apply absolute top-[0px] left-[0px] w-full -z-1;
+}
 </style>
