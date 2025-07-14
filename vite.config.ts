@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
 import tailwindcss from '@tailwindcss/vite'
-// import javascriptObfuscator from 'javascript-obfuscator'
+import javascriptObfuscator from 'javascript-obfuscator'
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -14,28 +14,28 @@ export default defineConfig({
       additionalLegacyPolyfills: ["regenerator-runtime/runtime"],
     }),
     // 使用 javascript-obfuscator'
-    // {
-    //   name: 'obfuscator',
-    //   generateBundle(_options, bundle) {
-    //     for (const fileName of Object.keys(bundle)) {
-    //       if (fileName.endsWith('.js')) {
-    //         const chunk = bundle[fileName]
-    //         if (chunk.type === 'chunk') {
-    //           const obfuscated = javascriptObfuscator.obfuscate(chunk.code, {
-    //             compact: true,
-    //             controlFlowFlattening: true,
-    //             controlFlowFlatteningThreshold: 1,
-    //             stringArray: true,
-    //             stringArrayThreshold: 1,
-    //             renameGlobals: true,
-    //             debugProtection: true,
-    //           })
-    //           chunk.code = obfuscated.getObfuscatedCode()
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
+    {
+      name: 'obfuscator',
+      generateBundle(_options, bundle) {
+        for (const fileName of Object.keys(bundle)) {
+          if (fileName.endsWith('.js')) {
+            const chunk = bundle[fileName]
+            if (chunk.type === 'chunk') {
+              const obfuscated = javascriptObfuscator.obfuscate(chunk.code, {
+                compact: true,
+                controlFlowFlattening: true,
+                controlFlowFlatteningThreshold: 1,
+                stringArray: true,
+                stringArrayThreshold: 1,
+                renameGlobals: true,
+                // debugProtection: true,
+              })
+              chunk.code = obfuscated.getObfuscatedCode()
+            }
+          }
+        }
+      }
+    }
   ],
   base: './',
   server: {
