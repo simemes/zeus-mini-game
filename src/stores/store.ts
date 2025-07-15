@@ -22,6 +22,7 @@ export const useStore = defineStore('store', {
     stageTime: 60,
     fortuneType: 0,
     isReady: false,
+    loadingProgress: 0,
     isPreloaded: false,
     resultLoaded : false,
     isStart: false,
