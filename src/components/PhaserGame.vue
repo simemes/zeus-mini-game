@@ -207,7 +207,7 @@ import BuyPass from '../components/BuyPass.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 import { useRouter } from 'vue-router'
-import canAutoPlay from 'can-autoplay';
+// import canAutoPlay from 'can-autoplay';
 const router = useRouter()
 const $store = useStore()
 
