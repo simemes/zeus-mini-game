@@ -1,8 +1,4 @@
 <template>
-  <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
-  <!-- <transition leave-active-class="transition-opacity duration-100 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
-    <div v-if="!$store.isPreloaded" class="absolute w-full h-full bg-black z-10"></div>
-  </transition> -->
   <div>
     <!-- UI -->
     <div
@@ -182,7 +178,7 @@
     <!-- StartPanel mask -->
     <div v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
     <!-- Start -->
-    <div v-if="!$store.isStart && $store.isReady" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
+    <div v-if="!$store.isStart && $store.isReady && $store.isPreloaded" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>
     </div>
     <!-- BuyChance -->
@@ -256,15 +252,6 @@ const imageList: string[] = [
   './images/time_bar.png',
   './images/zeus_drop_logo.png',
   './images/zeus.png',
-];
-// 預載入音效
-const audioList: string[] = [
-  './sounds/Score.mp3',
-  './sounds/Descore.mp3',
-  './sounds/BGM.mp3',
-  './sounds/Bomb.mp3',
-  './sounds/Completed.mp3',
-  './sounds/TimeCountdown.mp3'
 ];
 // Stage 1、2、3 itemList settings
 const itemList1 = [
@@ -454,20 +441,6 @@ function preloadImages(imageUrls: string[]) {
     )
   );
 }
-// function preloadAudios(audioUrls: string[]) {
-//   console.log("[zeus]: preloadAudios from Home ...")
-//   return Promise.all(
-//     audioUrls.map(
-//       (src) =>
-//         new Promise((resolve, reject) => {
-//           const audio = new Audio();
-//           audio.src = src;
-//           audio.oncanplaythrough = resolve;
-//           audio.onerror = reject;
-//         })
-//     )
-//   );
-// }
 
 // ------------- 背景響應式調整 -------------
 function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
@@ -738,18 +711,6 @@ function ActiveInvincible() {
 }
 
 // ----------- 播放音效 -----------
-// function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0) {
-//   if (!audioMap[audio_name]) {
-//     audioMap[audio_name] = new Audio('./sounds/' + audio_name);
-//     audioMap[audio_name].loop = loop;
-//   }
-//   const audio = audioMap[audio_name];
-//   audio.currentTime = 0;
-//   audio.playbackRate = rate; // << 加速播放
-//   audio.play().catch((e) => {
-//     console.error('Audio play failed: ', audio_name, e);
-//   });
-// }
 function AudioPlay(audio_name: string, loop = false, rate = 1.0) {
   
   console.log("AudioPlay(" + audio_name + ")")
@@ -836,7 +797,6 @@ watch(buyChanceTrans, () => {
 onMounted(async() => {
 
   // type CanAutoplayResult = { result: boolean; error?: any }
-  
   // canAutoPlay.audio().then(({ result, error }: CanAutoplayResult) => {
   //   if (result) {
   //     console.log('✅ 可以自動播放音訊')
@@ -844,10 +804,9 @@ onMounted(async() => {
   //     console.warn('❌ 無法自動播放音訊，需要用戶觸控', error)
   //   }
   // })
+  
   // 預載入圖片
   await preloadImages(imageList);
-  // await preloadAudios(audioList);
-  $store.isPreloaded = true;
 
   if (!gameContainer.value) return;
 
@@ -913,6 +872,17 @@ onMounted(async() => {
     this.load.audio('Bomb.mp3', './sounds/Bomb.mp3')
     this.load.audio('Completed.mp3', './sounds/Completed.mp3')
     this.load.audio('TimeCountdown.mp3', './sounds/TimeCountdown.mp3')
+
+    // ======== 加載進度事件 ========
+    this.load.on('progress', (value: number) => {
+      console.log(`[zeus] 預載進度：${Math.floor(value * 100)}%`)
+      $store.loadingProgress = Math.floor(value * 100)
+    })
+    // 確認載入完成
+    this.load.on('complete', () => {
+      console.log('[zeus] 資源載入完成')
+      $store.isPreloaded = true;
+    })
   }
 
   // -------------------------- *** create *** --------------------------
