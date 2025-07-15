@@ -211,6 +211,7 @@ import BuyPass from '../components/BuyPass.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 import { useRouter } from 'vue-router'
+import canAutoPlay from 'can-autoplay';
 const router = useRouter()
 const $store = useStore()
 
@@ -779,6 +780,16 @@ watch(buyChanceTrans, () => {
 // ================================== onMounted ==================================
 
 onMounted(async() => {
+
+  type CanAutoplayResult = { result: boolean; error?: any }
+  
+  canAutoPlay.audio().then(({ result, error }: CanAutoplayResult) => {
+    if (result) {
+      console.log('✅ 可以自動播放音訊')
+    } else {
+      console.warn('❌ 無法自動播放音訊，需要用戶觸控', error)
+    }
+  })
   // 預載入圖片
   await preloadImages(imageList);
   $store.isPreloaded = true; 

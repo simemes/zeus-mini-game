@@ -16,6 +16,7 @@
     "@vitejs/plugin-legacy": "^6.1.1",
     "animejs": "^4.0.2",
     "axios": "^1.10.0",
+    "can-autoplay": "^3.0.2",
     "firebase": "^11.10.0",
     "phaser": "^3.90.0",
     "pinia": "^3.0.3",
@@ -24,6 +25,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@types/can-autoplay": "^3.0.5",
     "@vitejs/plugin-vue": "^5.2.3",
     "@vue/tsconfig": "^0.7.0",
     "javascript-obfuscator": "^4.1.1",
