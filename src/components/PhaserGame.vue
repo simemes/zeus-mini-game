@@ -257,6 +257,15 @@ const imageList: string[] = [
   './images/zeus_drop_logo.png',
   './images/zeus.png',
 ];
+// 預載入音效
+const audioList: string[] = [
+  './sounds/Score.mp3',
+  './sounds/Descore.mp3',
+  './sounds/BGM.mp3',
+  './sounds/Bomb.mp3',
+  './sounds/Completed.mp3',
+  './sounds/TimeCountdown.mp3'
+];
 // Stage 1、2、3 itemList settings
 const itemList1 = [
   // 得分 - weight 大
@@ -378,7 +387,7 @@ const itemListCoin3 = [
   { key: 'coin', scale: 0.15, speed: [900, 2500], weight: 5, scores: 1500, delay: 0, plus_time: 0 }
 ];
 
-let game: Phaser.Game | null = null;
+let game = ref<Phaser.Game | null>(null);
 let resultTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 let timerEvent = ref<Phaser.Time.TimerEvent | null>(null);
 let fortuneTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
@@ -445,6 +454,20 @@ function preloadImages(imageUrls: string[]) {
     )
   );
 }
+// function preloadAudios(audioUrls: string[]) {
+//   console.log("[zeus]: preloadAudios from Home ...")
+//   return Promise.all(
+//     audioUrls.map(
+//       (src) =>
+//         new Promise((resolve, reject) => {
+//           const audio = new Audio();
+//           audio.src = src;
+//           audio.oncanplaythrough = resolve;
+//           audio.onerror = reject;
+//         })
+//     )
+//   );
+// }
 
 // ------------- 背景響應式調整 -------------
 function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
@@ -479,7 +502,7 @@ function activeReady() {
 
 // ------------- 預備三秒後啟動 -------------
 function StartCountdown() {
-  AudioPlay('TimeCountdown.wav')
+  AudioPlay('TimeCountdown.mp3')
   const interval = setInterval(() => {
     sec.value++;
     if (sec.value === 3) {
@@ -513,7 +536,7 @@ function StartClock() {
       if (clockSec.value === 0) {
         // console.log('Time\'s Up!')
         AudioPause('BGM.mp3')
-        AudioPlay('Completed.wav')
+        AudioPlay('Completed.mp3')
         clearInterval(interval);
       }
     }
@@ -525,8 +548,8 @@ function togglePause() {
   if(gameStart.value && clockSec.value != 0) {
     $store.isPaused = !$store.isPaused;
     // 確保遊戲存在且目前場景是活躍狀態
-    if (game && game.scene.isActive('default')) {
-      const scene = game.scene.getScene('default');
+    if (game && game.value?.scene.isActive('default')) {
+      const scene = game.value?.scene.getScene('default');
       // 暫停狀態
       if ($store.isPaused) {
         console.log('Pause')
@@ -715,17 +738,48 @@ function ActiveInvincible() {
 }
 
 // ----------- 播放音效 -----------
-function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0) {
-  if (!audioMap[audio_name]) {
-    audioMap[audio_name] = new Audio('./sounds/' + audio_name);
-    audioMap[audio_name].loop = loop;
+// function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0) {
+//   if (!audioMap[audio_name]) {
+//     audioMap[audio_name] = new Audio('./sounds/' + audio_name);
+//     audioMap[audio_name].loop = loop;
+//   }
+//   const audio = audioMap[audio_name];
+//   audio.currentTime = 0;
+//   audio.playbackRate = rate; // << 加速播放
+//   audio.play().catch((e) => {
+//     console.error('Audio play failed: ', audio_name, e);
+//   });
+// }
+function AudioPlay(audio_name: string, loop = false, rate = 1.0) {
+  
+  console.log("AudioPlay(" + audio_name + ")")
+  const scene = game.value?.scene.scenes[0]
+  if (!scene) {
+    console.log("!scene")
+    return
   }
-  const audio = audioMap[audio_name];
-  audio.currentTime = 0;
-  audio.playbackRate = rate; // << 加速播放
-  audio.play().catch((e) => {
-    console.error('Audio play failed: ', audio_name, e);
-  });;
+
+  const sound = scene.sound.get(audio_name) || scene.sound.add(audio_name)
+  if (!sound) {
+    console.log("!sound")
+    return
+  }
+
+  if (sound.isPlaying) {
+    console.log("sound.isPlaying")
+    sound.stop()
+  }
+
+  console.log("AudioPlay - 2")
+  // 這裡斷言為能夠 setLoop/setRate 的型別
+  try {
+    const realSound = sound as Phaser.Sound.WebAudioSound
+    realSound.setLoop(loop)
+    realSound.setRate(rate)
+    realSound.play()
+  } catch (e) {
+    console.log('erroe: ' + e)
+  }
 }
 // ----------- 暫停音效 -----------
 function AudioPause(audio_name: string) {
@@ -781,18 +835,19 @@ watch(buyChanceTrans, () => {
 
 onMounted(async() => {
 
-  type CanAutoplayResult = { result: boolean; error?: any }
+  // type CanAutoplayResult = { result: boolean; error?: any }
   
-  canAutoPlay.audio().then(({ result, error }: CanAutoplayResult) => {
-    if (result) {
-      console.log('✅ 可以自動播放音訊')
-    } else {
-      console.warn('❌ 無法自動播放音訊，需要用戶觸控', error)
-    }
-  })
+  // canAutoPlay.audio().then(({ result, error }: CanAutoplayResult) => {
+  //   if (result) {
+  //     console.log('✅ 可以自動播放音訊')
+  //   } else {
+  //     console.warn('❌ 無法自動播放音訊，需要用戶觸控', error)
+  //   }
+  // })
   // 預載入圖片
   await preloadImages(imageList);
-  $store.isPreloaded = true; 
+  // await preloadAudios(audioList);
+  $store.isPreloaded = true;
 
   if (!gameContainer.value) return;
 
@@ -823,7 +878,7 @@ onMounted(async() => {
     }
   };
 
-  game = new Phaser.Game(config);
+  game.value = new Phaser.Game(config);
   // console.log('🟢 ', game.canvas)
 
   // -------------------------- *** preload *** --------------------------
@@ -851,6 +906,13 @@ onMounted(async() => {
     this.load.image("fortune", "./images/fortune.png");
     // atlas
     this.load.atlas("bomb_smoke", "./images/bomb_smoke.png", "./images/bomb_smoke.json")
+    // audio
+    this.load.audio('Score.mp3', './sounds/Score.mp3')
+    this.load.audio('Descore.mp3', './sounds/Descore.mp3')
+    this.load.audio('BGM.mp3', './sounds/BGM.mp3')
+    this.load.audio('Bomb.mp3', './sounds/Bomb.mp3')
+    this.load.audio('Completed.mp3', './sounds/Completed.mp3')
+    this.load.audio('TimeCountdown.mp3', './sounds/TimeCountdown.mp3')
   }
 
   // -------------------------- *** create *** --------------------------
@@ -992,7 +1054,7 @@ onMounted(async() => {
       // 扣分
       } else if (type === 'thunder') {
         if($store.invincible) return
-        AudioPlay('Descore.wav')
+        AudioPlay('Descore.mp3')
         // console.log($store.score + ' - ' + itemInfo!.scores + ' = ' + ($store.score - itemInfo!.scores))
         $store.score = $store.score <= itemInfo!.scores ? 0 : $store.score - itemInfo!.scores
         // 顯示於 UI
@@ -1130,7 +1192,7 @@ onMounted(async() => {
 });
 
 onBeforeUnmount(() => {
-  game?.destroy(true)
+  game.value?.destroy(true)
 
   if (resultTimeout.value) {
     clearTimeout(resultTimeout.value);
