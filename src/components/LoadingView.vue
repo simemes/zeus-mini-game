@@ -114,7 +114,6 @@ onMounted(async() => {
   if($store.isMobile) {
     await preloadImages()
     // await preloadAudio()
-    $store.isLoaded = true
     console.log('🔥[preload]!')
     router.push('/game')
   }

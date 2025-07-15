@@ -3,7 +3,7 @@
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
-    <div v-if="$store.isLoaded" class="w-full flex flex-1 justify-between mt-6">
+    <div class="w-full flex flex-1 justify-between mt-6">
       <!-- pass -->
       <div class="w-[12%] relative m-5">
         <div @click="getPass" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
@@ -23,16 +23,9 @@
     </div>
     <!-- zeus_drop_logo -->
     <img src="/images/zeus_drop_logo.png" class="flex-4 w-[60%] object-contain">
-
-    <!-- Loading -->
-    <!-- <div v-if="!$store.isLoaded" class="flex-1 flex load-text font-[Inter,sans-serif] font-bold text-[20px] [text-shadow:1px_1px_0_#000,-1px_-1px_0_#000,1px_-1px_0_#000,-1px_1px_0_#000]">
-      <p>Loading</p>
-      <p v-if="load_point >= 1">.</p>
-      <p v-if="load_point >= 2">.</p>
-      <p v-if="load_point >= 3">.</p>
-    </div> -->
+    
     <!-- Ready Zone -->
-    <div v-if="$store.isLoaded" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
+    <div class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
       <div>
         <div class="my-5">Collect items, avoid bombs, score big, and climb the leaderboard!</div>
         <div class="my-5">But beware, as time ticks on, the challenge accelerates.</div>
@@ -47,24 +40,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onBeforeUnmount } from 'vue'
 import { useStore } from '../stores/store'
-// import { useRouter } from 'vue-router'
-// const router = useRouter()
 const $store = useStore()
-
-let sec = ref(0)
-let load_point = ref(0)
-let loadInterval = ref<ReturnType<typeof setInterval> | null>(null);
-let interval = ref<ReturnType<typeof setInterval> | null>(null);
-// ============= 切換頁面 =============
-// function GoToStart() {
-//   router.push('/')
-// }
+const emit = defineEmits(['readyEvent'])
 
 function Ready() {
-  $store.isReady = true
-  // console.log($store.isReady)
+  emit('readyEvent')
 }
 
 function getPass() {
@@ -75,32 +56,6 @@ function get3Chance() {
   $store.isBuyChance = true
 }
 
-onMounted(() => {
-
-  interval.value = setInterval(() => {
-    sec.value++;
-    
-    if (sec.value === 2) {
-      // GoToStart();
-      $store.isLoaded = true
-    }
-  }, 1000);
-
-  loadInterval.value = setInterval(() => {
-    load_point.value++;
-    if (load_point.value === 4) {
-      load_point.value = 0
-    }
-  }, 100);
-  
-})
-
-onBeforeUnmount(() => {
-  if (loadInterval.value) {
-    clearTimeout(loadInterval.value);
-    loadInterval.value = null;
-  }
-})
 </script>
 
 <style scoped>

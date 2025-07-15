@@ -177,7 +177,7 @@
     class="absolute translate-x-[calc(50vw-50%)] translate-y-[calc(50vh-50%)] inset-0 aspect-[720/1280] max-w-full max-h-full z-[1] pointer-events-none overflow-hidden"
   >
     <div v-if="!$store.isStart" class="absolute top-0 z-2 w-full h-full flex flex-col justify-center">
-      <LoadPage></LoadPage>
+      <LoadPage @readyEvent = "activeReady"></LoadPage>
     </div>
     <!-- StartPanel mask -->
     <div v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
@@ -187,11 +187,11 @@
     </div>
     <!-- BuyChance -->
     <div v-if="$store.isBuyChance" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
-      <BuyChance @startEvent = "activeGameStart"></BuyChance>
+      <BuyChance></BuyChance>
     </div>
     <!-- BuyPass -->
     <div v-if="$store.isBuyPass" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
-      <BuyPass @startEvent = "activeGameStart"></BuyPass>
+      <BuyPass></BuyPass>
     </div>
     <!-- Pause -->
     <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full flex flex-col justify-center">
@@ -472,6 +472,10 @@ function activeGameStart() {
   StartCountdown();
 }
 
+function activeReady() {
+  $store.isReady = true
+}
+
 // ------------- 預備三秒後啟動 -------------
 function StartCountdown() {
   AudioPlay('TimeCountdown.wav')
@@ -719,7 +723,7 @@ function AudioPlay(audio_name: string, loop: boolean = false, rate: number = 1.0
   audio.currentTime = 0;
   audio.playbackRate = rate; // << 加速播放
   audio.play().catch((e) => {
-    console.error('Audio play failed:', e);
+    console.error('Audio play failed: ', audio_name, e);
   });;
 }
 // ----------- 暫停音效 -----------
@@ -841,13 +845,6 @@ onMounted(async() => {
   // -------------------------- *** create *** --------------------------
   function create(this: Phaser.Scene) {
     // QKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
-
-    this.input.once('pointerdown', () => {
-      const sound = this.sound as Phaser.Sound.WebAudioSoundManager;
-        if (sound.context && sound.context.state === 'suspended') {
-          sound.context.resume();
-        }
-    });
 
     // background
     changBackground("bg", this)

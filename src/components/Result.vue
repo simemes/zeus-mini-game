@@ -114,7 +114,6 @@ function Share() {
 function GoToStart() {
   $store.score = 0
   $store.isStart = false
-  $store.isLoaded = false
   $store.resultLoaded = false
   $store.isResult = false
   $store.stage = 1
