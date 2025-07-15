@@ -1,5 +1,5 @@
 <template>
-  <!-- 預載入圖片後遮罩消失，目的是蓋住 Game Start 畫面 -->
+  <!-- 預載入圖片後遮罩消失 -->
   <transition leave-active-class="transition-opacity duration-300 ease-in" leave-from-class="opacity-100" leave-to-class="opacity-0">
     <div v-if="!$store.resultLoaded" class="absolute w-full h-full bg-white z-10"></div>
   </transition>
@@ -10,6 +10,7 @@
     <div class="relative overflow-hidden [clip-path:ellipse(100%_85%_at_50%_0%)]">
       <img src="/images/gold_background.jpg" class="w-full h-full object-cover object-top -z-1 ">
       <img src="/images/pepe_in_chest.png" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%]">
+      <img src="/images/zeus_drop_logo.png" class="absolute top-3 left-1/2 -translate-x-1/2 w-[23%]">
     </div>
     <div class="relative">
       <img src="/images/game_results.png" class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[60%]">
@@ -38,16 +39,25 @@
         <!-- high ranking -->
         <div class="text-[12px] text-[#FFEB89] mb-3 font-[700]">You are in top {{ $store.rank || 0 }}%</div>
       </div>
-      <!-- Share & Play Again -->
-      <div @click="Share" class="btn-box btn-click">
-        <div class="strokeText " data-stroke="Share">Share</div>
+      <!-- Share & Accepted friends & Play Again -->
+      <div class="w-full flex justify-between">
+
+        <div @click="Share" class="btn-box btn-click mr-2">
+          <div class="strokeText " data-stroke="Share">Share</div>
+        </div>
+
+        <div class="btn-box-2 btn-click">
+          <div class=""></div>
+          <img src="/images/accepted_frens.png" class="absolute top-[10px] sm:top-[8px] md:top-[6px] left-1/2 -translate-x-1/2 max-w-[20%] max-h-[35px] aspect-square">
+        </div>
+
       </div>
       <div @click="GoToStart" class="btn-box btn-click" :class="{ disabled: btnIsDisabled}" :disabled="btnIsDisabled">
         <div class="strokeText " data-stroke="Play Again">Play Again</div>
       </div>
       <!-- footer text -->
       <div class="text-[11px] mb-5 font-[700]">
-        Players who share will get 1 additional play for the day.
+        Share with frens to get extra ticket.
       </div>
     </div>
   </div>
@@ -113,13 +123,16 @@ function Share() {
 
 function GoToStart() {
   $store.score = 0
+  $store.isReady = false
   $store.isStart = false
+  $store.loadingProgress = 0
   $store.resultLoaded = false
   $store.isResult = false
   $store.stage = 1
   $store.stageTime = 60
   $store.canInvincible = false
   $store.invincible = false
+  $store.isPreloaded = false
   router.push('/')
 }
 
@@ -184,6 +197,17 @@ onMounted(async() => {
 .btn-box {
   @apply text-center my-[2px] text-[#FFFFFF] font-[900];
   @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
+  @apply h-[48px] w-full rounded-[8px] -z-1 relative pointer-events-auto;
+  border: 1px solid black !important;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
+}
+.btn-box-2 {
+  @apply text-center my-[2px] text-[#FFFFFF] font-[900];
+  @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#057ACB_50%,_#0460A8_50%,_#0460A8_90%,_#057ACB_100%)];
   @apply h-[48px] w-full rounded-[8px] -z-1 relative pointer-events-auto;
   border: 1px solid black !important;
   -webkit-user-select: none;

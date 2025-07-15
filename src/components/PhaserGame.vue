@@ -176,7 +176,7 @@
       <LoadPage @readyEvent = "activeReady"></LoadPage>
     </div>
     <!-- StartPanel mask -->
-    <div v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-none"></div>
+    <div @click="ClickMask" v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
     <!-- Start -->
     <div v-if="!$store.isStart && $store.isReady && $store.isPreloaded" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>
@@ -490,19 +490,25 @@ function StartCountdown() {
 function StartClock() {
   console.log("StartClock!")
   AudioPlay('BGM.mp3', true)
+  const scene = game.value?.scene.scenes[0];
+  const sound = scene?.sound.get('BGM.mp3');
   const interval = setInterval(() => {
     if (!$store.isPaused) {
       clockSec.value--;
       // STAGE 2
       if (clockSec.value === 40) {
         $store.stage = 2
-        audioMap['BGM.mp3'].playbackRate = 1.4
+        if (sound && sound.isPlaying) {
+          (sound as Phaser.Sound.WebAudioSound).setRate(1.4);
+        }
         // console.log('STAGE 2!')
       }
       // STAGE 3
       if (clockSec.value === 20) {
         $store.stage = 3
-        audioMap['BGM.mp3'].playbackRate = 1.8
+        if (sound && sound.isPlaying) {
+          (sound as Phaser.Sound.WebAudioSound).setRate(1.8);
+        }
         // console.log('STAGE 3!')
       }
       // 時間結束
@@ -712,26 +718,19 @@ function ActiveInvincible() {
 
 // ----------- 播放音效 -----------
 function AudioPlay(audio_name: string, loop = false, rate = 1.0) {
-  
-  console.log("AudioPlay(" + audio_name + ")")
+  // console.log("AudioPlay(" + audio_name + ")")
   const scene = game.value?.scene.scenes[0]
   if (!scene) {
     console.log("!scene")
     return
   }
-
   const sound = scene.sound.get(audio_name) || scene.sound.add(audio_name)
   if (!sound) {
-    console.log("!sound")
     return
   }
-
   if (sound.isPlaying) {
-    console.log("sound.isPlaying")
     sound.stop()
   }
-
-  console.log("AudioPlay - 2")
   // 這裡斷言為能夠 setLoop/setRate 的型別
   try {
     const realSound = sound as Phaser.Sound.WebAudioSound
@@ -744,9 +743,14 @@ function AudioPlay(audio_name: string, loop = false, rate = 1.0) {
 }
 // ----------- 暫停音效 -----------
 function AudioPause(audio_name: string) {
-  const audio = audioMap[audio_name];
-  if (audio) {
-    audio.pause();
+  const scene = game.value?.scene.scenes[0];
+  if (!scene) {
+    console.log("!scene");
+    return;
+  }
+  const sound = scene.sound.get(audio_name);
+  if (sound && sound.isPlaying) {
+    sound.pause();  // Phaser 的 pause
   }
 }
 
@@ -756,6 +760,12 @@ function GotoResult() {
     router.push('/result')
     $store.isResult = true
   }, 3000);
+}
+function ClickMask() {
+  console.log('ClickMask')
+  $store.isBuyChance = false
+  $store.isBuyPass = false
+  $store.isReady = false
 }
 
 // ================================== computed ==================================

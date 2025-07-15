@@ -14,7 +14,8 @@ export const useStore = defineStore('store', {
     rank: 0,
     api: 'https://simm-dev-441009.de.r.appspot.com/api/v1/',
     token: '',
-    passLeft: 30,
+    purchaseNum: 24,
+    finalDay: '08/31',
     // non-server related
     device: '',
     isMobile: false,

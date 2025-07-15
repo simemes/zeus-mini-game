@@ -15,23 +15,22 @@
       <div class="w-[100%] relative flex flex-col justify-center items-center my-2">
         <div class="strokeText-2 flex justify-start items-center px-3 sm:text-[14px] md:text-[24px] lg:text-[34px] xl:text-[44px]">
           <img src="/images/x_star.png" class="w-[5%] mx-1">
-          <div>Get one extra play per day</div>
+          <div>Get one extra play per day untill {{ $store.finalDay }}</div>
         </div>
       </div>
     </div>
+    <!-- text -->
+    <div class="strokeText-2 mt-0 mb-2">Days Left: {{ DaysLeft }}</div>
     <!-- btn -->
     <div v-if="!$store.isPassTime" @click="Purchase" class="btn-box btn-click">
       <div class="strokeText" data-stroke="$ 1">$ 1</div>
     </div>
-    <!-- text -->
-    <div v-if="!$store.isPassTime" class="strokeText-2 mt-2 mb-2">30-day Privileges</div>
-    <div v-if="$store.isPassTime" class="strokeText-2 mt-2 mb-2">Days Left: {{ $store.passLeft }}</div>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, computed } from 'vue';
 import { useStore } from '../stores/store'
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
@@ -47,6 +46,16 @@ function Purchase() {
 function Close() {
   $store.isBuyPass = false
 }
+
+const DaysLeft = computed(() => {
+  const today = new Date();
+  const thisYear = today.getFullYear();
+  const targetDate = new Date(thisYear, 7, 31); // 月份是從 0 開始，所以 7 是 8 月
+  // 計算毫秒差距，轉成天數
+  const diffTime = targetDate.getTime() - today.getTime(); // ✅ 明確轉成 number
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+})
 
 // ================================== onMounted ==================================
 
@@ -86,7 +95,7 @@ onMounted(() => {
 }
 
 .strokeText-2 {
-  @apply relative w-full text-[#FFFFFF] z-1 font-[800];
+  @apply relative w-full text-[12px] text-[#FFFFFF] z-1 font-[800];
 }
 .strokeText-2::before {
   content: attr(data-stroke);

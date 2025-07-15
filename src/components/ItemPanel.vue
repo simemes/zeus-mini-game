@@ -63,6 +63,18 @@
         <div>Red pill or blue pill, your pick.</div>
       </div>
     </div>
+    <!-- =================== 6th row =================== -->
+    <div class="w-full h-full flex flex-row justify-center my-1">
+      <div class="w-full h-full flex flex-row justify-start items-center">
+        <div class="bg-[#00000040] rounded-[12px] w-[20%] p-2 mx-2">
+          <img src="/images/star.png" class="">
+        </div>
+        <div class="flex flex-col items-start">
+          <div>Immune 2 seconds</div>
+          <div class="text-[12px] text-[#C87637]">(You can double tap to activate)</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

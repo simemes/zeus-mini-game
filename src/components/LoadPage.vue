@@ -1,5 +1,5 @@
 <template>
-  <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
+  <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10">
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
