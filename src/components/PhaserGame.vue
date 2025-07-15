@@ -418,7 +418,6 @@ let isTouching = false;
 let hasGotoResult = false
 let timeTipId = 0;
 let bg: Phaser.GameObjects.Image | null = null;
-let audioMap: Record<string, HTMLAudioElement> = {};
 // let QKey: Phaser.Input.Keyboard.Key;
 let comboCount = ref(0)
 let lastTapTime = ref(0);
