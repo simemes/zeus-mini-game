@@ -171,12 +171,12 @@ function preloadImages(imageUrls: string[]) {
 }
 
 function ShowAcceptedPanel() {
-  console.log('ShowAcceptedPanel!')
+  // console.log('ShowAcceptedPanel!')
   $store.isAcceptedPanel = true
 }
 
 function CloseMask() {
-  console.log('CloseMask!')
+  // console.log('CloseMask!')
   $store.isAcceptedPanel = false
 }
 
