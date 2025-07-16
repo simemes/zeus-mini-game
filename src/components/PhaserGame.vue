@@ -885,6 +885,17 @@ onMounted(() => {
   function create(this: Phaser.Scene) {
     // QKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
 
+    // 解決 canvas 沒有符合螢幕大小問題
+    const canvas = this.game.canvas
+    canvas.style.margin = '0'
+    canvas.style.padding = '0'
+    canvas.style.display = 'block'
+    canvas.style.position = 'absolute'
+    canvas.style.top = '0'
+    canvas.style.left = '0'
+    canvas.style.width = '100vw'
+    canvas.style.height = '100vh'
+
     // background
     changBackground("bg", this)
 
