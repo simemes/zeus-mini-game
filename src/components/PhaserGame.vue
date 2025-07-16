@@ -176,7 +176,7 @@
       <LoadPage @readyEvent = "activeReady"></LoadPage>
     </div>
     <!-- StartPanel mask -->
-    <div @click="ClickMask" v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-sm bg-[#00000050] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
+    <div @click="ClickMask" v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-[5px] bg-[#00000070] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
     <!-- Start -->
     <div v-if="!$store.isStart && $store.isReady && $store.isPreloaded" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>

@@ -46,7 +46,7 @@
           <div class="strokeText " data-stroke="Share">Share</div>
         </div>
 
-        <div class="btn-box-2 btn-click">
+        <div @click="ShowAcceptedPanel"  class="btn-box-2 btn-click">
           <div class=""></div>
           <img src="/images/accepted_frens.png" class="absolute top-[10px] sm:top-[8px] md:top-[6px] left-1/2 -translate-x-1/2 max-w-[20%] max-h-[35px] aspect-square">
         </div>
@@ -60,12 +60,23 @@
         Share with frens to get extra ticket.
       </div>
     </div>
+
+    <div v-if="$store.isAcceptedPanel" class="absolute top-0 left-0 w-full h-full">
+      <!-- AcceptedPanel mask -->
+      <div @click="CloseMask"  class="backdrop-blur-[5px] bg-[#00000070] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
+      <!-- AcceptedPanel -->
+      <div class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
+        <AcceptedPanel ></AcceptedPanel>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useStore } from '../stores/store'
+import AcceptedPanel from '../components/AcceptedPanel.vue'
 // import { shareURL } from '@telegram-apps/sdk';
 // import axios from 'axios';
 const $store = useStore()
@@ -157,6 +168,16 @@ function preloadImages(imageUrls: string[]) {
         })
     )
   );
+}
+
+function ShowAcceptedPanel() {
+  console.log('ShowAcceptedPanel!')
+  $store.isAcceptedPanel = true
+}
+
+function CloseMask() {
+  console.log('CloseMask!')
+  $store.isAcceptedPanel = false
 }
 
 // ================================== onMounted ==================================

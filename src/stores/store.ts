@@ -9,6 +9,7 @@ export const useStore = defineStore('store', {
       highScore: 0,
       lastPlayedAt: 0
     },
+    accepted_friends: ['@telegram_account-1','@telegram_account-2','@telegram_account-3'],
     user_id: null,
     score: 0,
     rank: 0,
@@ -17,6 +18,7 @@ export const useStore = defineStore('store', {
     purchaseNum: 24,
     finalDay: '08/31',
     isPassTime: false,
+    ticketCount: 3,
     // non-server related
     device: '',
     isMobile: false,
@@ -32,6 +34,7 @@ export const useStore = defineStore('store', {
     isBuyPass: false,
     isResult: false,
     isPaused: false,
+    isAcceptedPanel: false,
     knockOut: false,
     canInvincible: false,
     invincible: false,
