@@ -49,5 +49,23 @@ export default defineConfig({
     allowedHosts: ['2635-203-121-229-38.ngrok-free.app'],
     // port: 3000,
     open: true // 啟動後自動開瀏覽器
+  },
+  build: {
+    assetsInlineLimit: 0, // 所有圖片都不轉 base64
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('phaser')) {
+              return 'vendor-phaser'
+            }
+            if (id.includes('vue')) {
+              return 'vendor-vue'
+            }
+            return 'vendor'
+          }
+        }
+      }
+    }
   }
 })
