@@ -160,6 +160,7 @@ function Share() {
 function GoToStart() {
   $store.score = 0
 
+  $store.stage = 1,
   $store.stageTime = 60,
   $store.fortuneType = 0,
   $store.isReady = false,
