@@ -3,12 +3,12 @@
   <div class="relative w-[90%] flex flex-col justify-center items-center bg-[#C87637] rounded-[20px] p-1 border-[2px] border-[#3A1D07]">
     <!-- close -->
     <div @click="Close" class="absolute -top-2 -right-2 w-[10%] z-1 pointer-events-auto">
-      <img src="/images/close.png" class="">
+      <img :src="close" class="">
     </div>
     <!-- items -->
     <div class="relative w-[100%] flex flex justify-around bg-[#45250C] rounded-[20px] p-5 border-[#3A1D07] border-[2px]">
       <div class="w-[100%] relative mx-1 flex flex-col justify-center items-center my-2">
-        <img src="/images/zeus_3chance.png" class="flex-1 rotate-[-15deg] w-[30%] my-3">
+        <img :src="zChance" class="flex-1 rotate-[-15deg] w-[30%] my-3">
         <div class="strokeText-2 flex-1" data-stroke="x 3">x 3</div>
       </div>
     </div>
@@ -24,6 +24,10 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useStore } from '../stores/store'
+
+import close from '@/assets/images/close.png'
+import zChance from '@/assets/images/zeus_3chance.png'
+
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 

@@ -1,5 +1,5 @@
 <template>
-  <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10">
+  <img :src="bg" class="absolute top-0 left-0 w-full h-full object-cover -z-10">
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
@@ -7,22 +7,22 @@
       <!-- pass -->
       <div class="w-[12%] relative m-5">
         <div @click="getPass" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
-          <img src="/images/zeus_pass.png" class="rotate-[-15deg] w-[80%]">
+          <img :src="zPass" class="rotate-[-15deg] w-[80%]">
         </div>
       </div>
       <!-- chance -->
       <div @click="get3Chance" class="relative w-[18%] h-[31%] m-5 bg-[#00000050] rounded-full p-3 flex justify-center items-center pointer-events-auto">
         <div class="flex-1">
-          <img src="/images/zeus_3chance.png" class="rotate-[-15deg]">
+          <img :src="zChance" class="rotate-[-15deg]">
         </div>
         <div class="absolute w-[20%] bottom-[5%] left-[30%]">
-          <img src="/images/plus_icon.png">
+          <img :src="plus">
         </div>
         <div class="flex-2 text-[14px] font-[700]">{{ $store.users_profile.maxPlayCount - $store.users_profile.todayPlayCount }}</div>
       </div>
     </div>
     <!-- zeus_drop_logo -->
-    <img src="/images/zeus_drop_logo.png" class="flex-4 w-[60%] object-contain">
+    <img :src="zeusLogo" class="flex-4 w-[60%] object-contain">
     
     <!-- Ready Zone -->
     <div v-if="$store.isPreloaded" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
@@ -46,6 +46,13 @@
 
 <script setup lang="ts">
 import { useStore } from '../stores/store'
+
+import bg from '@/assets/images/simemes_bg.png'
+import zPass from '@/assets/images/zeus_pass.png'
+import zChance from '@/assets/images/zeus_3chance.png'
+import plus from '@/assets/images/plus_icon.png'
+import zeusLogo from '@/assets/images/zeus_drop_logo.png'
+
 const $store = useStore()
 const emit = defineEmits(['readyEvent'])
 

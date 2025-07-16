@@ -4,13 +4,13 @@
 
     <!-- close -->
     <div @click="Close" class="absolute -top-2 -right-2 w-[10%] z-1 pointer-events-auto">
-      <img src="/images/close.png" class="">
+      <img :src="close" class="">
     </div>
 
     <!-- intro -->
     <div class="flex flex-col justify-center items-center my-1">
         <div class="w-[18%] mt-2">
-            <img src="/images/zeus_3chance.png" class="rotate-[-15deg]">
+            <img :src="zChance" class="rotate-[-15deg]">
         </div>
         <div class="w-[100%] my-2">
             <div class="play-count" :data-stroke="ticketCount">{{ ticketCount }}</div>
@@ -36,6 +36,10 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useStore } from '../stores/store'
+
+import close from '@/assets/images/close.png'
+import zChance from '@/assets/images/zeus_3chance.png'
+
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 

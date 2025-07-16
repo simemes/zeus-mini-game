@@ -15,7 +15,7 @@
           <!-- 底 -->
           <div class="w-[95%] h-8 left-[2.5%] rounded-[20px] bg-[#C87637] border-[2px] border-black absolute top-4"></div>
           <!-- logo -->
-          <img src="/images/simemes_logo.png" class="w-25 absolute top-2 left-4" />
+          <img :src="logo" class="w-25 absolute top-2 left-4" />
           <!-- 分數區 -->
           <div class="w-[37%] h-15 rounded-[13px] bg-[#C87637] border-[2px] border-black absolute top-0 left-[31.5%] flex justify-center items-center">
             <div class="w-[92%] h-[80%] rounded-[10px] bg-[#643B1B] text-center text-[32px] font-[Impact]">
@@ -26,7 +26,7 @@
           <div class="w-12 h-12 rounded-[10px] bg-[#C87637] border-[2px] border-black absolute top-2 right-5 flex justify-center items-center">
             <img
               @click="togglePause"
-              src="/images/pause_btn.png"
+              :src="pause"
               class="w-[90%] h-[90%] top-2 left-4 pointer-events-auto" 
             />
           </div>
@@ -75,8 +75,8 @@
         <div
           v-if="(3 > sec)"
           class="w-[80%] flex mt-20 mx-auto">
-          <img src="/images/arrow_l.png" class="w-[50%]">
-          <img src="/images/arrow_r.png" class="w-[50%]">
+          <img :src="arrowL" class="w-[50%]">
+          <img :src="arrowR" class="w-[50%]">
         </div>
       </div>
       <!-- Stage2 Hint -->
@@ -127,7 +127,7 @@
               ></circle>
             </g>
           </svg>
-          <img src="/images/star.png" class="relative z-20">
+          <img :src="star" class="relative z-20">
         </div>
       </div>
       <!-- Time -->
@@ -137,13 +137,13 @@
       >
         <div class="relative flex aspect-[10]">
           <!-- bar bg -->
-          <img src="/images/time_bar.png" class="absolute bottom-0">
+          <img :src="time_bar" class="absolute bottom-0">
           <!-- clock & progress 的容器 -->
           <div class="relative w-full flex px-2">
             <!-- clock bg -->
             <div class=" w-[45px] h-[22px] py-[2px] mr-3 bg-[#643B1B] rounded-[20px] relative flex justify-start">
               <!-- icon -->
-              <img src="/images/clock_icon.png" class="relative w-[16px] h-[16px] mx-1">
+              <img :src="clock_icon" class="relative w-[16px] h-[16px] mx-1">
               <!-- sec -->
               <p class="sec-font relative text-[18px] leading-[100%]">{{clockSec}}</p>
             </div>
@@ -208,6 +208,42 @@ import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 import { useRouter } from 'vue-router'
 // import canAutoPlay from 'can-autoplay';
+
+// images
+import logo from '@/assets/images/simemes_logo.png'
+import pause from '@/assets/images/pause_btn.png'
+import arrowL from '@/assets/images/arrow_l.png'
+import arrowR from '@/assets/images/arrow_r.png'
+import time_bar from '@/assets/images/time_bar.png'
+import clock_icon from '@/assets/images/clock_icon.png'
+import bgBlue from '@/assets/images/bg_blue_sky.jpg'
+import bgCyan from '@/assets/images/bg_cyan.png'
+import bgGold from '@/assets/images/bg_gold.png'
+import bgBlack from '@/assets/images/bg_black.png'
+import zeus from '@/assets/images/zeus.png'
+import playerPic from '@/assets/images/player.png'
+import invincible from '@/assets/images/invincible.png'
+import knockout from '@/assets/images/knockout.png'
+import bomb from '@/assets/images/bomb.png'
+import clock from '@/assets/images/clock.png'
+import clockGold from '@/assets/images/clock_gold.png'
+import coin from '@/assets/images/coin.png'
+import star from '@/assets/images/star.png'
+import gmove from '@/assets/images/gmove.png'
+import hat from '@/assets/images/hat.png'
+import thunder from '@/assets/images/thunder.png'
+import fortune from '@/assets/images/fortune.png'
+import bombSmokeImg from '@/assets/images/bomb_smoke.png'
+import bombSmokeJson from '@/assets/images/bomb_smoke.json'
+
+// sounds
+import score from '@/assets/sounds/Score.mp3'
+import descore from '@/assets/sounds/Descore.mp3'
+import bgm from '@/assets/sounds/BGM.mp3'
+import bombSound from '@/assets/sounds/Bomb.mp3'
+import completed from '@/assets/sounds/Completed.mp3'
+import countdown from '@/assets/sounds/TimeCountdown.mp3'
+
 const router = useRouter()
 const $store = useStore()
 
@@ -222,37 +258,6 @@ const playerMaxSpeed = 10000;
 // 速度係數，數字越小，速度變化越慢
 const inputScale = 25;
 const timeTips = ref<{ id: number; value: number }[]>([]);
-// 預載入圖片
-const imageList: string[] = [
-  './images/bg_blue_sky.jpg',
-  './images/bg_cyan.png',
-  './images/bg_gold.png',
-  './images/bg_black.png',
-  './images/arrow_l.png',
-  './images/arrow_r.png',
-  './images/bomb.png',
-  './images/clock.png',
-  './images/clock_gold.png',
-  './images/clock_icon.png',
-  './images/coin.png',
-  './images/gmove.png',
-  './images/hat.png',
-  './images/invincible.png',
-  './images/knockout.png',
-  './images/pause_btn.png',
-  './images/pepe_in_chest.png',
-  './images/player.png',
-  './images/poseidon.png',
-  './images/simemes_bg.png',
-  './images/simemes_logo.png',
-  './images/smoke.png',
-  './images/star.png',
-  './images/thunder.png',
-  './images/fortune.png',
-  './images/time_bar.png',
-  './images/zeus_drop_logo.png',
-  './images/zeus.png',
-];
 // Stage 1、2、3 itemList settings
 const itemList1 = [
   // 得分 - weight 大
@@ -424,22 +429,6 @@ let lastTapTime = ref(0);
 let invincibleCircle = ref(180);
 
 // ================================== function ==================================
-
-// ------------- 預載入圖片 -------------
-function preloadImages(imageUrls: string[]) {
-  console.log("[zeus]: preloadImages from Home ...")
-  return Promise.all(
-    imageUrls.map(
-      (src) =>
-        new Promise((resolve, reject) => {
-          const img = new Image();
-          img.src = src;
-          img.onload = resolve;
-          img.onerror = reject;
-        })
-    )
-  );
-}
 
 // ------------- 背景響應式調整 -------------
 function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
@@ -803,7 +792,7 @@ watch(buyChanceTrans, () => {
 
 // ================================== onMounted ==================================
 
-onMounted(async() => {
+onMounted(() => {
 
   // type CanAutoplayResult = { result: boolean; error?: any }
   // canAutoPlay.audio().then(({ result, error }: CanAutoplayResult) => {
@@ -813,9 +802,6 @@ onMounted(async() => {
   //     console.warn('❌ 無法自動播放音訊，需要用戶觸控', error)
   //   }
   // })
-  
-  // 預載入圖片
-  await preloadImages(imageList);
 
   if (!gameContainer.value) return;
 
@@ -851,36 +837,37 @@ onMounted(async() => {
 
   // -------------------------- *** preload *** --------------------------
   function preload(this: Phaser.Scene) {
-    // bg
-    this.load.image("bg", "./images/bg_blue_sky.jpg");
-    this.load.image("bg_cyan", "./images/bg_cyan.png");
-    this.load.image("bg_gold", "./images/bg_gold.png");
-    this.load.image("bg_black", "./images/bg_black.png");
-    // char
-    this.load.image("boss", "./images/zeus.png");
-    this.load.image("player", "./images/player.png");
-    this.load.image("invincible", "./images/invincible.png");
-    this.load.image("knockout", "./images/knockout.png");
-    // item
-    this.load.image("bomb", "./images/bomb.png");
-    this.load.image("clock", "./images/clock.png");
-    this.load.image("clock_gold", "./images/clock_gold.png");
-    this.load.image("coin", "./images/coin.png");
-    this.load.image("star", "./images/star.png");
-    this.load.image("gmove", "./images/gmove.png");
-    this.load.image("hat", "./images/hat.png");
-    this.load.image("poseidon", "./images/poseidon.png");
-    this.load.image("thunder", "./images/thunder.png");
-    this.load.image("fortune", "./images/fortune.png");
+    // pic
+    this.load.image("logo", logo);
+    this.load.image("pause", pause);
+    this.load.image("bg", bgBlue);
+    this.load.image("bg_cyan", bgCyan);
+    this.load.image("bg_gold", bgGold);
+    this.load.image("bg_black", bgBlack);
+    this.load.image("boss", zeus);
+    this.load.image("player", playerPic);
+    this.load.image("invincible", invincible);
+    this.load.image("knockout", knockout);
+    this.load.image("bomb", bomb);
+    this.load.image("clock", clock);
+    this.load.image("clock_gold", clockGold);
+    this.load.image("coin", coin);
+    this.load.image("star", star);
+    this.load.image("gmove", gmove);
+    this.load.image("hat", hat);
+    this.load.image("thunder", thunder);
+    this.load.image("fortune", fortune);
+
     // atlas
-    this.load.atlas("bomb_smoke", "./images/bomb_smoke.png", "./images/bomb_smoke.json")
+    this.load.atlas("bomb_smoke", bombSmokeImg, bombSmokeJson)
+
     // audio
-    this.load.audio('Score.mp3', './sounds/Score.mp3')
-    this.load.audio('Descore.mp3', './sounds/Descore.mp3')
-    this.load.audio('BGM.mp3', './sounds/BGM.mp3')
-    this.load.audio('Bomb.mp3', './sounds/Bomb.mp3')
-    this.load.audio('Completed.mp3', './sounds/Completed.mp3')
-    this.load.audio('TimeCountdown.mp3', './sounds/TimeCountdown.mp3')
+    this.load.audio("Score.mp3", score)
+    this.load.audio("Descore.mp3", descore)
+    this.load.audio("BGM.mp3", bgm)
+    this.load.audio("Bomb.mp3", bombSound)
+    this.load.audio("Completed.mp3", completed)
+    this.load.audio("TimeCountdown.mp3", countdown)
 
     // ======== 加載進度事件 ========
     this.load.on('progress', (value: number) => {

@@ -1,5 +1,5 @@
 <template>
-  <img src="/images/simemes_bg.png" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
+  <img :src="bg" class="absolute top-0 left-0 w-full h-full object-cover -z-10 pointer-events-none">
   <div class="w-full flex flex-col justify-center items-center">
     <!-- items -->
     <div class="w-[67%]">
@@ -12,6 +12,8 @@
 
 <script setup lang="ts">
 import ItemPanel from '../components/ItemPanel.vue'
+
+import bg from '@/assets/images/simemes_bg.png'
 
 const emit = defineEmits(['pauseEvent'])
 

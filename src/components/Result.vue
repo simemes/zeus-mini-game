@@ -8,12 +8,12 @@
     >
     <!-- gold bg -->
     <div class="relative overflow-hidden [clip-path:ellipse(100%_85%_at_50%_0%)]">
-      <img src="/images/gold_background.jpg" class="w-full h-full object-cover object-top -z-1 ">
-      <img src="/images/pepe_in_chest.png" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%]">
-      <img src="/images/zeus_drop_logo.png" class="absolute top-3 left-1/2 -translate-x-1/2 w-[23%]">
+      <img :src="bgGold" class="w-full h-full object-cover object-top -z-1 ">
+      <img :src="pepeChest" class="absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%]">
+      <img :src="zeusLogo" class="absolute top-3 left-1/2 -translate-x-1/2 w-[23%]">
     </div>
     <div class="relative">
-      <img src="/images/game_results.png" class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[60%]">
+      <img :src="gameResult" class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[60%]">
     </div>
     <!-- 深藍邊線 -->
     <div class="bg-[#012D57] absolute top-13 left-0 w-full h-full object-cover -z-2 [clip-path:ellipse(100%_45%_at_50%_0%)]"></div>
@@ -48,7 +48,7 @@
 
         <div @click="ShowAcceptedPanel"  class="btn-box-2 btn-click">
           <div class=""></div>
-          <img src="/images/accepted_frens.png" class="absolute top-[10px] sm:top-[8px] md:top-[6px] left-1/2 -translate-x-1/2 max-w-[20%] max-h-[35px] aspect-square">
+          <img :src="acceptedFriends" class="absolute top-[10px] sm:top-[8px] md:top-[6px] left-1/2 -translate-x-1/2 max-w-[20%] max-h-[35px] aspect-square">
         </div>
 
       </div>
@@ -80,6 +80,14 @@ import AcceptedPanel from '../components/AcceptedPanel.vue'
 import { animate, createSpring } from 'animejs';
 // import { shareURL } from '@telegram-apps/sdk';
 // import axios from 'axios';
+
+import bgGold from '@/assets/images/gold_background.jpg'
+import pepeChest from '@/assets/images/pepe_in_chest.png'
+import zeusLogo from '@/assets/images/zeus_drop_logo.png'
+import gameResult from '@/assets/images/game_results.png'
+import acceptedFriends from '@/assets/images/accepted_frens.png'
+
+
 const $store = useStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -88,9 +96,11 @@ const acceptedPanelTrans = ref(null)
 
 // 預載入圖片
 const imageList: string[] = [
-  './images/gold_background.jpg',
-  './images/game_results.png',
-  './images/pepe_in_chest.png',
+  new URL('@/assets/images/gold_background.jpg', import.meta.url).href,
+  new URL('@/assets/images/game_results.png', import.meta.url).href,
+  new URL('@/assets/images/pepe_in_chest.png', import.meta.url).href,
+  new URL('@/assets/images/zeus_drop_logo.png', import.meta.url).href,
+  new URL('@/assets/images/accepted_frens.png', import.meta.url).href,
 ];
 
 let btnIsDisabled = ref(true)

@@ -3,7 +3,7 @@
   <div class="relative w-[90%] flex flex-col justify-center items-center bg-[#C87637] rounded-[20px] p-1 border-[2px] border-[#3A1D07]">
     <!-- close -->
     <div @click="Close" class="absolute -top-2 -right-2 w-[10%] z-1 pointer-events-auto">
-      <img src="/images/close.png" class="">
+      <img :src="close" class="">
     </div>
     <!-- items -->
     <div class="relative w-[100%] flex flex justify-around bg-[#45250C] rounded-[20px] p-5 border-[#3A1D07] border-[2px]">
@@ -15,7 +15,7 @@
       <div class="strokeText " data-stroke="Start">Start</div>
       <div class="flex justify-center my-1">
         <div class="w-[10%] relative flex items-center justify-center">
-          <img src="/images/zeus_3chance.png" class="rotate-[-15deg]">
+          <img :src="zChance" class="rotate-[-15deg]">
         </div>
         <div class="w-[20%] relative tracking-widest">
           <div class="play-count" :data-stroke="playCount">{{ playCount }}</div>
@@ -30,6 +30,10 @@
 import { onMounted, computed } from 'vue';
 import ItemPanel from '../components/ItemPanel.vue'
 import { useStore } from '../stores/store'
+
+import close from '@/assets/images/close.png'
+import zChance from '@/assets/images/zeus_3chance.png'
+
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 

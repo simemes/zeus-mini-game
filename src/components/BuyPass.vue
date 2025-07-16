@@ -3,18 +3,18 @@
   <div class="relative w-[90%] flex flex-col justify-center items-center bg-[linear-gradient(to_bottom,_#BC621B_0%,_#823900_100%)] rounded-[20px] p-5 border-[2px] border-[#3A1D07]">
     <!-- close -->
     <div @click="Close" class="absolute -top-2 -right-2 w-[10%] z-1 pointer-events-auto">
-      <img src="/images/close.png" class="">
+      <img :src="close" class="">
     </div>
     <!-- pic -->
     <div @click="Close" class="absolute -top-11 left-4 w-[30%] z-1 pointer-events-auto">
-      <img src="/images/zeus_pass.png" class="rotate-[-15deg]">
+      <img :src="zPass" class="rotate-[-15deg]">
     </div>
     <div class="strokeText-3 flex-1 mb-5 sm:text-[20px] md:text-[30px] lg:text-[40px] xl:text-[50px]" data-stroke="Zeus’s Blessing Pass">Zeus’s Blessing Pass</div>
     <!-- items -->
     <div class="relative w-[100%] flex flex justify-around bg-[#6C2F00] rounded-[8px] p-3 mx-10 mb-5">
       <div class="w-[100%] relative flex flex-col justify-center items-center my-2">
         <div class="strokeText-2 flex justify-start items-center px-3 sm:text-[14px] md:text-[24px] lg:text-[34px] xl:text-[44px]">
-          <img src="/images/x_star.png" class="w-[5%] mx-1">
+          <img :src="xStar" class="w-[5%] mx-1">
           <div>Get one extra play per day untill {{ $store.finalDay }}</div>
         </div>
       </div>
@@ -32,6 +32,11 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useStore } from '../stores/store'
+
+import close from '@/assets/images/close.png'
+import zPass from '@/assets/images/zeus_pass.png'
+import xStar from '@/assets/images/x_star.png'
+
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 
