@@ -65,7 +65,7 @@
       <!-- AcceptedPanel mask -->
       <div @click="CloseMask"  class="backdrop-blur-[5px] bg-[#00000070] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
       <!-- AcceptedPanel -->
-      <div class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
+      <div class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="acceptedPanelTrans">
         <AcceptedPanel ></AcceptedPanel>
       </div>
     </div>
@@ -74,14 +74,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from '../stores/store'
 import AcceptedPanel from '../components/AcceptedPanel.vue'
+import { animate, createSpring } from 'animejs';
 // import { shareURL } from '@telegram-apps/sdk';
 // import axios from 'axios';
 const $store = useStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
+
+const acceptedPanelTrans = ref(null)
 
 // 預載入圖片
 const imageList: string[] = [
@@ -112,7 +115,19 @@ const displayedScore = computed(() => {
       : $store.score;
 })
 
+// ================================== watch ==================================
 
+watch(acceptedPanelTrans, () => {
+  if (acceptedPanelTrans.value) {
+    animate(acceptedPanelTrans.value, {
+      translateY: [ 100, 0 ],
+      opacity: [ 0, 1 ],
+      delay: 0,
+      duration: 300,
+      ease: createSpring({ stiffness: 120 }),
+    })
+  }
+})
 
 // ================================== function ==================================
 
