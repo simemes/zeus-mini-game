@@ -123,16 +123,23 @@ function Share() {
 
 function GoToStart() {
   $store.score = 0
-  $store.isReady = false
-  $store.isStart = false
-  $store.loadingProgress = 0
-  $store.resultLoaded = false
-  $store.isResult = false
-  $store.stage = 1
-  $store.stageTime = 60
-  $store.canInvincible = false
-  $store.invincible = false
-  $store.isPreloaded = false
+
+  $store.stageTime = 60,
+  $store.fortuneType = 0,
+  $store.isReady = false,
+  $store.loadingProgress = 0,
+  $store.isPreloaded = false,
+  $store.resultLoaded  = false,
+  $store.isStart = false,
+  $store.isBuyChance = false,
+  $store.isBuyPass = false,
+  $store.isResult = false,
+  $store.isPaused = false,
+  $store.knockOut = false,
+  $store.canInvincible = false,
+  $store.invincible = false,
+  $store.knockoutCooling = false,
+  
   router.push('/')
 }
 

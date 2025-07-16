@@ -16,6 +16,7 @@ export const useStore = defineStore('store', {
     token: '',
     purchaseNum: 24,
     finalDay: '08/31',
+    isPassTime: false,
     // non-server related
     device: '',
     isMobile: false,
@@ -29,7 +30,6 @@ export const useStore = defineStore('store', {
     isStart: false,
     isBuyChance: false,
     isBuyPass: false,
-    isPassTime: false,
     isResult: false,
     isPaused: false,
     knockOut: false,
