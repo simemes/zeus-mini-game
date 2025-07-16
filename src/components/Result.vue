@@ -132,9 +132,9 @@ watch(acceptedPanelTrans, () => {
 // ================================== function ==================================
 
 function Share() {
-  console.log(btnIsDisabled)
+  // console.log(btnIsDisabled)
   btnIsDisabled.value = false
-  console.log(btnIsDisabled)
+  // console.log(btnIsDisabled)
 
   // try {
   //   const link = `https://t.me/SIMemes_bot?startapp=${$store.user_id}`
