@@ -207,7 +207,7 @@ import BuyPass from '../components/BuyPass.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 import { useRouter } from 'vue-router'
-// import axios from 'axios';
+import axios from 'axios';
 // import canAutoPlay from 'can-autoplay';
 
 // images
@@ -462,20 +462,20 @@ function activeGameStart() {
   // 從 url_games_start 抓 gameplayId，這裏 server 會將 todayPlayCount +1
   // console.log($store.api)
   // console.log($store.token)
-  // const url_games_start = $store.api + 'games/start';
-  // axios.post(url_games_start, {
-  //   headers: {
-  //     'Authorization': `tma ${$store.token}`
-  //   }
-  // })
-  //   .then(response => {
-  //     console.log('get games_start:', response.data);
-  //     $store.games_start.gameplayId = response.data.gameplayId
-  //     console.log('gameplayId:', $store.games_start.gameplayId);
-  //   })
-  //   .catch(error => {
-  //     console.error('get games_start 錯誤:', error);
-  //   });
+  const url_games_start = $store.api + 'games/start';
+  axios.post(url_games_start, {
+    headers: {
+      'Authorization': `tma ${$store.token}`
+    }
+  })
+    .then(response => {
+      console.log('get games_start:', response.data);
+      $store.games_start.gameplayId = response.data.gameplayId
+      console.log('gameplayId:', $store.games_start.gameplayId);
+    })
+    .catch(error => {
+      console.error('get games_start 錯誤:', error);
+    });
 
   StartCountdown();
 }

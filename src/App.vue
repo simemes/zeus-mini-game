@@ -13,7 +13,7 @@ import { onMounted } from 'vue';
 import { init,postEvent } from '@telegram-apps/sdk';
 import { useStore } from './stores/store'
 import MobilOnlyView from './components/MobileOnlyView.vue'
-// import axios from 'axios';
+import axios from 'axios';
 const $store = useStore()
 // const token = ref('')
 
@@ -50,7 +50,7 @@ onMounted(() => {
   try {
     const tg = (window as any).Telegram.WebApp;
     const user = tg.initDataUnsafe?.user;
-    // const init_data = tg.initData;
+    const init_data = tg.initData;
     const startParam = tg.initDataUnsafe?.start_param;
     // console.log("[Telegram.WebApp] - user: ", user);
     console.log("經由", startParam, "推薦進來的");
@@ -58,151 +58,151 @@ onMounted(() => {
     $store.user_id = user.id
 
     // ============================== 登入取得 token ==============================
-    // const url_login = $store.api + 'users/login';
-    // axios.post(url_login, {
-    //   data: init_data
-    // }, {
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // })
-    //   .then(response => {
-    //     // console.log('login response.data:', response.data);
-    //     $store.token = response.data.token
+    const url_login = $store.api + 'users/login';
+    axios.post(url_login, {
+      data: init_data
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => {
+        // console.log('login response.data:', response.data);
+        $store.token = response.data.token
 
-    //     // ============================== 取得 users_profile ==============================
-    //     const url_user_profile = $store.api + 'users/profile';
-    //     axios.get(url_user_profile, {
-    //       headers: {
-    //         'Authorization': `tma ${$store.token}`
-    //       }
-    //     })
-    //       .then(response => {
-    //         // console.log('get users_profile:', response.data);
-    //         // 賦值到 $store
-    //         $store.users_profile = response.data
-    //         console.log('👶$store.users_profile:', $store.users_profile);
-    //       })
-    //       .catch(error => {
-    //         console.error('get users_profile 錯誤:', error);
-    //       });
+        // ============================== 取得 users_profile ==============================
+        const url_user_profile = $store.api + 'users/profile';
+        axios.get(url_user_profile, {
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            // console.log('get users_profile:', response.data);
+            // 賦值到 $store
+            $store.users_profile = response.data
+            console.log('👶$store.users_profile:', $store.users_profile);
+          })
+          .catch(error => {
+            console.error('get users_profile 錯誤:', error);
+          });
 
-    //     // ============================== 取得 games_data ==============================
-    //     const url_games = $store.api + 'games';
-    //     axios.get(url_games, {
-    //       headers: {
-    //         'Authorization': `tma ${$store.token}`
-    //       }
-    //     })
-    //       .then(response => {
-    //         // console.log('get games_data:', response.data);
-    //         // 賦值到 $store
-    //         $store.games_data = response.data
-    //         console.log('📀$store.games_data:', $store.games_data);
-    //         // const date = new Date($store.games_data.lastPlayedAt * 1000);
-    //         // console.log(date.toString());
-    //       })
-    //       .catch(error => {
-    //         console.error('get games_data 錯誤:', error);
-    //       });
+        // ============================== 取得 games_data ==============================
+        const url_games = $store.api + 'games';
+        axios.get(url_games, {
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            // console.log('get games_data:', response.data);
+            // 賦值到 $store
+            $store.games_data = response.data
+            console.log('📀$store.games_data:', $store.games_data);
+            // const date = new Date($store.games_data.lastPlayedAt * 1000);
+            // console.log(date.toString());
+          })
+          .catch(error => {
+            console.error('get games_data 錯誤:', error);
+          });
         
-    //     // ============================== 取得 orders_data_daily_pass ==============================
-    //     const url_orders = $store.api + 'orders';
-    //     axios.get(url_orders, {
-    //       params: {
-    //         itemId: 'daily_pass'
-    //       },
-    //       headers: {
-    //         'Authorization': `tma ${$store.token}`
-    //       }
-    //     })
-    //       .then(response => {
-    //         // console.log('get orders_data_daily_pass:', response.data);
-    //         // 賦值到 $store
-    //         $store.orders_data_daily_pass = response.data
-    //         console.log('⚪️$store.orders_data_daily_pass:', $store.orders_data_daily_pass);
-    //       })
-    //       .catch(error => {
-    //         console.error('get orders_data_daily_pass 錯誤:', error);
-    //       });
+        // ============================== 取得 orders_data_daily_pass ==============================
+        const url_orders = $store.api + 'orders';
+        axios.get(url_orders, {
+          params: {
+            itemId: 'daily_pass'
+          },
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            // console.log('get orders_data_daily_pass:', response.data);
+            // 賦值到 $store
+            $store.orders_data_daily_pass = response.data
+            console.log('⚪️$store.orders_data_daily_pass:', $store.orders_data_daily_pass);
+          })
+          .catch(error => {
+            console.error('get orders_data_daily_pass 錯誤:', error);
+          });
         
-    //     // ============================== 取得 orders_invoice_daily_pass ==============================
-    //     const url_orders_invoice = $store.api + 'orders/invoice';
-    //     axios.get(url_orders_invoice, {
-    //       params: {
-    //         itemId: 'daily_pass'
-    //       },
-    //       headers: {
-    //         'Authorization': `tma ${$store.token}`
-    //       }
-    //     })
-    //       .then(response => {
-    //         // console.log('get orders_invoice_daily_pass:', response.data);
-    //         // 賦值到 $store
-    //         $store.orders_invoice_daily_pass = response.data
-    //         console.log('⚪️$store.orders_invoice_daily_pass:', $store.orders_invoice_daily_pass);
-    //       })
-    //       .catch(error => {
-    //         console.error('get orders_invoice_daily_pass 錯誤:', error);
-    //       });
-    //     // ============================== 取得 orders_data_golden_pass ==============================
-    //     axios.get(url_orders, {
-    //       params: {
-    //         itemId: 'golden_pass'
-    //       },
-    //       headers: {
-    //         'Authorization': `tma ${$store.token}`
-    //       }
-    //     })
-    //       .then(response => {
-    //         // console.log('get orders_data_golden_pass:', response.data);
-    //         // 賦值到 $store
-    //         $store.orders_data_golden_pass = response.data
-    //         console.log('🟡$store.orders_data_golden_pass:', $store.orders_data_golden_pass);
-    //       })
-    //       .catch(error => {
-    //         console.error('get orders_data_golden_pass 錯誤:', error);
-    //       });
+        // ============================== 取得 orders_invoice_daily_pass ==============================
+        const url_orders_invoice = $store.api + 'orders/invoice';
+        axios.get(url_orders_invoice, {
+          params: {
+            itemId: 'daily_pass'
+          },
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            // console.log('get orders_invoice_daily_pass:', response.data);
+            // 賦值到 $store
+            $store.orders_invoice_daily_pass = response.data
+            console.log('⚪️$store.orders_invoice_daily_pass:', $store.orders_invoice_daily_pass);
+          })
+          .catch(error => {
+            console.error('get orders_invoice_daily_pass 錯誤:', error);
+          });
+        // ============================== 取得 orders_data_golden_pass ==============================
+        axios.get(url_orders, {
+          params: {
+            itemId: 'golden_pass'
+          },
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            // console.log('get orders_data_golden_pass:', response.data);
+            // 賦值到 $store
+            $store.orders_data_golden_pass = response.data
+            console.log('🟡$store.orders_data_golden_pass:', $store.orders_data_golden_pass);
+          })
+          .catch(error => {
+            console.error('get orders_data_golden_pass 錯誤:', error);
+          });
         
-    //     // ============================== 取得 orders_invoice_golden_pass ==============================
-    //     axios.get(url_orders_invoice, {
-    //       params: {
-    //         itemId: 'golden_pass'
-    //       },
-    //       headers: {
-    //         'Authorization': `tma ${$store.token}`
-    //       }
-    //     })
-    //       .then(response => {
-    //         // console.log('get orders_invoice_golden_pass:', response.data);
-    //         // 賦值到 $store
-    //         $store.orders_invoice_golden_pass = response.data
-    //         console.log('🟡$store.orders_invoice_golden_pass:', $store.orders_invoice_golden_pass);
-    //       })
-    //       .catch(error => {
-    //         console.error('get orders_invoice_golden_pass 錯誤:', error);
-    //       });
+        // ============================== 取得 orders_invoice_golden_pass ==============================
+        axios.get(url_orders_invoice, {
+          params: {
+            itemId: 'golden_pass'
+          },
+          headers: {
+            'Authorization': `tma ${$store.token}`
+          }
+        })
+          .then(response => {
+            // console.log('get orders_invoice_golden_pass:', response.data);
+            // 賦值到 $store
+            $store.orders_invoice_golden_pass = response.data
+            console.log('🟡$store.orders_invoice_golden_pass:', $store.orders_invoice_golden_pass);
+          })
+          .catch(error => {
+            console.error('get orders_invoice_golden_pass 錯誤:', error);
+          });
 
-    //     // ============================== 開始遊戲，取得 gameplayId ==============================
-    //     // const url_games_start = $store.api + 'games/start';
-    //     // axios.post(url_games_start, {
-    //     //   headers: {
-    //     //     'Authorization': `tma ${$store.token}`
-    //     //   }
-    //     // })
-    //     //   .then(response => {
-    //     //     console.log('get games_start:', response.data);
-    //     //     // $store.games_start.gameplayId = response.data.gameplayId
-    //     //     // console.log('⚡️gameplayId:', $store.games_start.gameplayId);
-    //     //   })
-    //     //   .catch(error => {
-    //     //     console.error('🔥get games_start 錯誤:', error);
-    //     //   });
+        // ============================== 開始遊戲，取得 gameplayId ==============================
+        // const url_games_start = $store.api + 'games/start';
+        // axios.post(url_games_start, {
+        //   headers: {
+        //     'Authorization': `tma ${$store.token}`
+        //   }
+        // })
+        //   .then(response => {
+        //     console.log('get games_start:', response.data);
+        //     // $store.games_start.gameplayId = response.data.gameplayId
+        //     // console.log('⚡️gameplayId:', $store.games_start.gameplayId);
+        //   })
+        //   .catch(error => {
+        //     console.error('🔥get games_start 錯誤:', error);
+        //   });
 
-    //   })
-    //   .catch(error => {
-    //     console.error('login 請求錯誤:', error);
-    //   });
+      })
+      .catch(error => {
+        console.error('login 請求錯誤:', error);
+      });
 
   }
   catch (error) {
