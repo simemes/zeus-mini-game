@@ -67,7 +67,7 @@ onMounted(() => {
       }
     })
       .then(response => {
-        // console.log('login response.data:', response.data);
+        // console.log('post users_login:', response.data);
         $store.token = response.data.token
 
         // ============================== 取得 users_profile ==============================
@@ -81,7 +81,7 @@ onMounted(() => {
             // console.log('get users_profile:', response.data);
             // 賦值到 $store
             $store.users_profile = response.data
-            console.log('👶$store.users_profile:', $store.users_profile);
+            console.log('👶users_profile:', $store.users_profile);
           })
           .catch(error => {
             console.error('get users_profile 錯誤:', error);
@@ -98,7 +98,7 @@ onMounted(() => {
             // console.log('get games_data:', response.data);
             // 賦值到 $store
             $store.games_data = response.data
-            console.log('📀$store.games_data:', $store.games_data);
+            console.log('📀games_data:', $store.games_data);
             // const date = new Date($store.games_data.lastPlayedAt * 1000);
             // console.log(date.toString());
           })
@@ -120,31 +120,12 @@ onMounted(() => {
             // console.log('get orders_data_daily_pass:', response.data);
             // 賦值到 $store
             $store.orders_data_daily_pass = response.data
-            console.log('⚪️$store.orders_data_daily_pass:', $store.orders_data_daily_pass);
+            console.log('⚪️orders_data_daily_pass:', $store.orders_data_daily_pass);
           })
           .catch(error => {
             console.error('get orders_data_daily_pass 錯誤:', error);
           });
         
-        // ============================== 取得 orders_invoice_daily_pass ==============================
-        const url_orders_invoice = $store.api + 'orders/invoice';
-        axios.get(url_orders_invoice, {
-          params: {
-            itemId: 'daily_pass'
-          },
-          headers: {
-            'Authorization': `tma ${$store.token}`
-          }
-        })
-          .then(response => {
-            // console.log('get orders_invoice_daily_pass:', response.data);
-            // 賦值到 $store
-            $store.orders_invoice_daily_pass = response.data
-            console.log('⚪️$store.orders_invoice_daily_pass:', $store.orders_invoice_daily_pass);
-          })
-          .catch(error => {
-            console.error('get orders_invoice_daily_pass 錯誤:', error);
-          });
         // ============================== 取得 orders_data_golden_pass ==============================
         axios.get(url_orders, {
           params: {
@@ -158,46 +139,11 @@ onMounted(() => {
             // console.log('get orders_data_golden_pass:', response.data);
             // 賦值到 $store
             $store.orders_data_golden_pass = response.data
-            console.log('🟡$store.orders_data_golden_pass:', $store.orders_data_golden_pass);
+            console.log('🟡orders_data_golden_pass:', $store.orders_data_golden_pass);
           })
           .catch(error => {
             console.error('get orders_data_golden_pass 錯誤:', error);
           });
-        
-        // ============================== 取得 orders_invoice_golden_pass ==============================
-        axios.get(url_orders_invoice, {
-          params: {
-            itemId: 'golden_pass'
-          },
-          headers: {
-            'Authorization': `tma ${$store.token}`
-          }
-        })
-          .then(response => {
-            // console.log('get orders_invoice_golden_pass:', response.data);
-            // 賦值到 $store
-            $store.orders_invoice_golden_pass = response.data
-            console.log('🟡$store.orders_invoice_golden_pass:', $store.orders_invoice_golden_pass);
-          })
-          .catch(error => {
-            console.error('get orders_invoice_golden_pass 錯誤:', error);
-          });
-
-        // ============================== 開始遊戲，取得 gameplayId ==============================
-        // const url_games_start = $store.api + 'games/start';
-        // axios.post(url_games_start, {
-        //   headers: {
-        //     'Authorization': `tma ${$store.token}`
-        //   }
-        // })
-        //   .then(response => {
-        //     console.log('get games_start:', response.data);
-        //     // $store.games_start.gameplayId = response.data.gameplayId
-        //     // console.log('⚡️gameplayId:', $store.games_start.gameplayId);
-        //   })
-        //   .catch(error => {
-        //     console.error('🔥get games_start 錯誤:', error);
-        //   });
 
       })
       .catch(error => {

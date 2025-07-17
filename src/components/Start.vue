@@ -18,7 +18,7 @@
           <img :src="zChance" class="rotate-[-15deg]">
         </div>
         <div class="w-[20%] relative tracking-widest">
-          <div class="play-count" :data-stroke="playCount">{{ playCount }}</div>
+          <div class="play-count" data-stroke="x 1">x 1</div>
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted } from 'vue';
 import ItemPanel from '../components/ItemPanel.vue'
 import { useStore } from '../stores/store'
 
@@ -37,29 +37,16 @@ import zChance from '@/assets/images/zeus_3chance.png'
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 
-// ============= 切換頁面 =============
+// ================================== function ==================================
 
 // 開始按鈕
 function GameStart() {
-  if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
-    console.warn('todayPlayCount greater than maxPlayCount')
-    // 跳 buyChance, 關 start
-    $store.isBuyChance = true
-    $store.isReady = false
-    return
-  }
   emit('startEvent')
 }
 // 關閉 start
 function Close() {
   $store.isReady = false
 }
-
-// ================================== computed ==================================
-
-const playCount = computed(() => {
-    return `x ${$store.games_data.maxPlayCount - $store.games_data.todayPlayCount}`;
-})
 
 // ================================== onMounted ==================================
 

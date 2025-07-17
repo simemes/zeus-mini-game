@@ -10,6 +10,14 @@ export const useStore = defineStore('store', {
       name: '',
       referralUrl: ''
     },
+    users_referrals: {
+      referrals: [
+        {
+          id: '1234',
+          name: 'You dont have any referrals'
+        },
+      ]
+    },
     games_data: {
       todayPlayCount: 0,
       maxPlayCount: 1,
@@ -18,6 +26,10 @@ export const useStore = defineStore('store', {
     },
     games_start: {
       gameplayId: ''
+    },
+    games_finish: {
+      gameplayId: '',
+      score: 0
     },
     // 票卡購買相關
     orders_data_daily_pass: {
@@ -39,11 +51,8 @@ export const useStore = defineStore('store', {
     user_id: null,
     score: 0,
     rank: 0,
-    purchaseNum: 24,
+    purchaseNum: 75,
     finalDay: '08/31',
-    isPassTime: false,
-    ticketCount: 3,
-    accepted_friends: ['@telegram_account-1','@telegram_account-2','@telegram_account-3'],
     // non-server related
     device: '',
     isMobile: false,

@@ -22,7 +22,7 @@
     <!-- text -->
     <div class="strokeText-2 mt-0 mb-2">Days Left: {{ DaysLeft }}</div>
     <!-- btn -->
-    <div v-if="!$store.isPassTime" @click="Purchase" class="btn-box btn-click">
+    <div v-if="$store.orders_data_golden_pass.purchaseCount < $store.orders_data_golden_pass.purchaseLimit" @click="Purchase" class="btn-box btn-click">
       <div class="strokeText" data-stroke="$ 1">$ 1</div>
     </div>
 
@@ -32,6 +32,8 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useStore } from '../stores/store'
+import axios from 'axios'
+import { invoice } from '@telegram-apps/sdk';
 
 import close from '@/assets/images/close.png'
 import zPass from '@/assets/images/zeus_pass.png'
@@ -40,17 +42,82 @@ import xStar from '@/assets/images/x_star.png'
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 
-// ============= 切換頁面 =============
+// ================================== function ==================================
 
-// 開始按鈕
-function Purchase() {
-  console.log('Purchase!')
-  $store.isPassTime = true
+// 跳出付費彈窗
+async function Purchase() {
+  $store.isBuyPass = false;
+  // 取得 orders_invoice_golden_pass
+  const url_orders_invoice = $store.api + 'orders/invoice';
+  try {
+    const response = await axios.get(url_orders_invoice, {
+      params: {
+        itemId: 'golden_pass'
+      },
+      headers: {
+        'Authorization': `tma ${$store.token}`
+      }
+    });
+    // console.log('get orders_invoice_golden_pass:', response.data);
+    // 取得 invoice link 賦值到 $store
+    $store.orders_invoice_golden_pass = response.data;
+    console.log('🟡orders_invoice_golden_pass:', $store.orders_invoice_golden_pass);
+    // 跳出 invoiceLink 視窗
+    const invoiceLink = $store.orders_invoice_golden_pass.invoiceLink;
+    const status = await invoice.open(invoiceLink, 'url');
+    // 根據付款結果處理
+    if (status === 'paid') {
+      console.log('✅ 月卡付款完成');
+      await getGamesData();
+    } else {
+      console.log('❌ 月卡付款未完成或取消:', status);
+      getGoldenPass()
+    }
+  } catch(error) {
+    console.error('get orders_invoice_golden_pass 錯誤:', error);
+  }
 }
+
+// 取得 games_data 
+async function getGamesData() {
+  try {
+    const response = await axios.get($store.api + 'games', {
+      headers: {
+        'Authorization': `tma ${$store.token}`
+      }
+    });
+    $store.games_data = response.data
+    console.log('📀games_data:', $store.games_data);
+  } catch (error) {
+    console.error('get games_data 錯誤:', error);
+  }
+}
+
+// 取得 orders_data_golden_pass
+function getGoldenPass() {
+  axios.get($store.api + 'orders', {
+    params: {
+      itemId: 'golden_pass'
+    },
+    headers: {
+      'Authorization': `tma ${$store.token}`
+    }
+  })
+    .then(response => {
+      $store.orders_data_golden_pass = response.data
+      console.log('🟡orders_data_golden_pass:', $store.orders_data_golden_pass);
+    })
+    .catch(error => {
+      console.error('get orders_data_golden_pass 錯誤:', error);
+    });
+}
+
 // 關閉 BuyChance
 function Close() {
   $store.isBuyPass = false
 }
+
+// ================================== computed ==================================
 
 const DaysLeft = computed(() => {
   const today = new Date();
@@ -65,7 +132,7 @@ const DaysLeft = computed(() => {
 // ================================== onMounted ==================================
 
 onMounted(() => {
-  
+  // console.log('invoice.isSupported(): ', invoice.isSupported())
 })
 
 </script>

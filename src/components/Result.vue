@@ -78,8 +78,8 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from '../stores/store'
 import AcceptedPanel from '../components/AcceptedPanel.vue'
 import { animate, createSpring } from 'animejs';
-// import { shareURL } from '@telegram-apps/sdk';
-// import axios from 'axios';
+import { shareURL } from '@telegram-apps/sdk';
+import axios from 'axios';
 
 import bgGold from '@/assets/images/gold_background.jpg'
 import pepeChest from '@/assets/images/pepe_in_chest.png'
@@ -103,20 +103,19 @@ const imageList: string[] = [
   new URL('@/assets/images/accepted_frens.png', import.meta.url).href,
 ];
 
-let btnIsDisabled = ref(true)
+// let btnIsDisabled = ref(true)
 
 // ================================== computed ==================================
 
-// const btnIsDisabled = computed(() => {
-//   let result
-//   // console.log($store.games_data.todayPlayCount, $store.games_data.maxPlayCount)
-//   if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
-//     result = true
-//   } else {
-//     result = false
-//   }
-//   return result
-// })
+const btnIsDisabled = computed(() => {
+  let result
+  if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
+    result = true
+  } else {
+    result = false
+  }
+  return result
+})
 
 
 const displayedScore = computed(() => {
@@ -141,20 +140,69 @@ watch(acceptedPanelTrans, () => {
 
 // ================================== function ==================================
 
-function Share() {
-  // console.log(btnIsDisabled)
-  btnIsDisabled.value = false
-  // console.log(btnIsDisabled)
+// post games/finish
+function postGamesFinish() {
+  axios.post($store.api + 'games/finish', {
+    "gameplayId": $store.games_start.gameplayId,
+    "score": $store.score
+  }, {
+    headers: {
+      'Authorization': `tma ${$store.token}`
+    }
+  })
+    .then(response => {
+      $store.games_finish = response.data
+      console.log('games_finish:', $store.games_finish);
+    })
+    .catch(error => {
+      console.error('post games_finish 錯誤:', error);
+    });
+}
 
-  // try {
-  //   const link = `https://t.me/SIMemes_bot?startapp=${$store.users_profile.userId}`
-  //   if (shareURL.isAvailable()) {
-  //     shareURL(link, '⚡️ let\'s play with zeus!');
-  //   }
-  // }
-  // catch (error) {
-  //   console.log("[Telegram.WebApp]: ", error);
-  // }
+// get users/referrals
+function getUsersReferrals() {
+  axios.get($store.api + 'users/referrals', {
+    headers: {
+      'Authorization': `tma ${$store.token}`
+    }
+  })
+    .then(response => {
+      $store.users_referrals = response.data
+      console.log('users_referrals:', $store.users_referrals);
+    })
+    .catch(error => {
+      console.error('get users_referrals 錯誤:', error);
+    });
+}
+
+// get games
+function getGamesData() {
+  axios.get($store.api + 'games', {
+    headers: {
+      'Authorization': `tma ${$store.token}`
+    }
+  })
+    .then(response => {
+      $store.games_data = response.data
+      console.log('📀games_data:', $store.games_data);
+    })
+    .catch(error => {
+      console.error('get games_data 錯誤:', error);
+    });
+}
+
+function Share() {
+  // btnIsDisabled.value = false
+
+  try {
+    const link = `https://t.me/SIMemes_bot?startapp=${$store.users_profile.userId}`
+    if (shareURL.isAvailable()) {
+      shareURL(link, '⚡️ let\'s play with zeus!');
+    }
+  }
+  catch (error) {
+    console.log("[Telegram.WebApp]: ", error);
+  }
 }
 
 function GoToStart() {
@@ -209,29 +257,16 @@ function CloseMask() {
 // ================================== onMounted ==================================
 
 onMounted(async() => {
-  // $store.games_data.todayPlayCount = 1
-  // $store.games_data.maxPlayCount = 1
   // 預載入圖片
   await preloadImages(imageList);
   $store.resultLoaded = true; 
 
-  // 結束遊戲 (把結果送到server/ 還有另一種可能是玩家關掉 app 時)
-  // const url_finish = $store.api + 'games/finish';
-  // axios.post(url_finish, {
-  //   score: $store.score
-  // }, {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': `tma ${$store.token}`
-  //   }
-  // })
-  //   .then(response => {
-  //     console.log('post 結束遊戲:', response.data);
-  //   })
-  //   .catch(error => {
-  //     console.error('post 結束遊戲錯誤:', error);
-  //     console.error('錯誤訊息:', error.response?.data);
-  //   });
+  // 結束遊戲
+  postGamesFinish()
+  // 更新 gamesData
+  getGamesData()
+  // 獲取邀請好友清單
+  getUsersReferrals()
 })
 </script>
 

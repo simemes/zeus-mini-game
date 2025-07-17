@@ -24,6 +24,8 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
 import { useStore } from '../stores/store'
+import axios from 'axios'
+import { invoice } from '@telegram-apps/sdk';
 
 import close from '@/assets/images/close.png'
 import zChance from '@/assets/images/zeus_3chance.png'
@@ -31,14 +33,77 @@ import zChance from '@/assets/images/zeus_3chance.png'
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 
-// ============= 切換頁面 =============
+// ================================== function ==================================
 
-// 開始按鈕
-function Purchase() {
-  console.log('Purchase!')
-  $store.games_data.maxPlayCount += 3
-  $store.isBuyChance = false
+// 跳出付費彈窗
+async function Purchase() {
+  // $store.games_data.maxPlayCount += 3
+  $store.isBuyChance = false;
+  //  取得 orders_invoice_daily_pass 
+  const url_orders_invoice = $store.api + 'orders/invoice';
+  try {
+    const response = await axios.get(url_orders_invoice, {
+      params: {
+        itemId: 'daily_pass'
+      },
+      headers: {
+        'Authorization': `tma ${$store.token}`
+      }
+    });
+    // console.log('get orders_invoice_daily_pass:', response.data);
+    // 取得 invoice link 賦值到 $store
+    $store.orders_invoice_daily_pass = response.data;
+    console.log('⚪️orders_invoice_daily_pass:', $store.orders_invoice_daily_pass);
+    const invoiceLink = response.data.invoiceLink;
+    // 跳出 Telegram 的付款畫面
+    const status = await invoice.open(invoiceLink, 'url');
+    // 根據付款結果處理
+    if (status === 'paid') {
+      console.log('✅ 日票付款完成');
+      await getGamesData();
+    } else {
+      console.log('❌ 日票付款未完成或取消:', status);
+      getDailyPass()
+    }
+  } catch (error) {
+    console.error('get orders_invoice_daily_pass 錯誤:', error);
+  }
 }
+
+// 取得 games_data 
+async function getGamesData() {
+  try {
+    const response = await axios.get($store.api + 'games', {
+      headers: {
+        'Authorization': `tma ${$store.token}`
+      }
+    });
+    $store.games_data = response.data
+    console.log('📀games_data:', $store.games_data);
+  } catch (error) {
+    console.error('get games_data 錯誤:', error);
+  }
+}
+
+// 取得 orders_data_daily_pass
+function getDailyPass() {
+  axios.get($store.api + 'orders', {
+    params: {
+      itemId: 'daily_pass'
+    },
+    headers: {
+      'Authorization': `tma ${$store.token}`
+    }
+  })
+    .then(response => {
+      $store.orders_data_daily_pass = response.data
+      console.log('⚪️orders_data_daily_pass:', $store.orders_data_daily_pass);
+    })
+    .catch(error => {
+      console.error('get orders_data_daily_pass 錯誤:', error);
+    });
+}
+
 // 關閉 BuyChance
 function Close() {
   $store.isBuyChance = false
@@ -55,7 +120,7 @@ const purchaseForChance = computed(() => {
 // ================================== onMounted ==================================
 
 onMounted(() => {
-  
+  // console.log('invoice.isSupported(): ', invoice.isSupported())
 })
 
 </script>

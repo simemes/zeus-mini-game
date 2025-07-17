@@ -454,27 +454,33 @@ function changBackground(new_bg: string, scene: Phaser.Scene) {
 
 // ------------- 開始遊戲按鈕 -------------
 function activeGameStart() {
+  // 若次數不夠，就 return
+  if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
+    console.warn('todayPlayCount greater than maxPlayCount')
+    // 關 start
+    $store.isReady = false
+    // 跳 buyChance 提示購票
+    if($store.orders_data_daily_pass.purchaseCount < $store.orders_data_daily_pass.purchaseLimit) $store.isBuyChance = true
+    return
+  }
+  // 若次數夠，就開始執行
   $store.isStart = true
-  // 這裏是否就要向 server 丟 +1 ?
-  $store.games_data.todayPlayCount += 1
-
-  // ============================== 開始遊戲，取得 gameplayId ==============================
+  // $store.games_data.todayPlayCount += 1
+  // 開始遊戲，取得 gameplayId
   // 從 url_games_start 抓 gameplayId，這裏 server 會將 todayPlayCount +1
-  // console.log($store.api)
-  // console.log($store.token)
   const url_games_start = $store.api + 'games/start';
-  axios.post(url_games_start, {
+  axios.post(url_games_start, {}, {
     headers: {
       'Authorization': `tma ${$store.token}`
     }
   })
     .then(response => {
-      console.log('get games_start:', response.data);
+      // console.log('get games_start:', response.data);
       $store.games_start.gameplayId = response.data.gameplayId
       console.log('gameplayId:', $store.games_start.gameplayId);
     })
     .catch(error => {
-      console.error('get games_start 錯誤:', error);
+      console.error('post games_start 錯誤:', error);
     });
 
   StartCountdown();

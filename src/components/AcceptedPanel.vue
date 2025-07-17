@@ -13,7 +13,7 @@
             <img :src="zChance" class="rotate-[-15deg]">
         </div>
         <div class="w-[100%] my-2">
-            <div class="play-count" :data-stroke="ticketCount">{{ ticketCount }}</div>
+            <div class="play-count" :data-stroke="referralsTickets">{{ referralsTickets }}</div>
         </div>
         <div class="w-[100%] mb-2">
           <div class="text-[12px] font-[700]">you can use one referred ticket max per day.</div>
@@ -23,8 +23,8 @@
     <!-- list -->
     <div class="relative w-[100%] flex flex-col justify-center items-start bg-[#45250C] rounded-[20px] px-4 pb-5 mb-2 border-[#3A1D07] border-[2px]">
         <!-- <div class="relative"> -->
-            <div v-for="friend in $store.accepted_friends">
-                <div class="text-[12px] font-[700] mt-4">{{ friend }}</div>
+            <div v-for="referral in $store.users_referrals.referrals">
+                <div class="text-[12px] font-[700] mt-4">{{ referral.name }}</div>
                 <div class="absolute w-[90%] border-b-[2px] border-[#684325] mt-2"></div>
             </div>
         <!-- </div> -->
@@ -50,8 +50,8 @@ function Close() {
 
 // ================================== computed ==================================
 
-const ticketCount = computed(() => {
-    return `Your ticket : ${$store.ticketCount}`;
+const referralsTickets = computed(() => {
+    return `Your ticket : ${$store.users_referrals.referrals.length - 0}`;
 })
 
 // ================================== onMounted ==================================
