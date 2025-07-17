@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "simm-dev-441009"
-  }
+  },
+  "targets": {
+    "simm-dev-441009": {
+      "hosting": {
+        "dev": [
+          "zeusdrop-dev"
+        ],
+        "prod": [
+          "zeusdrop"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
