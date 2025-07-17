@@ -207,6 +207,7 @@ import BuyPass from '../components/BuyPass.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 import { useRouter } from 'vue-router'
+// import axios from 'axios';
 // import canAutoPlay from 'can-autoplay';
 
 // images
@@ -428,7 +429,9 @@ let comboCount = ref(0)
 let lastTapTime = ref(0);
 let invincibleCircle = ref(180);
 
+// ==============================================================================
 // ================================== function ==================================
+// ==============================================================================
 
 // ------------- 背景響應式調整 -------------
 function fitBackground(bg: Phaser.GameObjects.Image, scene: Phaser.Scene) {
@@ -453,7 +456,27 @@ function changBackground(new_bg: string, scene: Phaser.Scene) {
 function activeGameStart() {
   $store.isStart = true
   // 這裏是否就要向 server 丟 +1 ?
-  $store.users_profile.todayPlayCount += 1
+  $store.games_data.todayPlayCount += 1
+
+  // ============================== 開始遊戲，取得 gameplayId ==============================
+  // 從 url_games_start 抓 gameplayId，這裏 server 會將 todayPlayCount +1
+  // console.log($store.api)
+  // console.log($store.token)
+  // const url_games_start = $store.api + 'games/start';
+  // axios.post(url_games_start, {
+  //   headers: {
+  //     'Authorization': `tma ${$store.token}`
+  //   }
+  // })
+  //   .then(response => {
+  //     console.log('get games_start:', response.data);
+  //     $store.games_start.gameplayId = response.data.gameplayId
+  //     console.log('gameplayId:', $store.games_start.gameplayId);
+  //   })
+  //   .catch(error => {
+  //     console.error('get games_start 錯誤:', error);
+  //   });
+
   StartCountdown();
 }
 
@@ -755,8 +778,9 @@ function ClickMask() {
   $store.isBuyPass = false
   $store.isReady = false
 }
-
+// ==============================================================================
 // ================================== computed ==================================
+// ==============================================================================
 
 const countdownSec = computed(() => {
   let result;
@@ -765,7 +789,9 @@ const countdownSec = computed(() => {
   return result?result:3-sec.value
 })
 
-// ================================== watch ==================================
+// ==============================================================================
+// ================================== watch =====================================
+// ==============================================================================
 
 watch(startPanelTrans, () => {
   if (startPanelTrans.value) {
@@ -790,7 +816,9 @@ watch(buyChanceTrans, () => {
   }
 })
 
+// ===============================================================================
 // ================================== onMounted ==================================
+// ===============================================================================
 
 onMounted(() => {
 
@@ -835,7 +863,8 @@ onMounted(() => {
   game.value = new Phaser.Game(config);
   // console.log('🟢 ', game.canvas)
 
-  // -------------------------- *** preload *** --------------------------
+  // ===================================== *** preload *** =========================================
+
   function preload(this: Phaser.Scene) {
     // pic
     this.load.image("logo", logo);
@@ -881,7 +910,7 @@ onMounted(() => {
     })
   }
 
-  // -------------------------- *** create *** --------------------------
+  // ===================================== *** create *** =========================================
   function create(this: Phaser.Scene) {
     // QKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.Q);
 
@@ -1054,7 +1083,7 @@ onMounted(() => {
 
   }
 
-  // -------------------------- *** update *** --------------------------
+  // ===================================== *** update *** =========================================
   function update(this: Phaser.Scene) {
     
     // Check for 'Q' key press

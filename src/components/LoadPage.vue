@@ -18,7 +18,7 @@
         <div class="absolute w-[20%] bottom-[5%] left-[30%]">
           <img :src="plus">
         </div>
-        <div class="flex-2 text-[14px] font-[700]">{{ $store.users_profile.maxPlayCount - $store.users_profile.todayPlayCount }}</div>
+        <div class="flex-2 text-[14px] font-[700]">{{ $store.games_data.maxPlayCount - $store.games_data.todayPlayCount }}</div>
       </div>
     </div>
     <!-- zeus_drop_logo -->

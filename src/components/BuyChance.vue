@@ -36,7 +36,7 @@ const emit = defineEmits(['startEvent'])
 // 開始按鈕
 function Purchase() {
   console.log('Purchase!')
-  $store.users_profile.maxPlayCount += 3
+  $store.games_data.maxPlayCount += 3
   $store.isBuyChance = false
 }
 // 關閉 BuyChance

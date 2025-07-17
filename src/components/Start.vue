@@ -10,7 +10,7 @@
       <ItemPanel></ItemPanel>
     </div>
     <!-- btn -->
-    <!-- <div @click="GameStart" class="btn-box btn-click" :class="{ disabled: $store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount}" :disabled="$store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount"> -->
+    <!-- <div @click="GameStart" class="btn-box btn-click" :class="{ disabled: $store.games_data.todayPlayCount >= $store.games_data.maxPlayCount}" :disabled="$store.games_data.todayPlayCount >= $store.games_data.maxPlayCount"> -->
     <div @click="GameStart" class="btn-box btn-click">
       <div class="strokeText " data-stroke="Start">Start</div>
       <div class="flex justify-center my-1">
@@ -41,7 +41,7 @@ const emit = defineEmits(['startEvent'])
 
 // 開始按鈕
 function GameStart() {
-  if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+  if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
     console.warn('todayPlayCount greater than maxPlayCount')
     // 跳 buyChance, 關 start
     $store.isBuyChance = true
@@ -58,14 +58,14 @@ function Close() {
 // ================================== computed ==================================
 
 const playCount = computed(() => {
-    return `x ${$store.users_profile.maxPlayCount - $store.users_profile.todayPlayCount}`;
+    return `x ${$store.games_data.maxPlayCount - $store.games_data.todayPlayCount}`;
 })
 
 // ================================== onMounted ==================================
 
 onMounted(() => {
-  // $store.users_profile.todayPlayCount = 1
-  // $store.users_profile.maxPlayCount = 2
+  // $store.games_data.todayPlayCount = 1
+  // $store.games_data.maxPlayCount = 2
 })
 
 </script>

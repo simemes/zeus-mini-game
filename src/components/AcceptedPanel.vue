@@ -57,8 +57,8 @@ const ticketCount = computed(() => {
 // ================================== onMounted ==================================
 
 onMounted(() => {
-  // $store.users_profile.todayPlayCount = 1
-  // $store.users_profile.maxPlayCount = 2
+  // $store.games_data.todayPlayCount = 1
+  // $store.games_data.maxPlayCount = 2
 })
 
 </script>

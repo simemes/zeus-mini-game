@@ -109,8 +109,8 @@ let btnIsDisabled = ref(true)
 
 // const btnIsDisabled = computed(() => {
 //   let result
-//   // console.log($store.users_profile.todayPlayCount, $store.users_profile.maxPlayCount)
-//   if($store.users_profile.todayPlayCount >= $store.users_profile.maxPlayCount) {
+//   // console.log($store.games_data.todayPlayCount, $store.games_data.maxPlayCount)
+//   if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
 //     result = true
 //   } else {
 //     result = false
@@ -120,8 +120,8 @@ let btnIsDisabled = ref(true)
 
 
 const displayedScore = computed(() => {
-    return ($store.users_profile.highScore > $store.score)
-      ? $store.users_profile.highScore
+    return ($store.games_data.highScore > $store.score)
+      ? $store.games_data.highScore
       : $store.score;
 })
 
@@ -147,7 +147,7 @@ function Share() {
   // console.log(btnIsDisabled)
 
   // try {
-  //   const link = `https://t.me/SIMemes_bot?startapp=${$store.user_id}`
+  //   const link = `https://t.me/SIMemes_bot?startapp=${$store.users_profile.userId}`
   //   if (shareURL.isAvailable()) {
   //     shareURL(link, '⚡️ let\'s play with zeus!');
   //   }
@@ -209,8 +209,8 @@ function CloseMask() {
 // ================================== onMounted ==================================
 
 onMounted(async() => {
-  // $store.users_profile.todayPlayCount = 1
-  // $store.users_profile.maxPlayCount = 1
+  // $store.games_data.todayPlayCount = 1
+  // $store.games_data.maxPlayCount = 1
   // 預載入圖片
   await preloadImages(imageList);
   $store.resultLoaded = true; 
