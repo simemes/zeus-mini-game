@@ -198,7 +198,7 @@ function Share() {
   try {
     const link = `https://t.me/SIMemes_bot?startapp=${$store.users_profile.userId}`
     if (shareURL.isAvailable()) {
-      shareURL(link, '⚡️ let\'s play with zeus!');
+      shareURL(link, 'Unleash your inner god in Zeus Drop! Dodge deadly obstacles, stack points, and race the clock to become the ultimate champion! 🏆 Can you handle the storm? Tap to play now! ⚡️');
     }
   }
   catch (error) {
