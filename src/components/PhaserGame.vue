@@ -428,6 +428,7 @@ let bg: Phaser.GameObjects.Image | null = null;
 let comboCount = ref(0)
 let lastTapTime = ref(0);
 let invincibleCircle = ref(180);
+let blackout: Phaser.GameObjects.Rectangle;
 
 // ==============================================================================
 // ================================== function ==================================
@@ -482,7 +483,10 @@ function activeGameStart() {
     .catch(error => {
       console.error('post games_start 錯誤:', error);
     });
-
+  
+  // 移除黑色遮罩，開始倒數
+  const scene = game.value?.scene.scenes[0] as Phaser.Scene;
+  if (scene) removeBlackout(scene);
   StartCountdown();
 }
 
@@ -784,6 +788,20 @@ function ClickMask() {
   $store.isBuyPass = false
   $store.isReady = false
 }
+// 移除黑色遮罩
+function removeBlackout(scene: Phaser.Scene) {
+  blackout = (scene as any).blackout;
+  if (!blackout) return;
+
+  scene.tweens.add({
+    targets: blackout,
+    alpha: 0,
+    duration: 800,
+    ease: 'Power2',
+    onComplete: () => blackout.destroy()
+  });
+}
+
 // ==============================================================================
 // ================================== computed ==================================
 // ==============================================================================
@@ -933,6 +951,12 @@ onMounted(() => {
 
     // background
     changBackground("bg", this)
+
+    // 建立全螢幕黑色遮罩
+    blackout = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000)
+      .setOrigin(0, 0)
+      .setDepth(9999);
+    (this as any).blackout = blackout;
 
     // Boss
     boss = this.add.sprite(360, 250, "boss");
