@@ -108,13 +108,14 @@ const imageList: string[] = [
 // ================================== computed ==================================
 
 const btnIsDisabled = computed(() => {
-  let result
-  if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
-    result = true
-  } else {
-    result = false
-  }
-  return result
+  // let result
+  // if($store.games_data.todayPlayCount >= $store.games_data.maxPlayCount) {
+  //   result = true
+  // } else {
+  //   result = false
+  // }
+  // return result
+  return false
 })
 
 
