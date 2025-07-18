@@ -20,7 +20,7 @@
       </div>
     </div>
     <!-- reached limit hint -->
-    <div v-if="$store.orders_data_golden_pass.purchaseCount >= $store.orders_data_golden_pass.purchaseLimit" class="strokeText-2 mt-0 mb-2">You have reached your limit.</div>
+    <div v-if="$store.orders_data_golden_pass.purchaseCount >= $store.orders_data_golden_pass.purchaseLimit" class="strokeText-2 mt-0 mb-2">You have purchased Zeus Golden Pass.</div>
     <!-- btn -->
     <div v-if="$store.orders_data_golden_pass.purchaseCount < $store.orders_data_golden_pass.purchaseLimit" @click="Purchase" class="btn-box btn-click">
       <div class="strokeText" data-stroke="$ 1">$ 1</div>
