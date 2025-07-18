@@ -12,8 +12,10 @@
         <div class="strokeText-2 flex-1" data-stroke="x 3">x 3</div>
       </div>
     </div>
+    <!-- reached daily limit hint -->
+    <div v-if="$store.orders_data_daily_pass.purchaseCount >= $store.orders_data_daily_pass.purchaseLimit" class="strokeText-2 mt-4">You have reached your daily limit.</div>
     <!-- btn -->
-    <div @click="Purchase" class="btn-box btn-click">
+    <div v-if="$store.orders_data_daily_pass.purchaseCount < $store.orders_data_daily_pass.purchaseLimit" @click="Purchase" class="btn-box btn-click">
       <div class="strokeText " :data-stroke="purchaseForChance">{{ purchaseForChance }}</div>
 
     </div>

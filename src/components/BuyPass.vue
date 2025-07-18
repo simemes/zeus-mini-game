@@ -9,7 +9,7 @@
     <div @click="Close" class="absolute -top-11 left-4 w-[30%] z-1 pointer-events-auto">
       <img :src="zPass" class="rotate-[-15deg]">
     </div>
-    <div class="strokeText-3 flex-1 mb-5 sm:text-[20px] md:text-[30px] lg:text-[40px] xl:text-[50px]" data-stroke="Zeus’s Blessing Pass">Zeus’s Blessing Pass</div>
+    <div class="strokeText-3 flex-1 mb-5 sm:text-[20px] md:text-[30px] lg:text-[40px] xl:text-[50px]" data-stroke="Zeus Golden Pass">Zeus Golden Pass</div>
     <!-- items -->
     <div class="relative w-[100%] flex flex justify-around bg-[#6C2F00] rounded-[8px] p-3 mx-10 mb-5">
       <div class="w-[100%] relative flex flex-col justify-center items-center my-2">
@@ -19,8 +19,8 @@
         </div>
       </div>
     </div>
-    <!-- text -->
-    <div class="strokeText-2 mt-0 mb-2">Days Left: {{ DaysLeft }}</div>
+    <!-- reached limit hint -->
+    <div v-if="$store.orders_data_golden_pass.purchaseCount >= $store.orders_data_golden_pass.purchaseLimit" class="strokeText-2 mt-0 mb-2">You have reached your limit.</div>
     <!-- btn -->
     <div v-if="$store.orders_data_golden_pass.purchaseCount < $store.orders_data_golden_pass.purchaseLimit" @click="Purchase" class="btn-box btn-click">
       <div class="strokeText" data-stroke="$ 1">$ 1</div>
@@ -119,15 +119,15 @@ function Close() {
 
 // ================================== computed ==================================
 
-const DaysLeft = computed(() => {
-  const today = new Date();
-  const thisYear = today.getFullYear();
-  const targetDate = new Date(thisYear, 7, 31); // 月份是從 0 開始，所以 7 是 8 月
-  // 計算毫秒差距，轉成天數
-  const diffTime = targetDate.getTime() - today.getTime(); // ✅ 明確轉成 number
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
-})
+// const DaysLeft = computed(() => {
+//   const today = new Date();
+//   const thisYear = today.getFullYear();
+//   const targetDate = new Date(thisYear, 7, 31); // 月份是從 0 開始，所以 7 是 8 月
+//   // 計算毫秒差距，轉成天數
+//   const diffTime = targetDate.getTime() - today.getTime(); // ✅ 明確轉成 number
+//   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+//   return diffDays;
+// })
 
 // ================================== onMounted ==================================
 
