@@ -22,12 +22,25 @@
     
     <!-- list -->
     <div class="relative w-[100%] flex flex-col justify-center items-start bg-[#45250C] rounded-[20px] px-4 pb-5 mb-2 border-[#3A1D07] border-[2px]">
-        <!-- <div class="relative"> -->
-            <div v-for="referral in $store.users_referrals.referrals">
-                <div class="text-[12px] font-[700] mt-4">{{ referral.name }}</div>
-                <div class="absolute w-[90%] border-b-[2px] border-[#684325] mt-2"></div>
+      <div v-for="referral in $store.users_referrals.referrals" class="w-full">
+        <div class="flex justify-between items-center pt-5">
+          <div class="text-[12px] font-[700]">{{ referral.name }}</div>
+
+          <div class="w-[22%]">
+            <!-- Claimed -->
+            <div v-if="referral.claimed" class="text-[12px] font-[700] mr-2 text-[#C87637]">Claimed</div>
+            <!-- Claim btn -->
+            <div>
+              <div v-if="!referral.claimed" @click="Claim(referral.name)" class="btn-box btn-click" :class="{ disabled: $store.referrals_used_today}" :disabled="$store.referrals_used_today">
+                <div class="strokeText" data-stroke="Claim">Claim</div>
+              </div>
             </div>
-        <!-- </div> -->
+
+          </div>
+          
+        </div>  
+        <div class="absolute w-[90%] border-b-[2px] border-[#684325] mt-2"></div>
+      </div>
     </div>
 
   </div>
@@ -43,9 +56,24 @@ import zChance from '@/assets/images/zeus_3chance.png'
 const $store = useStore()
 const emit = defineEmits(['startEvent'])
 
-// 關閉 AcceptedPanel
+// 關閉 ReferralsPanel
 function Close() {
-  $store.isAcceptedPanel = false
+  $store.isReferralsPanel = false
+}
+// Claim
+function Claim(referralName: string) {
+  const referral = $store.users_referrals.referrals.find(
+    (r) => r.name === referralName
+  );
+  if (referral) {
+    console.log('Claim!', referral);
+    referral.claimed = true
+    // api
+  } else {
+    console.warn('Referral not found for name:', referralName);
+  }
+  // 今日 claimed 過，更新 games_data
+
 }
 
 // ================================== computed ==================================
@@ -65,30 +93,30 @@ onMounted(() => {
 
 <style scoped>
 .btn-box {
-  @apply text-center my-[15px] font-[800];
-  @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#FFDC30_50%,_#F8C022_50%,_#F8C022_90%,_#FFDC30_100%)];
-  @apply h-[60px] rounded-[8px] relative pointer-events-auto;
+  @apply text-center mt-[0px] font-[800];
+  @apply shadow-[inset_0px_-4px_0px_0px_#00000040] bg-[linear-gradient(to_bottom,_#50D500_50%,_#42C115_50%,_#42C115_90%,_#50D500_100%)];
+  @apply rounded-[4px] relative pointer-events-auto;
   border: 1px solid black !important;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   touch-action: manipulation;
-  @apply max-w-[400px] w-[65%] h-[72px];
+  @apply max-w-[73px] h-[30px];
 }
 .disabled {
-  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none;
+  @apply bg-[linear-gradient(to_bottom,_#6D638A_50%,_#5D537A_50%,_#6D638A_100%)] pointer-events-none text-[#9A95A7];
 }
 .btn-click {
   @apply transition-transform duration-100 active:scale-90 select-none outline-none ring-0;
 }
 .strokeText {
-  @apply relative top-[5px] w-full text-[24px] text-[#FFFFFF] z-0;
+  @apply relative top-[3px] w-full text-[14px] z-0;
 }
 .strokeText::before {
   content: attr(data-stroke);
-  -webkit-text-stroke: 5px black;
-  text-stroke: 5px black;
+  -webkit-text-stroke: 4px black;
+  text-stroke: 4px black;
   @apply absolute top-[0px] left-[0px] w-full -z-1;
 }
 

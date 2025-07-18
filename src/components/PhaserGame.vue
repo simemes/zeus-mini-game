@@ -176,7 +176,7 @@
       <LoadPage @readyEvent = "activeReady"></LoadPage>
     </div>
     <!-- StartPanel mask -->
-    <div @click="ClickMask" v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass" class="backdrop-blur-[5px] bg-[#00000070] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
+    <div @click="ClickMask" v-if="(!$store.isStart && $store.isReady) || $store.isBuyChance || $store.isBuyPass || $store.isReferralsPanel" class="backdrop-blur-[5px] bg-[#00000070] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
     <!-- Start -->
     <div v-if="!$store.isStart && $store.isReady && $store.isPreloaded" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="startPanelTrans">
       <Start @startEvent = "activeGameStart"></Start>
@@ -188,6 +188,10 @@
     <!-- BuyPass -->
     <div v-if="$store.isBuyPass" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
       <BuyPass></BuyPass>
+    </div>
+    <!-- Referrals -->
+    <div v-if="$store.isReferralsPanel" class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="buyChanceTrans">
+      <ReferralsPanel></ReferralsPanel>
     </div>
     <!-- Pause -->
     <div v-if="$store.isPaused" class="absolute top-0 z-1 w-full h-full flex flex-col justify-center">
@@ -204,6 +208,7 @@ import Pause from '../components/Pause.vue'
 import Start from '../components/Start.vue'
 import BuyChance from '../components/BuyChance.vue'
 import BuyPass from '../components/BuyPass.vue'
+import ReferralsPanel from '../components/ReferralsPanel.vue'
 import LoadPage from '../components/LoadPage.vue'
 import { animate, createSpring } from 'animejs';
 import { useRouter } from 'vue-router'
@@ -787,6 +792,7 @@ function ClickMask() {
   $store.isBuyChance = false
   $store.isBuyPass = false
   $store.isReady = false
+  $store.isReferralsPanel = false
 }
 // 移除黑色遮罩
 function removeBlackout(scene: Phaser.Scene) {

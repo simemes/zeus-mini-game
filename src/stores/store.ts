@@ -14,7 +14,13 @@ export const useStore = defineStore('store', {
       referrals: [
         {
           id: '1234',
-          name: 'You dont have any referrals'
+          name: 'You dont have any referrals',
+          claimed: false
+        },
+        {
+          id: '5678',
+          name: 'jerry',
+          claimed: false
         },
       ]
     },
@@ -53,6 +59,7 @@ export const useStore = defineStore('store', {
     rank: 0,
     purchaseNum: 75,
     finalDay: '08/31',
+    referrals_used_today: false,
     // non-server related
     isLogin: false,
     device: '',
@@ -69,7 +76,7 @@ export const useStore = defineStore('store', {
     isBuyPass: false,
     isResult: false,
     isPaused: false,
-    isAcceptedPanel: false,
+    isReferralsPanel: false,
     knockOut: false,
     canInvincible: false,
     invincible: false,

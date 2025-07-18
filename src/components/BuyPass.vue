@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted } from 'vue';
 import { useStore } from '../stores/store'
 import axios from 'axios'
 import { invoice } from '@telegram-apps/sdk';

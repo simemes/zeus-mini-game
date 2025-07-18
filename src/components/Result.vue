@@ -46,7 +46,7 @@
           <div class="strokeText " data-stroke="Share">Share</div>
         </div>
 
-        <div @click="ShowAcceptedPanel"  class="btn-box-2 btn-click">
+        <div @click="ShowReferrals"  class="btn-box-2 btn-click">
           <div class=""></div>
           <img :src="acceptedFriends" class="absolute top-[10px] sm:top-[8px] md:top-[6px] left-1/2 -translate-x-1/2 max-w-[20%] max-h-[35px] aspect-square">
         </div>
@@ -61,12 +61,12 @@
       </div>
     </div>
 
-    <div v-if="$store.isAcceptedPanel" class="absolute top-0 left-0 w-full h-full">
-      <!-- AcceptedPanel mask -->
+    <div v-if="$store.isReferralsPanel" class="absolute top-0 left-0 w-full h-full">
+      <!-- ReferralsPanel mask -->
       <div @click="CloseMask"  class="backdrop-blur-[5px] bg-[#00000070] absolute top-0 left-0 w-full h-full z-2 pointer-events-auto"></div>
-      <!-- AcceptedPanel -->
-      <div class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="acceptedPanelTrans">
-        <AcceptedPanel ></AcceptedPanel>
+      <!-- ReferralsPanel -->
+      <div class="absolute top-0 z-3 w-full h-full flex flex-col justify-center items-center" ref="referralsPanelTrans">
+        <ReferralsPanel ></ReferralsPanel>
       </div>
     </div>
 
@@ -76,7 +76,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useStore } from '../stores/store'
-import AcceptedPanel from '../components/AcceptedPanel.vue'
+import ReferralsPanel from '../components/ReferralsPanel.vue'
 import { animate, createSpring } from 'animejs';
 import { shareURL } from '@telegram-apps/sdk';
 import axios from 'axios';
@@ -92,7 +92,7 @@ const $store = useStore()
 import { useRouter } from 'vue-router'
 const router = useRouter()
 
-const acceptedPanelTrans = ref(null)
+const referralsPanelTrans = ref(null)
 
 // 預載入圖片
 const imageList: string[] = [
@@ -127,9 +127,9 @@ const displayedScore = computed(() => {
 
 // ================================== watch ==================================
 
-watch(acceptedPanelTrans, () => {
-  if (acceptedPanelTrans.value) {
-    animate(acceptedPanelTrans.value, {
+watch(referralsPanelTrans, () => {
+  if (referralsPanelTrans.value) {
+    animate(referralsPanelTrans.value, {
       translateY: [ 100, 0 ],
       opacity: [ 0, 1 ],
       delay: 0,
@@ -245,14 +245,14 @@ function preloadImages(imageUrls: string[]) {
   );
 }
 
-function ShowAcceptedPanel() {
-  // console.log('ShowAcceptedPanel!')
-  $store.isAcceptedPanel = true
+function ShowReferrals() {
+  // console.log('ShowReferrals!')
+  $store.isReferralsPanel = true
 }
 
 function CloseMask() {
   // console.log('CloseMask!')
-  $store.isAcceptedPanel = false
+  $store.isReferralsPanel = false
 }
 
 // ================================== onMounted ==================================

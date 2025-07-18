@@ -2,16 +2,24 @@
   <img :src="bg" class="absolute top-0 left-0 w-full h-full object-cover -z-10">
   <div class="w-full h-full flex flex-col justify-center items-center">
 
-    <!-- pass & chance -->
-    <div v-if="$store.isPreloaded && $store.isLogin" class="w-full flex flex-1 justify-between mt-6">
-      <!-- pass -->
-      <div class="w-[12%] relative m-5">
-        <div @click="getPass" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
-          <img :src="zPass" class="rotate-[-15deg] w-[80%]">
+    <!-- pass & chance & referrals -->
+    <div v-if="$store.isPreloaded && $store.isLogin" class="w-full flex flex-1 justify-between items-start mt-6">
+      <div>
+        <!-- pass -->
+        <div class="w-[20%] relative ml-5">
+          <div @click="getPass" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
+            <img :src="zPass" class="rotate-[-15deg] w-[80%]">
+          </div>
+        </div>
+        <!-- referrals -->
+        <div class="w-[20%] relative ml-5 mt-3">
+          <div @click="ShowReferrals" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
+            <img :src="referrals" class="w-[70%]">
+          </div>
         </div>
       </div>
       <!-- chance -->
-      <div @click="get3Chance" class="relative w-[18%] h-[31%] m-5 bg-[#00000050] rounded-full p-3 flex justify-center items-center pointer-events-auto">
+      <div @click="get3Chance" class="relative w-[18%] h-[31%] bg-[#00000050] rounded-full p-3 flex justify-center items-center pointer-events-auto">
         <div class="flex-1">
           <img :src="zChance" class="rotate-[-15deg]">
         </div>
@@ -53,6 +61,7 @@ import { useStore } from '../stores/store'
 
 import bg from '@/assets/images/simemes_bg.png'
 import zPass from '@/assets/images/zeus_pass.png'
+import referrals from '@/assets/images/accepted_frens.png'
 import zChance from '@/assets/images/zeus_3chance.png'
 import plus from '@/assets/images/plus_icon.png'
 import zeusLogo from '@/assets/images/zeus_drop_logo.png'
@@ -70,6 +79,11 @@ function getPass() {
 
 function get3Chance() {
   $store.isBuyChance = true
+}
+
+function ShowReferrals() {
+  // console.log('ShowReferrals!')
+  $store.isReferralsPanel = true
 }
 
 </script>
