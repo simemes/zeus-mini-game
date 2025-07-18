@@ -3,7 +3,7 @@
   <div class="w-full h-full flex flex-col justify-center items-center">
 
     <!-- pass & chance -->
-    <div v-if="$store.isPreloaded" class="w-full flex flex-1 justify-between mt-6">
+    <div v-if="$store.isPreloaded && $store.isLogin" class="w-full flex flex-1 justify-between mt-6">
       <!-- pass -->
       <div class="w-[12%] relative m-5">
         <div @click="getPass" class="bg-[#00000050] rounded-full p-1 aspect-square flex justify-center items-center pointer-events-auto">
@@ -25,7 +25,7 @@
     <img :src="zeusLogo" class="flex-4 w-[60%] object-contain">
     
     <!-- Ready Zone -->
-    <div v-if="$store.isPreloaded" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
+    <div v-if="$store.isPreloaded && $store.isLogin" class="flex flex-col justify-start flex-4 mx-[15%] load-text font-bold text-[12px]">
       <div>
         <div class="my-5">Collect items, avoid bombs, score big, and climb the leaderboard!</div>
         <div class="my-5">But beware, as time ticks on, the challenge accelerates.</div>
@@ -39,6 +39,10 @@
     <!-- loadingProgress -->
     <div v-if="!$store.isPreloaded" class="flex-1 font-[700] text-[14px]">
       <p>Loading ... {{ $store.loadingProgress }}%</p>
+    </div>
+
+    <div v-if="$store.isPreloaded && !$store.isLogin" class="flex-1 font-[700] text-[14px]">
+      <p>Login Failed ...</p>
     </div>
 
   </div>

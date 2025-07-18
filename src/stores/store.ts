@@ -54,6 +54,7 @@ export const useStore = defineStore('store', {
     purchaseNum: 75,
     finalDay: '08/31',
     // non-server related
+    isLogin: false,
     device: '',
     isMobile: false,
     stage: 1,

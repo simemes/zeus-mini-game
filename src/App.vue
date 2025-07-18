@@ -69,6 +69,7 @@ onMounted(() => {
       .then(response => {
         // console.log('post users_login:', response.data);
         $store.token = response.data.token
+        $store.isLogin = true
 
         // ============================== 取得 users_profile ==============================
         const url_user_profile = $store.api + 'users/profile';
