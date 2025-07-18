@@ -12,16 +12,20 @@ export const useStore = defineStore('store', {
     },
     users_referrals: {
       referrals: [
-        {
-          id: '1234',
-          name: 'You dont have any referrals',
-          claimed: false
-        },
-        {
-          id: '5678',
-          name: 'jerry',
-          claimed: false
-        },
+        { id: '1', name: 'Oliver', claimed: false },
+        { id: '2', name: 'Jerry', claimed: false },
+        { id: '3', name: 'Sophia', claimed: false },
+        { id: '4', name: 'Liam', claimed: false },
+        { id: '5', name: 'Emma', claimed: false },
+        { id: '6', name: 'Noah', claimed: false },
+        { id: '7', name: 'Ava', claimed: false },
+        { id: '8', name: 'Lucas', claimed: false },
+        { id: '9', name: 'Mia', claimed: false },
+        { id: '10', name: 'Ethan', claimed: false },
+        { id: '11', name: 'Isabella', claimed: false },
+        { id: '12', name: 'Mason', claimed: false },
+        { id: '13', name: 'Amelia', claimed: false },
+        { id: '14', name: 'Logan', claimed: false },
       ]
     },
     games_data: {
